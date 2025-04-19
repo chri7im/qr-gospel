@@ -1,105 +1,100 @@
 "use client";
 
-import { useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
-import { t, LANGUAGES, translateConcern } from "../lib/translations";
+   import { useState } from "react";
+   import Link from "next/link";
+   import { useSearchParams } from "next/navigation";
 
-export default function QuestionnairePage() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const lang = (searchParams.get("lang") || "English") as (typeof LANGUAGES)[number];
+   const questions = {
+     ar: {
+       title: "سؤال: إيش اللي يضايقك أكثر في حياتك؟",
+       options: ["الخوف", "الاكتئاب", "الوحدة", "قلة الهدف", "القلق", "شعور بالذنب", "غيرها"],
+     },
+     en: {
+       title: "Questionnaire: What bothers you most in life?",
+       options: ["Fear", "Depression", "Loneliness", "Lack of Purpose", "Anxiety", "Feelings of guilt", "Other"],
+     },
+     fr: {
+       title: "Question : Qu’est-ce qui te dérange le plus dans la vie ?",
+       options: ["Peur", "Dépression", "Solitude", "Manque de but", "Anxiété", "Sentiments de culpabilité", "Autre"],
+     },
+     de: {
+       title: "Frage: Was stört dich am meisten im Leben?",
+       options: ["Angst", "Depression", "Einsamkeit", "Sinnlosigkeit", "Unruhe", "Schuldgefühle", "Anderes"],
+     },
+     hi: {
+       title: "सवाल: जिंदगी में तुझे सबसे ज्यादा क्या परेशान करता है?",
+       options: ["डर", "उदासी", "अकेलापन", "मकसद की कमी", "चिंता", "अपराध बोध", "अन्य"],
+     },
+     it: {
+       title: "Domanda: Cosa ti dà più fastidio nella vita?",
+       options: ["Paura", "Depressione", "Solitudine", "Mancanza di scopo", "Ansia", "Sensi di colpa", "Altro"],
+     },
+     ja: {
+       title: "質問: 人生で一番お前を悩ませるものは何？",
+       options: ["恐怖", "うつ", "孤独", "目的の欠如", "不安", "罪悪感", "その他"],
+     },
+     ko: {
+       title: "질문: 인생에서 너를 제일 괴롭히는 게 뭐야?",
+       options: ["두려움", "우울증", "외로움", "목적 부족", "불안", "죄책감", "기타"],
+     },
+     zh: {
+       title: "问题：生活中最困扰你的是什么？",
+       options: ["恐惧", "抑郁", "孤独", "缺乏目标", "焦虑", "内疚感", "其他"],
+     },
+     pt: {
+       title: "Pergunta: O que te incomoda mais na vida?",
+       options: ["Medo", "Depressão", "Solidão", "Falta de propósito", "Ansiedade", "Sentimentos de culpa", "Outro"],
+     },
+     ru: {
+       title: "Вопрос: Что тебя больше всего беспокоит в жизни?",
+       options: ["Страх", "Депрессия", "Одиночество", "Отсутствие цели", "Тревога", "Чувство вины", "Другое"],
+     },
+     es: {
+       title: "Pregunta: ¿Qué te molesta más en la vida?",
+       options: ["Miedo", "Depresión", "Soledad", "Falta de propósito", "Ansiedad", "Sentimientos de culpa", "Otro"],
+     },
+     sw: {
+       title: "Swali: Nini kinakusumbua zaidi maishani?",
+       options: ["Hofu", "Unasumbufu", "Upweke", "Ukosefu wa kusudi", "Wasiwasi", "Hisia za hatia", "Nyingine"],
+     },
+   };
 
-  const [concernKey, setConcernKey] = useState<string>("fear");
+   export default function Questionnaire() {
+     const searchParams = useSearchParams();
+     const lang = searchParams.get("lang") || "en";
+     const [selected, setSelected] = useState("");
 
-  const handleNext = () => {
-    if (concernKey === "other") {
-      router.push(`/questionnaire/other?lang=${encodeURIComponent(lang)}`);
-    } else {
-      router.push(
-        `/final?lang=${encodeURIComponent(lang)}&issue=${encodeURIComponent(concernKey)}`
-      );
-    }
-  };
+     const { title, options } = questions[lang as keyof typeof questions] || questions.en;
 
-  return (
-    <main style={{ padding: "2rem", position: "relative", height: "100vh" }}>
-      <h1>{t("questionTitle", lang)}</h1>
-
-      <div style={{ marginTop: "1rem" }}>
-        <label style={{ display: "block", marginBottom: "0.5rem" }}>
-          <input
-            type="radio"
-            name="concern"
-            value="fear"
-            checked={concernKey === "fear"}
-            onChange={() => setConcernKey("fear")}
-          />
-          {translateConcern("fear", lang)}
-        </label>
-
-        <label style={{ display: "block", marginBottom: "0.5rem" }}>
-          <input
-            type="radio"
-            name="concern"
-            value="depression"
-            checked={concernKey === "depression"}
-            onChange={() => setConcernKey("depression")}
-          />
-          {translateConcern("depression", lang)}
-        </label>
-
-        <label style={{ display: "block", marginBottom: "0.5rem" }}>
-          <input
-            type="radio"
-            name="concern"
-            value="loneliness"
-            checked={concernKey === "loneliness"}
-            onChange={() => setConcernKey("loneliness")}
-          />
-          {translateConcern("loneliness", lang)}
-        </label>
-
-        <label style={{ display: "block", marginBottom: "0.5rem" }}>
-          <input
-            type="radio"
-            name="concern"
-            value="lack-of-purpose"
-            checked={concernKey === "lack-of-purpose"}
-            onChange={() => setConcernKey("lack-of-purpose")}
-          />
-          {translateConcern("lackOfPurpose", lang)}
-        </label>
-
-        <label style={{ display: "block", marginBottom: "0.5rem" }}>
-          <input
-            type="radio"
-            name="concern"
-            value="other"
-            checked={concernKey === "other"}
-            onChange={() => setConcernKey("other")}
-          />
-          {translateConcern("other", lang)}
-        </label>
-      </div>
-
-      <button
-        onClick={handleNext}
-        style={{
-          width: "3rem",
-          height: "3rem",
-          borderRadius: "50%",
-          backgroundColor: "#0070f3",
-          color: "#fff",
-          fontSize: "1.5rem",
-          border: "none",
-          position: "absolute",
-          bottom: "2rem",
-          right: "2rem",
-          cursor: "pointer",
-        }}
-      >
-        ➜
-      </button>
-    </main>
-  );
-}
+     return (
+       <div className="w-full max-w-md h-screen flex flex-col items-center justify-center p-4">
+         <h1 className="text-xl font-bold mb-4 text-center">{title}</h1>
+         <div className="space-y-4 w-full">
+           {options.map((option) => (
+             <button
+               key={option}
+               onClick={() => setSelected(option)}
+               className={`w-full p-3 rounded-lg ${
+                 selected === option ? "bg-blue-500 text-white" : "bg-gray-200"
+               }`}
+             >
+               {option}
+             </button>
+           ))}
+         </div>
+         {selected && (
+           <Link
+             href={
+               selected === options[options.length - 1]
+                 ? `/other?lang=${lang}&issue=${selected}`
+                 : `/final?lang=${lang}&issue=${selected}`
+             }
+           >
+             <button className="mt-8 w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center">
+               →
+             </button>
+           </Link>
+         )}
+       </div>
+     );
+   }

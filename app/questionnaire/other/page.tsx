@@ -1,51 +1,49 @@
 "use client";
 
 import { useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
-import { LANGUAGES } from "../../lib/translations";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
-export default function OtherConcernPage() {
+const prompts = {
+  ar: "قول لنا إيش اللي يضايقك أكثر:",
+  en: "Tell us what bothers you most:",
+  fr: "Dis-nous ce qui te dérange le plus :",
+  de: "Sag uns, was dich am meisten stört:",
+  hi: "हमें बता कि तुझे सबसे ज्यादा क्या परेशान करता है:",
+  it: "Dimmi cosa ti dà più fastidio:",
+  ja: "お前を一番悩ませるものを教えて:",
+  ko: "너를 제일 괴롭히는 게 뭔지 말해줘:",
+  zh: "告诉我们最困扰你的是什么：",
+  pt: "Conta pra gente o que te incomoda mais:",
+  ru: "Скажи, что тебя больше всего беспокоит:",
+  es: "Dinos qué te molesta más:",
+  sw: "Tuambie nini kinakusumbua zaidi:",
+};
+
+export default function Other() {
   const searchParams = useSearchParams();
-  const router = useRouter();
-  const lang = (searchParams.get("lang") || "English") as (typeof LANGUAGES)[number];
+  const lang = searchParams.get("lang") || "en";
+  const [customIssue, setCustomIssue] = useState("");
 
-  const [customConcern, setCustomConcern] = useState("");
-
-  const handleSubmit = () => {
-    if (!customConcern.trim()) return;
-    router.push(
-      `/final?lang=${encodeURIComponent(lang)}&issue=${encodeURIComponent(customConcern)}`
-    );
-  };
+  const prompt = prompts[lang as keyof typeof prompts] || prompts.en;
 
   return (
-    <main style={{ padding: "2rem", position: "relative", height: "100vh" }}>
-      <h1>Please describe what bothers you most in life:</h1>
-      <textarea
-        rows={4}
-        value={customConcern}
-        onChange={(e) => setCustomConcern(e.target.value)}
-        style={{ width: "100%", marginTop: "1rem" }}
+    <div className="w-full max-w-md h-screen flex flex-col items-center justify-center p-4">
+      <h1 className="text-xl font-bold mb-4 text-center">{prompt}</h1>
+      <input
+        type="text"
+        value={customIssue}
+        onChange={(e) => setCustomIssue(e.target.value)}
+        className="w-full p-2 border rounded-lg mb-4"
+        placeholder="Enter your issue"
       />
-
-      <button
-        onClick={handleSubmit}
-        style={{
-          width: "3rem",
-          height: "3rem",
-          borderRadius: "50%",
-          backgroundColor: "#0070f3",
-          color: "#fff",
-          fontSize: "1.5rem",
-          border: "none",
-          position: "absolute",
-          bottom: "2rem",
-          right: "2rem",
-          cursor: "pointer",
-        }}
-      >
-        ➜
-      </button>
-    </main>
+      {customIssue && (
+        <Link href={`/final?lang=${lang}&issue=${customIssue}`}>
+          <button className="w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center">
+            →
+          </button>
+        </Link>
+      )}
+    </div>
   );
 }
