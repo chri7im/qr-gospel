@@ -2,7 +2,6 @@
   "name": "qr-gospel",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -31,6 +30,6 @@
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "postcss": "^8.4.47",
     "tailwindcss": "^4.0.0-alpha.26",
-    "typescript": "^5.5.4"
+    "typescript": "^5.6.3"
   }
 }

@@ -2,8 +2,17 @@
 
 import { useSearchParams } from 'next/navigation';
 import { t, Language } from '../lib/translations.ts';
+import SuspenseWrapper from '../lib/SuspenseWrapper.tsx';
 
 export default function Final() {
+  return (
+    <SuspenseWrapper>
+      <FinalContent />
+    </SuspenseWrapper>
+  );
+}
+
+function FinalContent() {
   const searchParams = useSearchParams();
   const lang = (searchParams.get('lang') || 'English') as Language;
   const issue = searchParams.get('issue')?.toLowerCase() || 'fear';
@@ -30,7 +39,7 @@ export default function Final() {
 
   return (
     <div className="w-full max-w-md h-screen flex flex-col items-center justify-center p-4">
-      <p className="text-lg text-center">
+      <p className="text-lg text-center whitespace-pre-wrap">
         {opening} {message}
       </p>
     </div>

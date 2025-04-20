@@ -4,8 +4,17 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { t, Language } from '../../lib/translations.ts';
+import SuspenseWrapper from '../../lib/SuspenseWrapper.tsx';
 
 export default function Other() {
+  return (
+    <SuspenseWrapper>
+      <OtherContent />
+    </SuspenseWrapper>
+  );
+}
+
+function OtherContent() {
   const searchParams = useSearchParams();
   const lang = (searchParams.get('lang') || 'English') as Language;
   const [customIssue, setCustomIssue] = useState('');

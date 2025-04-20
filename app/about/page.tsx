@@ -3,8 +3,17 @@
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { t, Language } from '../lib/translations.ts';
+import SuspenseWrapper from '../lib/SuspenseWrapper.tsx';
 
 export default function About() {
+  return (
+    <SuspenseWrapper>
+      <AboutContent />
+    </SuspenseWrapper>
+  );
+}
+
+function AboutContent() {
   const searchParams = useSearchParams();
   const lang = (searchParams.get('lang') || 'English') as Language;
 

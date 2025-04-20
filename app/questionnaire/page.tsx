@@ -4,8 +4,17 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { t, Language, messages } from '../lib/translations.ts';
+import SuspenseWrapper from '../lib/SuspenseWrapper.tsx';
 
 export default function Questionnaire() {
+  return (
+    <SuspenseWrapper>
+      <QuestionnaireContent />
+    </SuspenseWrapper>
+  );
+}
+
+function QuestionnaireContent() {
   const searchParams = useSearchParams();
   const lang = (searchParams.get('lang') || 'English') as Language;
   const [selected, setSelected] = useState('');
