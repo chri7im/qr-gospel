@@ -18,9 +18,10 @@ export function WheelPicker({
   const y = useMotionValue(0);
   const springY = useSpring(y, { stiffness: 300, damping: 30 }); // Smooth scrolling
   const totalHeight = items.length * itemHeight;
+  const centerOffset = (visibleCount - 1) / 2; // Center item index (2 for 5 visible items)
 
   // Derive the “selected index” by rounding scroll / itemHeight
-  const currentIndex = useTransform(springY, (y) => Math.round(-y / itemHeight));
+  const currentIndex = useTransform(springY, (y) => Math.round(-y / itemHeight) + centerOffset);
 
   // When the derived index changes, clamp it and call onChange
   useEffect(() => {
@@ -38,7 +39,7 @@ export function WheelPicker({
     const currentY = springY.get();
     const nearestIndex = Math.round(currentY / itemHeight);
     const snapY = nearestIndex * itemHeight;
-    const boundedSnapY = Math.min(0, Math.max(-(totalHeight - itemHeight * visibleCount), snapY));
+    const boundedSnapY = Math.min(itemHeight * centerOffset, Math.max(-(totalHeight - itemHeight * (centerOffset + 1)), snapY));
     springY.set(boundedSnapY);
     console.log('Snapped y:', boundedSnapY, 'Nearest index:', nearestIndex);
   };
@@ -48,7 +49,7 @@ export function WheelPicker({
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
       const delta = e.deltaY * 0.5; // Adjust scroll sensitivity
-      const newY = Math.min(0, Math.max(-(totalHeight - itemHeight * visibleCount), y.get() - delta));
+      const newY = Math.min(itemHeight * centerOffset, Math.max(-(totalHeight - itemHeight * (centerOffset + 1)), y.get() - delta));
       y.set(newY);
       console.log('Wheel scroll y:', newY);
     };
@@ -85,8 +86,14 @@ export function WheelPicker({
       style={{ height: itemHeight * visibleCount, perspective: 800 }}
     >
       {/* Gradient mask for fade effect */}
-      <div className="absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-gray-100 to-transparent z-10" />
-      <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-gray-100 to-transparent z-10" />
+      <div
+        className="absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-gray-100 to-transparent z-0"
+        style={{ height: itemHeight }}
+      />
+      <div
+        className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-gray-100 to-transparent z-0"
+        style={{ height: itemHeight }}
+      />
       {/* Fixed highlight with modern iOS effect */}
       <div
         className="absolute inset-x-0 top-[80px] h-10 z-0"
@@ -104,8 +111,8 @@ export function WheelPicker({
         style={{ y: springY }}
         drag="y"
         dragConstraints={{
-          top: -(totalHeight - itemHeight * visibleCount),
-          bottom: 0,
+          top: -(totalHeight - itemHeight * (centerOffset + 1)),
+          bottom: itemHeight * centerOffset,
         }}
         dragElastic={0.1}
         dragMomentum={true}

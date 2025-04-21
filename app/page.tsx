@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { WheelPicker } from './lib/WheelPicker.tsx';
+import { WheelPicker } from './lib/WheelPicker';
 import { Language, t } from './lib/translations.ts';
 
 export default function Home() {
@@ -34,21 +34,25 @@ export default function Home() {
 
   return (
     <div className='w-full h-screen flex flex-col items-center justify-center p-4 bg-gray-100'>
-      <WheelPicker
-        items={items}
-        visibleCount={5}
-        itemHeight={40}
-        onChange={handleChange}
-      />
-      <Link href={`/about?lang=${selectedLanguage}`}>
-        <button
-          className='mt-6 px-6 py-2 bg-blue-500 text-white rounded-full disabled:opacity-50'
-          type='button'
-          disabled={!selectedLanguage}
-        >
-          Next
-        </button>
-      </Link>
+      <div className='relative'>
+        <WheelPicker
+          items={items}
+          visibleCount={5}
+          itemHeight={40}
+          onChange={handleChange}
+        />
+      </div>
+      <div className='mt-12 z-20'>
+        <Link href={`/about?lang=${selectedLanguage}`}>
+          <button
+            className='px-6 py-2 bg-blue-500 text-white rounded-full disabled:opacity-50'
+            type='button'
+            disabled={!selectedLanguage}
+          >
+            Next
+          </button>
+        </Link>
+      </div>
     </div>
   );
 }
