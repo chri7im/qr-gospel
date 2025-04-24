@@ -1,69 +1,145 @@
-export type Language = 'Arabic' | 'English' | 'French' | 'German' | 'Hindi' | 'Italian' | 'Japanese' | 'Korean' | 'Mandarin' | 'Portuguese' | 'Russian' | 'Spanish' | 'Swahili';
+export type Language = 'Arabic' | 'English' | 'Farsi' | 'French' | 'German' | 'Hindi' | 'Italian' | 'Japanese' | 'Korean' | 'Mandarin' | 'Portuguese' | 'Russian' | 'Spanish' | 'Swahili';
 
 type Translation = {
   [key in Language]: string;
 };
 
-type ConcernTranslation = {
-  [key: string]: Translation;
-};
-
 type Messages = {
-  about: Translation;
+  aboutPrefix: Translation;
+  aboutContent: Translation;
   questionnaireTitle: Translation;
   questionnaireOptions: Translation[];
   otherPrompt: Translation;
+  enterYourIssuePrompt: Translation;
   finalOpening: Translation;
-  concerns: ConcernTranslation;
   chooseLanguagePrompt: Translation;
+  getItNowForFree: Translation;
+  tellMeMore: Translation;
+  contactUsTitle: Translation;
+  contactUsEmailPlaceholder: Translation;
+  contactUsAddMessageLabel: Translation;
+  contactUsMessagePlaceholder: Translation;
+  contactUsSubmit: Translation;
+  contactUsThankYouTitle: Translation;
+  contactUsThankYouMessage: Translation;
+  contactUsPhoneLabel: Translation;
+  formRequiredError: Translation;
 };
 
 export const messages: Messages = {
-  about: {
-    Arabic: 'عنّا: مهمتنا الوحيدة في هالعالم هي نشر أحلى خبر سمعته الدنيا! الحب، الأمل، الهدف—كلها لك!',
-    English: 'About us: Our only mission in this world is to spread the greatest news this world has ever heard! '
-             + 'Love, Hope, Purpose—all are up for grabs—for you!',
-    French: 'À propos de nous : Notre seule mission dans ce monde, c’est de partager la meilleure nouvelle '
-            + 'que t’as jamais entendue ! Amour, espoir, but—tout ça est à toi !',
-    German: 'Über uns: Unsere einzige Mission in dieser Welt ist, die beste Nachricht zu verbreiten, '
-            + 'die du je gehört hast! Liebe, Hoffnung, Sinn—alles für dich!',
-    Hindi: 'हमारे बारे में: इस दुनिया में हमारा एकमात्र मिशन सबसे बड़ी खबर फैलाना है जो तूने कभी सुनी! '
-           + 'प्यार, उम्मीद, मकसद—सब तेरे लिए!',
-    Italian: 'Chi siamo: La nostra unica missione in questo mondo è diffondere la notizia più bella '
-             + 'che tu abbia mai sentito! Amore, speranza, scopo—tutto per te!',
-    Japanese: '俺たちについて: この世界での唯一の使命は、お前が聞いたこともない最高のニュースを広めることだよ！ '
-              + '愛、希望、目的—全部お前のために！',
-    Korean: '우리 소개: 이 세상에서 우리 유일한 임무는 네가 들어본 적 없는 최고의 소식을 전하는 거야! '
-            + '사랑, 희망, 목적—다 너를 위해!',
-    Mandarin: '关于我们: 我们在这世界上的唯一任务就是传播你听过的最棒的消息！爱、希望、目标—全都是给你的！',
-    Portuguese: 'Sobre nós: Nossa única missão neste mundo é espalhar a melhor notícia que tu já ouviu! '
-                + 'Amor, esperança, propósito—tudo pra ti!',
-    Russian: 'О нас: Наша единственная миссия в этом мире — рассказать тебе самую крутую новость, '
-             + 'которую ты когда-либо слышал! Любовь, надежда, цель—всё для тебя!',
-    Spanish: 'Sobre nosotros: Nuestra única misión en este mundo es compartir la mejor noticia que hayas oído nunca! '
-             + '¡Amor, esperanza, propósito—todo es para ti!',
-    Swahili: 'Kuhusu sisi: Dhamira yetu pekee duniani ni kueneza habari njema zaidi uliyowahi kusikia! '
-             + 'Upendo, tumaini, kusudi—yote ni kwa ajili yako!',
+  aboutPrefix: {
+    Arabic: 'عنّا:',
+    English: 'About us:',
+    Farsi: 'درباره ما:',
+    French: 'À propos de nous :',
+    German: 'Über uns:',
+    Hindi: 'हमारे बारे में:',
+    Italian: 'Chi siamo:',
+    Japanese: '俺たちについて:',
+    Korean: '우리 소개:',
+    Mandarin: '关于我们:',
+    Portuguese: 'Sobre nós:',
+    Russian: 'О нас:',
+    Spanish: 'Sobre nosotros:',
+    Swahili: 'Kuhusu sisi:',
+  },
+  aboutContent: {
+    Arabic: 'مهمتنا الوحيدة في هالعالم هي نشر أحلى خبر سمعته الدنيا! الحب، الأمل، الهدف—كلها لك!',
+    English: 'Our only mission in this world is to spread the greatest news this world has ever heard! ' +
+             'Love, Hope, Purpose一all are up for grabs一for you!',
+    Farsi:    'تنها ماموریت ما در این دنیا این است که بهترین خبری که دنیا شنیده را منتشر کنیم! ' +
+              'عشق، امید، هدف—همه برای تو هستند!',
+    French: 'Notre seule mission dans ce monde, c’est de partager la meilleure nouvelle ' +
+            'que t’as jamais entendue ! Amour, espoir, but—tout ça est à toi !',
+    German: 'Unsere einzige Mission in dieser Welt ist, die beste Nachricht zu verbreiten, ' +
+            'die du je gehört hast! Liebe, Hoffnung, Sinn im Leben - das alles und mehr wartet auf dich!',
+    Hindi: 'इस दुनिया में हमारा एकमात्र मिशन सबसे बड़ी खबर फैलाना है जो तूने कभी सुनी! ' +
+           'प्यार, उम्मीद, मकसद—सब तेरे लिए!',
+    Italian: 'La nostra unica missione in questo mondo è diffondere la notizia più bella ' +
+             'che tu abbia mai sentito! Amore, speranza, scopo一tutto per te!',
+    Japanese: 'この世界での唯一の使命は、お前が聞いたこともない最高のニュースを広めることだよ！ ' +
+              '愛、希望、目的—全部お前のために！',
+    Korean: '이 세상에서 우리 유일한 임무는 네가 들어본 적 없는 최고의 소식을 전하는 거야! ' +
+            '사랑, 희망, 목적—다 너를 위해!',
+    Mandarin: '我们在这世界上的唯一任务就是传播你听过的最棒的消息！爱、希望、目标—全都是给你的！',
+    Portuguese: 'Nossa única missão neste mundo é espalhar a melhor notícia que tu já ouviu! ' +
+                'Amor, esperança, propósito—tudo pra ti!',
+    Russian: 'Наша единственная миссия в этом мире一рассказать тебе самую крутую новость, ' +
+             'которую ты когда-либо слышал! Любовь, надежда, смысл жизни一ждут тебя!',
+    Spanish: 'Nuestra única misión en este mundo es compartir la mejor noticia que hayas oído nunca! ' +
+             '¡Amor, esperanza, propósito一todo es para ti!',
+    Swahili: 'Dhamira yetu pekee duniani ni kueneza habari njema zaidi uliyowahi kusikia! ' +
+             'Upendo, tumaini, kusudi一yote ni kwa ajili yako!',
   },
   questionnaireTitle: {
-    Arabic: 'سؤال: إيش اللي يضايقك أكثر في حياتك؟',
-    English: 'Questionnaire: What bothers you most in life?',
-    French: 'Question : Qu’est-ce qui te dérange le plus dans la vie ?',
-    German: 'Frage: Was stört dich am meisten im Leben?',
-    Hindi: 'सवाल: जिंदगी में तुझे सबसे ज्यादा क्या परेशान करता है?',
-    Italian: 'Domanda: Cosa ti dà più fastidio nella vita?',
-    Japanese: '質問: 人生で一番お前を悩ませるものは何？',
-    Korean: '질문: 인생에서 너를 제일 괴롭히는 게 뭐야?',
-    Mandarin: '问题：生活中最困扰你的是什么？',
-    Portuguese: 'Pergunta: O que te incomoda mais na vida?',
-    Russian: 'Вопрос: Что тебя больше всего беспокоит в жизни?',
-    Spanish: 'Pregunta: ¿Qué te molesta más en la vida?',
-    Swahili: 'Swali: Nini kinakusumbua zaidi maishani?',
+    Arabic: 'إيش اللي يضايقك أكثر في حياتك؟',
+    English: 'What bothers you most in life?',
+    Farsi: 'چه چیزی در زندگیت بیشتر اذیتت می‌کنه؟',
+    French: 'Qu’est-ce qui te dérange le plus dans la vie ?',
+    German: 'Was stört dich am meisten im Leben?',
+    Hindi: 'जिंदगी में तुझे सबसे ज्यादा क्या परेशान करता है?',
+    Italian: 'Cosa ti dà più fastidio nella vita?',
+    Japanese: '人生で一番お前を悩ませるものは何？',
+    Korean: '인생에서 너를 제일 괴롭히는 게 뭐야?',
+    Mandarin: '生活中最困扰你的是什么？',
+    Portuguese: 'O que te incomoda mais na vida?',
+    Russian: 'Что тебя больше всего беспокоит в жизни?',
+    Spanish: '¿Qué te molesta más en la vida?',
+    Swahili: 'Nini kinakusumbua zaidi maishani?',
   },
   questionnaireOptions: [
     {
+      Arabic: 'الإدمان',
+      English: 'addiction',
+      Farsi: 'اعتیاد',
+      French: 'Dépendance',
+      German: 'Sucht',
+      Hindi: 'लत',
+      Italian: 'Dipendenza',
+      Japanese: '依存症',
+      Korean: '중독',
+      Mandarin: '成瘾',
+      Portuguese: 'Vício',
+      Russian: 'Зависимость',
+      Spanish: 'adicción',
+      Swahili: 'Uraibu',
+    },
+    {
+      Arabic: 'القلق',
+      English: 'anxiety',
+      Farsi: 'اضطراب',
+      French: 'Anxiété',
+      German: 'Sorgen',
+      Hindi: 'चिंता',
+      Italian: 'Ansia',
+      Japanese: '不安',
+      Korean: '불안',
+      Mandarin: '焦虑',
+      Portuguese: 'Ansiedade',
+      Russian: 'Тревога',
+      Spanish: 'ansiedad',
+      Swahili: 'Wasiwasi',
+    },
+    {
+      Arabic: 'الاكتئاب',
+      English: 'depression',
+      Farsi: 'افسردگی',
+      French: 'Dépression',
+      German: 'Depressionen',
+      Hindi: 'उदासी',
+      Italian: 'Depressione',
+      Japanese: 'うつ',
+      Korean: '우울증',
+      Mandarin: '抑郁',
+      Portuguese: 'Depressão',
+      Russian: 'Депрессия',
+      Spanish: 'depresión',
+      Swahili: 'Unasumbufu',
+    },
+    {
       Arabic: 'الخوف',
-      English: 'Fear',
+      English: 'fear',
+      Farsi: 'ترس',
       French: 'Peur',
       German: 'Angst',
       Hindi: 'डर',
@@ -73,72 +149,13 @@ export const messages: Messages = {
       Mandarin: '恐惧',
       Portuguese: 'Medo',
       Russian: 'Страх',
-      Spanish: 'Miedo',
+      Spanish: 'miedo',
       Swahili: 'Hofu',
     },
     {
-      Arabic: 'الاكتئاب',
-      English: 'Depression',
-      French: 'Dépression',
-      German: 'Depression',
-      Hindi: 'उदासी',
-      Italian: 'Depressione',
-      Japanese: 'うつ',
-      Korean: '우울증',
-      Mandarin: '抑郁',
-      Portuguese: 'Depressão',
-      Russian: 'Депрессия',
-      Spanish: 'Depresión',
-      Swahili: 'Unasumbufu',
-    },
-    {
-      Arabic: 'الوحدة',
-      English: 'Loneliness',
-      French: 'Solitude',
-      German: 'Einsamkeit',
-      Hindi: 'अकेलापन',
-      Italian: 'Solitudine',
-      Japanese: '孤独',
-      Korean: '외로움',
-      Mandarin: '孤独',
-      Portuguese: 'Solidão',
-      Russian: 'Одиночество',
-      Spanish: 'Soledad',
-      Swahili: 'Upweke',
-    },
-    {
-      Arabic: 'قلة الهدف',
-      English: 'Lack of Purpose',
-      French: 'Manque de but',
-      German: 'Sinnlosigkeit',
-      Hindi: 'मकसद की कमी',
-      Italian: 'Mancanza di scopo',
-      Japanese: '目的の欠如',
-      Korean: '목적 부족',
-      Mandarin: '缺乏目标',
-      Portuguese: 'Falta de propósito',
-      Russian: 'Отсутствие цели',
-      Spanish: 'Falta de propósito',
-      Swahili: 'Ukosefu wa kusudi',
-    },
-    {
-      Arabic: 'القلق',
-      English: 'Anxiety',
-      French: 'Anxiété',
-      German: 'Unruhe',
-      Hindi: 'चिंता',
-      Italian: 'Ansia',
-      Japanese: '不安',
-      Korean: '불안',
-      Mandarin: '焦虑',
-      Portuguese: 'Ansiedade',
-      Russian: 'Тревога',
-      Spanish: 'Ansiedad',
-      Swahili: 'Wasiwasi',
-    },
-    {
       Arabic: 'شعور بالذنب',
-      English: 'Feelings of guilt',
+      English: 'feelings of guilt',
+      Farsi: 'احساس گناه',
       French: 'Sentiments de culpabilité',
       German: 'Schuldgefühle',
       Hindi: 'अपराध बोध',
@@ -148,28 +165,94 @@ export const messages: Messages = {
       Mandarin: '内疚感',
       Portuguese: 'Sentimentos de culpa',
       Russian: 'Чувство вины',
-      Spanish: 'Sentimientos de culpa',
+      Spanish: 'sentimientos de culpa',
       Swahili: 'Hisia za hatia',
     },
     {
-      Arabic: 'غيرها',
-      English: 'Other',
-      French: 'Autre',
-      German: 'Anderes',
-      Hindi: 'अन्य',
-      Italian: 'Altro',
-      Japanese: 'その他',
-      Korean: '기타',
-      Mandarin: '其他',
-      Portuguese: 'Outro',
-      Russian: 'Другое',
-      Spanish: 'Otro',
-      Swahili: 'Nyingine',
+      Arabic: 'الوحدة',
+      English: 'loneliness',
+      Farsi: 'تنهایی',
+      French: 'Solitude',
+      German: 'Einsamkeit',
+      Hindi: 'अकेलापन',
+      Italian: 'Solitudine',
+      Japanese: '孤独',
+      Korean: '외로움',
+      Mandarin: '孤独',
+      Portuguese: 'Solidão',
+      Russian: 'Одиночество',
+      Spanish: 'soledad',
+      Swahili: 'Upweke',
+    },
+    {
+        Arabic: 'نوبات الهلع',
+        English: 'panic attacks',
+        Farsi: 'حملات پانیک',
+        French: 'Attaques de panique',
+        German: 'Panikattacken',
+        Hindi: 'घबराहट के दौरे',
+        Italian: 'Attacchi di panico',
+        Japanese: 'パニック発作',
+        Korean: '공황 발작',
+        Mandarin: '恐慌发作',
+        Portuguese: 'Ataques de pânico',
+        Russian: 'Панические атаки',
+        Spanish: 'ataques de pánico',
+        Swahili: 'Mishambulio ya hofu',
+      },
+      {
+        Arabic: 'قلة الهدف',
+        English: 'lack of purpose',
+        Farsi: 'کمبود هدف',
+        French: 'Manque de but',
+        German: 'Sinnlosigkeit',
+        Hindi: 'मकसद की कमी',
+        Italian: 'Mancanza di scopo',
+        Japanese: '目的の欠如',
+        Korean: '목적 부족',
+        Mandarin: '缺乏目标',
+        Portuguese: 'Falta de propósito',
+        Russian: 'Бессмысленность',
+        Spanish: 'falta de propósito',
+        Swahili: 'Ukosefu wa kusudi',
+      },
+      {
+        Arabic: 'العار',
+        English: 'shame',
+        Farsi: 'شرم',
+        French: 'Honte',
+        German: 'Scham',
+        Hindi: 'शर्म',
+        Italian: 'Vergogna',
+        Japanese: '恥',
+        Korean: '수치심',
+        Mandarin: '羞耻',
+        Portuguese: 'Vergonha',
+        Russian: 'Стыд',
+        Spanish: 'vergüenza',
+        Swahili: 'Aibu',
+      },
+    {
+      Arabic: 'شيء آخر',
+      English: 'something else',
+      Farsi: 'چیز دیگری',
+      French: 'autre chose',
+      German: 'was anderes',
+      Hindi: 'कुछ और',
+      Italian: 'qualcos\'altro',
+      Japanese: 'なにかべつ',
+      Korean: '다른 것',
+      Mandarin: '其他东西',
+      Portuguese: 'outra coisa',
+      Russian: 'что-то другое',
+      Spanish: 'otra cosa',
+      Swahili: 'kitu kingine',
     },
   ],
   otherPrompt: {
     Arabic: 'قول لنا إيش اللي يضايقك أكثر:',
     English: 'Tell us what bothers you most:',
+    Farsi: 'به ما بگو چه چیزی بیشتر اذیتت می‌کنه:',
     French: 'Dis-nous ce qui te dérange le plus :',
     German: 'Sag uns, was dich am meisten stört:',
     Hindi: 'हमें बता कि तुझे सबसे ज्यादा क्या परेशान करता है:',
@@ -182,250 +265,42 @@ export const messages: Messages = {
     Spanish: 'Dinos qué te molesta más:',
     Swahili: 'Tuambie nini kinakusumbua zaidi:',
   },
+  enterYourIssuePrompt: {
+    Arabic: 'أدخل مشكلتك',
+    English: 'Enter your issue',
+    Farsi: 'مشکل خود را وارد کنید',
+    French: 'Entrez votre problème',
+    German: 'Gib dein Problem ein',
+    Hindi: 'अपनी समस्या दर्ज करें',
+    Italian: 'Inserisci il tuo problema',
+    Japanese: 'あなたの問題を入力してください',
+    Korean: '당신의 문제를 입력하세요',
+    Mandarin: '输入您的问题',
+    Portuguese: 'Digite seu problema',
+    Russian: 'Введите вашу проблему',
+    Spanish: 'Ingresa tu problema',
+    Swahili: 'Ingiza tatizo lako',
+  },
   finalOpening: {
     Arabic: 'في قصة قديمة جدًا، هي جزء من دناك. القصة دي بتشرح سبب [issue] بتاعك.',
     English: 'There is a story so ancient, it is part of our DNA. That story explains the root cause of your [issue].',
+    Farsi: 'داستانی خیلی قدیمی وجود داره که بخشی از DNA توئه. اون داستان دلیل اصلی [issue] تو رو توضیح می‌ده.',
     French: 'Y’a une histoire si ancienne qu’elle fait partie de ton ADN. Cette histoire explique pourquoi t’as [issue].',
-    German: 'Es gibt eine Geschichte, so alt, dass sie in deiner DNA steckt. Die Geschichte erklärt, warum du [issue] hast.',
+    German: 'Es gibt eine Geschichte, die ist so alt, dass sie Teil unserer DNA geworden ist. Diese Geschichte ist der Grund deiner [issue].',
     Hindi: 'एक कहानी है जो इतनी पुरानी है कि वो तेरे डीएनए का हिस्सा है। वो कहानी बताती है कि तेरे [issue] की जड़ क्या है।',
     Italian: 'C’è una storia così antica che è parte del tuo DNA. Quella storia spiega perché hai [issue].',
     Japanese: 'すげえ古い話があって、それはお前のDNAの一部なんだ。その話はお前の[issue]の原因を説明してるよ。',
     Korean: '너무 오래된 이야기가 있어, 그건 너의 DNA 일부야. 그 이야기는 네 [issue]의 근본 원인을 설명해.',
     Mandarin: '有个故事特别古老，它是你DNA的一部分。那故事解释了你[issue]的根源。',
     Portuguese: 'Tem uma história tão antiga que tá no teu DNA. Essa história explica por que tu tens [issue].',
-    Russian: 'Есть история такая древняя, что она часть твоей ДНК. Эта история объясняет, почему у тебя [issue].',
+    Russian: 'Есть история на столько древняя, что она стала частью нашей ДНК. Эта история объясняет, почему у тебя [issue].',
     Spanish: 'Hay una historia tan antigua que está en tu ADN. Esa historia explica por qué tienes [issue].',
     Swahili: 'Kuna hadithi ya zamani sana, ni sehemu ya DNA yako. Hadithi hiyo inaelezea sababu ya [issue] yako.',
   },
-  concerns: {
-    fear: {
-      Arabic: 'الخوف بيمسك فينا لأننا فقدنا الثقة في عالم مكسور بالخطية. '
-              + 'الإنجيل بيقول إن يسوع انتصر على الخوف بمواجهة الموت نفسه، '
-              + 'وبيقدم لك السلام من خلال انتصاره.',
-      English: 'Fear grips you because you’ve lost trust in a world broken by sin. '
-               + 'The gospel tells you Jesus conquered fear by facing death itself, '
-               + 'offering you peace through His victory.',
-      French: 'La peur nous tient parce qu’on a perdu confiance en un monde brisé par le péché. '
-              + 'L’Évangile dit que Jésus a vaincu la peur en affrontant la mort, '
-              + 't’offrant la paix par sa victoire.',
-      German: 'Angst packt uns, weil wir das Vertrauen in eine von Sünde zerbrochene Welt verloren haben. '
-              + 'Das Evangelium sagt, dass Jesus die Angst besiegte, indem er dem Tod selbst begegnete, '
-              + 'und dir Frieden durch seinen Sieg schenkt.',
-      Hindi: 'डर हमें जकड़ लेता है क्योंकि हमने एक पाप से टूटी दुनिया में भरोसा खो दिया है। '
-             + 'सुसमाचार कहता है कि यीशु ने मृत्यु का सामना करके डर पर विजय पाई, '
-             + 'और तुझे अपने विजय के माध्यम से शांति देता है।',
-      Italian: 'La paura ci blocca perché abbiamo perso fiducia in un mondo rotto dal peccato. '
-               + 'Il Vangelo dice che Gesù ha sconfitto la paura affrontando la morte stessa, '
-               + 'offrendoti pace con la sua vittoria.',
-      Japanese: '恐怖は、罪で壊れた世界への信頼を失ったからお前をつかむ。'
-                + '福音は、イエスが死そのものに立ち向かって恐怖を打ち負かし、'
-                + '彼の勝利を通して平和をお前にくれるって教えてくれるよ。',
-      Korean: '두려움은 죄로 망가진 세상에 대한 신뢰를 잃었기 때문에 널 붙잡아。'
-              + '복음은 예수님이 죽음 자체를 맞서 두려움을 이겼다고 말하며、'
-              + '그의 승리를 통해 너에게 평화를 줘。',
-      Mandarin: '恐惧抓住你，因为我们对一个被罪破坏的世界的信任失去了。'
-                + '福音说耶稣通过直面死亡征服了恐惧，通过他的胜利给你平安。',
-      Portuguese: 'O medo te pega porque perdemos a confiança num mundo quebrado pelo pecado。'
-                  + 'O Evangelho diz que Jesus venceu o medo enfrentando a morte，'
-                  + 'te oferecendo paz pela vitória dele。',
-      Russian: 'Страх хватает тебя, потому что мы потеряли доверие к миру, сломанному грехом。'
-               + 'Евангелие говорит，что Иисус победил страх，столкнувшись со смертью，'
-               + 'и дает тебе мир через свою победу。',
-      Spanish: 'El miedo te atrapa porque hemos perdido la confianza en un mundo roto por el pecado。'
-               + 'El Evangelio dice que Jesús venció el miedo enfrentando la muerte misma，'
-               + 'ofreciéndote paz por su victoria。',
-      Swahili: 'Hofu inakushika kwa sababu tumepoteza imani katika dunia iliyovunjika na dhambi。'
-               + 'Injili inasema Yesu alishinda hofu kwa kukabiliana na kifo chenyewe，'
-               + 'akakupa amani kupitia ushindi wake。',
-    },
-    depression: {
-      Arabic: 'الاكتئاب بيثقل علينا لأننا بنحس إننا مفصولين عن هدفنا الحقيقي。'
-              + 'الإنجيل بيكشف محبة الله، وبيرجع الفرح من خلال علاقة معاه。',
-      English: 'Depression weighs heavy because you feel disconnected from your true purpose。'
-               + 'The gospel reveals God’s love，restoring joy through a relationship with Him。',
-      French: 'La dépression pèse lourd parce qu’on se sent déconnecté de notre vrai but。'
-              + 'L’Évangile révèle l’amour de Dieu，qui restaure la joie par une relation avec Lui。',
-      German: 'Depression lastet schwer，weil wir uns von unserem wahren Sinn entfremdet fühlen。'
-              + 'Das Evangelium zeigt Gottes Liebe，die Freude durch eine Beziehung mit ihm zurückbringt。',
-      Hindi: 'उदासी भारी पड़ती है क्योंकि हम अपने असली मकसद से कटे हुए महसूस करते हैं। '
-             + 'सुसमाचार परमेश्वर के प्रेम को प्रकट करता है，जो उसके साथ रिश्ते से खुशी लौटाता है।',
-      Italian: 'La depressione pesa perché ci sentiamo scollegati dal nostro vero scopo。'
-               + 'Il Vangelo rivela l’amore di Dio，che riporta gioia attraverso un rapporto con Lui。',
-      Japanese: 'うつは、本当の目的から切り離されてる気がするから重くのしかかる。'
-                + '福音は神の愛を明らかにして、彼との関係で喜びを取り戻してくれる。',
-      Korean: '우울증은 우리가 진짜 목적에서 단절된 것처럼 느껴지니까 무겁게 짓눌러。'
-              + '복음은 하나님의 사랑을 보여주며，그와의 관계를 통해 기쁨을 되찾게 해。',
-      Mandarin: '抑郁沉重，因为我们感觉与真正的目标脱节了。'
-                + '福音揭示了神的爱，通过与他的关系恢复喜乐。',
-      Portuguese: 'A depressão pesa porque nos sabemos desconectados do nosso verdadeiro propósito。'
-                  + 'O Evangelho revela o amor de Deus，trazendo alegria de volta por um relacionamento com Ele。',
-      Russian: 'Депрессия давит，потому что мы чувствуем себя оторванными от настоящей цели。'
-               + 'Евангелие открывает любовь Бога，возвращая радость через отношения с Ним。',
-      Spanish: 'La depresión pesa porque nos sentimos desconectados de nuestro verdadero propósito。'
-               + 'El Evangelio revela el amor de Dios，restaurando la alegría por una relación con Él。',
-      Swahili: 'Unasumbufu unalemea kwa sababu tunahisi tumekatwa na kusudi letu la kweli。'
-               + 'Injili inaonyesha upendo wa Mungu，ukirudisha furaha kupitia uhusiano naye。',
-    },
-    loneliness: {
-      Arabic: 'الوحدة بتوجع لأننا اتخلقنا عشان نكون متصلين。'
-              + 'الإنجيل بيدعيك لعيلة الله，اللي عمرك ما هتبقى فيها لوحدك。',
-      English: 'Loneliness stings because you were made for connection。'
-               + 'The gospel invites you into God’s family，where you’re never alone。',
-      French: 'La solitude fait mal parce qu’on est fait pour la connexion。'
-              + 'L’Évangile t’invite dans la famille de Dieu，où t’es jamais seul。',
-      German: 'Einsamkeit tut weh，weil wir für Gemeinschaft geschaffen sind。'
-              + 'Das Evangelium lädt dich in Gottes Familie ein，wo du nie allein bist。',
-      Hindi: 'अकेलापन चुभता है क्योंकि हम रिश्तों के लिए बने हैं। '
-             + 'सुसमाचार तुझे परमेश्वर के परिवार में बुलाता है，जहाँ तू कभी अकेला नहीं है।',
-      Italian: 'La solitudine fa male perché siamo fatti per la connessione。'
-               + 'Il Vangelo ti invita nella famiglia di Dio，dove non sei mai solo。',
-      Japanese: '孤独は、俺たちがつながり合うために作られたから刺さる。'
-                + '福音はお前を神の家族に招いて、決して一人じゃないって教えてくれる。',
-      Korean: '외로움은 우리가 연결되기 위해 만들어졌기 때문에 아파。'
-              + '복음은 널 하나님의 가족으로 초대해서 절대 혼자가 아니게 해。',
-      Mandarin: '孤独刺痛，因为我们是为连接而生的。'
-                + '福音邀请你加入神的家庭，在那里你永远不孤单。',
-      Portuguese: 'A solidão dói porque fomos feitos pra conexão。'
-                  + 'O Evangelho te convida pra família de Deus，onde nunca tá sozinho。',
-      Russian: 'Одиночество ранит，потому что мы созданы для связи。'
-               + 'Евангелие зовет тебя в семью Бога，где ты никогда не один。',
-      Spanish: 'La soledad duele porque estamos hechos para la conexión。'
-               + 'El Evangelio te invita a la familia de Dios，donde nunca estás solo。',
-      Swahili: 'Upweke unauma kwa sababu tuliumbwa kwa ajili ya kuungana。'
-               + 'Injili inakualika katika familia ya Mungu，ambapo huwezi kuwa peke yako。',
-    },
-    'lack of purpose': {
-      Arabic: 'من غير هدف，الحياة بتحس زي الفاضي。'
-              + 'الإنجيل بيوريك إنك اتخلقت لمجد الله，وبيدي لحياتك معنى أبدي。',
-      English: 'Without purpose，life feels empty。'
-               + 'The gospel shows you were created for God’s glory，giving your life eternal meaning。',
-      French: 'Sans but，la vie semble vide。'
-              + 'L’Évangile te montre que t’es créé pour la gloire de Dieu，donnant un sens éternel à ta vie。',
-      German: 'Ohne Sinn fühlt sich das Leben leer an。'
-              + 'Das Evangelium zeigt，dass du für Gottes Herrlichkeit geschaffen bist，'
-              + 'was deinem Leben ewigen Sinn gibt。',
-      Hindi: 'बिना मकसद के जिंदगी खाली लगती है। '
-             + 'सुसमाचार दिखाता है कि तू परमेश्वर की महिमा के लिए बना है，'
-             + 'जो तेरी जिंदगी को अनंत अर्थ देता है।',
-      Italian: 'Senza uno scopo，la vita sembra vuota。'
-               + 'Il Vangelo ti mostra che sei stato creato per la gloria di Dio，'
-               + 'dando alla tua vita un significato eterno。',
-      Japanese: '目的がないと、人生は空っぽに感じる。'
-                + '福音はお前が神の栄光のために作られたって示して、人生に永遠の意味を与えてくれる。',
-      Korean: '목적이 없으면 인생이 공허하게 느껴져。'
-              + '복음은 네가 하나님의 영광을 위해 만들어졌다고 보여주며，인생에 영원한 의미를 줘。',
-      Mandarin: '没有目标，生活感觉空虚。'
-                + '福音告诉你，你是为神的荣耀而造，赋予你生命永恒的意义。',
-      Portuguese: 'Sem propósito，a vida parece vazia。'
-                  + 'O Evangelho mostra que tu foi criado pra glória de Deus，'
-                  + 'dando um sentido eterno à tua vida。',
-      Russian: 'Без цели жизнь кажется пустой。'
-               + 'Евангелие показывает，что ты создан для славы Бога，давая твоей жизни вечный смысл。',
-      Spanish: 'Sin propósito，la vida se siente vacía。'
-               + 'El Evangelio te muestra que fuiste creado para la gloria de Dios，'
-               + 'dándole un sentido eterno a tu vida。',
-      Swahili: 'Bila kusudi，maisha yanahisi kuwa tupu。'
-               + 'Injili inakuonyesha uliumbwa kwa ajili ya utukufu wa Mungu，'
-               + 'ikikupa maisha yako maana ya milele。',
-    },
-    anxiety: {
-      Arabic: 'القلق بيغلبنا لأننا بنشيل همومنا لوحدنا。'
-              + 'الإنجيل بيقدم سلام يسوع，اللي بيشيل همومك وبيديك راحة。',
-      English: 'Anxiety overwhelms you because you carry burdens alone。'
-               + 'The gospel offers Jesus’ peace，who carries your worries and gives you rest。',
-      French: 'L’anxiété nous submerge parce qu’on porte nos fardeaux seuls。'
-              + 'L’Évangile t’offre la paix de Jésus，qui porte tes soucis et te donne du repos。',
-      German: 'Unruhe überwältigt uns，weil wir unsere Lasten allein tragen。'
-              + 'Das Evangelium bietet den Frieden Jesu，der deine Sorgen trägt und dir Ruhe schenkt。',
-      Hindi: 'चिंता हावी हो जाती है क्योंकि हम बोझ अकेले उठाते हैं। '
-             + 'सुसमाचार यीशु की शांति देता है，जो तेरे चिंताओं को उठाता है और तुझे आराम देता है।',
-      Italian: 'L’ansia ci travolge perché portiamo i nostri fardelli da soli。'
-               + 'Il Vangelo offre la pace di Gesù，che porta le tue preoccupazioni e ti dà riposo。',
-      Japanese: '不安は、一人で重荷を背負ってるから押しつぶす。'
-                + '福音はイエスの平和をお前にくれて、悩みを背負って休息を与えてくれる。',
-      Korean: '불안은 혼자 짐을 지고 있기 때문에 널 압도해。'
-              + '복음은 예수님의 평화를 주며，네 걱정을 지고 쉴 곳을 줘。',
-      Mandarin: '焦虑压倒你，因为我们独自承担重担。'
-                + '福音提供耶稣的平安，他替你承担忧虑，给你休息。',
-      Portuguese: 'A ansiedade te esmaga porque carregamos fardos sozinhos。'
-                  + 'O Evangelho oferece a paz de Jesus，que carrega tuas preocupações e te dá descanso。',
-      Russian: 'Тревога переполняет，потому что мы несем бремя в одиночку。'
-               + 'Евангелие предлагает мир Иисуса，который берет твои заботы и дает покой。',
-      Spanish: 'La ansiedad te abruma porque cargamos nuestras cargas solos。'
-               + 'El Evangelio ofrece la paz de Jesús，que lleva tus preocupaciones y te da descanso。',
-      Swahili: 'Wasiwasi unakulemea kwa sababu unabeba mizigo peke yako。'
-               + 'Injili inakupa amani ya Yesu，ambaye anabeba wasiwasi wako na kukupa raha。',
-    },
-    guilt: {
-      Arabic: 'شعور بالذنب بيثقل عليك لأنك عارف إنك أخطأت。'
-              + 'الإنجيل بيقدم الغفران من خلال تضحية يسوع，'
-              + 'بيمسح ذنوبك ويديك حرية。',
-      English: 'Feelings of guilt weigh you down because you know you’ve messed up。'
-               + 'The gospel offers forgiveness through Jesus’ sacrifice，'
-               + 'wiping your slate clean and giving you freedom。',
-      French: 'Les sentiments de culpabilité te pèsent parce que tu sais que t’as foiré。'
-              + 'L’Évangile t’offre le pardon par le sacrifice de Jésus，'
-              + 'effaçant ton ardoise et te donnant la liberté。',
-      German: 'Schuldgefühle drücken dich，weil du weißt，dass du Mist gebaut hast。'
-              + 'Das Evangelium bietet Vergebung durch Jesu Opfer，'
-              + 'wischt deine Tafel sauber und gibt dir Freiheit。',
-      Hindi: 'अपराध बोध तुझे भारी करता है क्योंकि तू जानता है कि तूने गड़बड़ की। '
-             + 'सुसमाचार यीशु के बलिदान के माध्यम से माफी देता है，'
-             + 'तेरी स्लेट साफ करता है और तुझे आजादी देता है।',
-      Italian: 'I sensi di colpa ti pesano perché sai di aver combinato un casino。'
-               + 'Il Vangelo offre il perdono attraverso il sacrificio di Gesù，'
-               + 'cancellando i tuoi errori e dandoti libertà。',
-      Japanese: '罪悪感はお前がやらかしたって知ってるから重くのしかかる。'
-                + '福音はイエスの犠牲で赦しをくれて、過去を清算して自由をお前にくれる。',
-      Korean: '죄책감은 네가 실수했다는 걸 알기 때문에 널 짓눌러。'
-              + '복음은 예수님의 희생으로 용서를 주며，네 기록을 깨끗이 하고 자유를 줘。',
-      Mandarin: '内疚感让你沉重，因为你知道自己搞砸了。'
-                + '福音通过耶稣的牺牲提供宽恕，擦净你的记录，给你自由。',
-      Portuguese: 'Sentimentos de culpa te pesam porque tu sabe que meteu os pés pelas mãos。'
-                  + 'O Evangelho oferece perdão pelo sacrifício de Jesus，'
-                  + 'limpando tua ficha e te dando liberdade。',
-      Russian: 'Чувство вины давит на тебя，потому что ты знаешь，что накосячил。'
-               + 'Евангелие предлагает прощение через жертву Иисуса，'
-               + 'очищая твою совесть и давая свободу。',
-      Spanish: 'Los sentimientos de culpa te pesan porque sabes que la has cagado。'
-               + 'El Evangelio ofrece perdón por el sacrificio de Jesús，'
-               + 'limpiando tu historial y dándote libertad。',
-      Swahili: 'Hisia za hatia zinakulemea kwa sababu unajua umeharibu。'
-               + 'Injili inakupa msamaha kupitia sadaka ya Yesu，'
-               + 'ikifuta rekodi yako na kukupa uhuru。',
-    },
-    other: {
-      Arabic: 'مهما كانت مشكلتك، الإنجيل بيقدم أمل من خلال يسوع، '
-              + 'اللي بيشفي الكسر ويجدد الحياة。',
-      English: 'Whatever your struggle，the gospel offers hope through Jesus，'
-               + 'who heals brokenness and restores life。',
-      French: 'Peu importe ton problème，l’Évangile offre de l’espoir par Jésus，'
-              + 'qui guérit les cœurs brisés et restaure la vie。',
-      German: 'Egal，welches Problem du hast，das Evangelium bietet Hoffnung durch Jesus，'
-              + 'der Zerbrochenes heilt und das Leben wiederherstellt。',
-      Hindi: 'चाहे तेरी कोई भी परेशानी हो，सुसमाचार यीशु के माध्यम से आशा देता है，'
-             + 'जो टूटेपन को ठीक करता है और जिंदगी को बहाल करता है।',
-      Italian: 'Qualsiasi sia il tuo problema，il Vangelo offre speranza attraverso Gesù，'
-               + 'che guarisce ciò che è rotto e restaura la vita。',
-      Japanese: 'どんな悩みでも、福音はイエスを通して希望をくれて、'
-                + '壊れたものを癒し、人生を新しくしてくれる。',
-      Korean: '네가 어떤 고난을 겪든，복음은 예수님을 통해 희망을 주며，'
-              + '망가진 것을 치유하고 삶을 회복시켜。',
-      Mandarin: '不管你有什么困扰，福音通过耶稣提供希望，'
-                + '治愈破碎，恢复生命。',
-      Portuguese: 'Seja qual for teu problema，o Evangelho oferece esperança por Jesus，'
-                  + 'que cura o que tá quebrado e restaura a vida。',
-      Russian: 'Какая бы у тебя ни была проблема，Евангелие дает надежду через Иисуса，'
-               + 'который исцеляет сломленное и восстанавливает жизнь。',
-      Spanish: 'Sea cual sea tu problema，el Evangelio ofrece esperanza por Jesús，'
-               + 'que sana lo roto y restaura la vida。',
-      Swahili: 'Chochote kinachokusumbua，Injili inakupa tumaini kupitia Yesu，'
-               + 'ambaye huponya yaliyovunjika na kurudisha maisha。',
-    },
-  },
   chooseLanguagePrompt: {
     Arabic: 'اختر لغتك',
-    English: 'Choose your language',
+    English: 'Please choose your language',
+    Farsi: 'لطفاً زبان خود را انتخاب کنید',
     French: 'Choisissez votre langue',
     German: 'Wähle deine Sprache',
     Hindi: 'अपनी भाषा चुनें',
@@ -438,15 +313,188 @@ export const messages: Messages = {
     Spanish: 'Elige tu idioma',
     Swahili: 'Chagua lugha yako',
   },
+  getItNowForFree: {
+    Arabic: 'احصل عليه الآن مجانًا',
+    English: 'Get it now for free',
+    Farsi: 'الان رایگان دریافت کن',
+    French: 'Obtiens-le maintenant gratuitement',
+    German: 'Hol es dir jetzt kostenlos',
+    Hindi: 'इसे अभी मुफ्त में प्राप्त करें',
+    Italian: 'Ottienilo ora gratis',
+    Japanese: '今すぐ無料で手に入れよう',
+    Korean: '지금 무료로 받기',
+    Mandarin: '现在免费获取',
+    Portuguese: 'Pegue agora de graça',
+    Russian: 'Получи сейчас бесплатно',
+    Spanish: 'Consíguelo ahora gratis',
+    Swahili: 'Pata sasa bila malipo',
+  },
+  tellMeMore: {
+    Arabic: 'أخبرني المزيد!',
+    English: 'Tell me more!',
+    French: 'Dis-m’en plus !',
+    German: 'Ich möchte mehr erfahren!',
+    Hindi: 'मुझे और बताओ!',
+    Italian: 'Dimmi di più!',
+    Japanese: 'もっと教えて！',
+    Korean: '더 알려줘!',
+    Mandarin: '告诉我更多！',
+    Portuguese: 'Me conta mais!',
+    Russian: 'Хочу узнать больше!',
+    Spanish: '¡Dime más!',
+    Swahili: 'Niambie zaidi!',
+    Farsi: 'بیشتر بگو!',
+  },
+  contactUsTitle: {
+    Arabic: 'اتصل بنا',
+    English: 'Contact Us',
+    French: 'Contactez-nous',
+    German: 'Kontaktiere uns',
+    Hindi: 'हमसे संपर्क करें',
+    Italian: 'Contattaci',
+    Japanese: 'お問い合わせ',
+    Korean: '문의하기',
+    Mandarin: '联系我们',
+    Portuguese: 'Contate-nos',
+    Russian: 'Свяжитесь с нами',
+    Spanish: 'Contáctanos',
+    Swahili: 'Wasiliana nasi',
+    Farsi: 'تماس با ما',
+  },
+  contactUsEmailPlaceholder: {
+    Arabic: 'أدخل بريدك الإلكتروني',
+    English: 'Enter your email',
+    French: 'Entrez votre email',
+    German: 'Gib deine E-Mail ein',
+    Hindi: 'अपना ईमेल दर्ज करें',
+    Italian: 'Inserisci la tua email',
+    Japanese: 'メールアドレスを入力してください',
+    Korean: '이메일을 입력하세요',
+    Mandarin: '输入您的电子邮件',
+    Portuguese: 'Digite seu email',
+    Russian: 'Введите ваш email',
+    Spanish: 'Ingresa tu email',
+    Swahili: 'Ingiza barua pepe yako',
+    Farsi: 'ایمیل خود را وارد کنید',
+  },
+  contactUsAddMessageLabel: {
+    Arabic: 'أرغب في إضافة رسالة مخصصة',
+    English: 'I’d like to add a custom message',
+    French: 'J’aimerais ajouter un message personnalisé',
+    German: 'Ich möchte eine benutzerdefinierte Nachricht hinzufügen',
+    Hindi: 'मैं एक कस्टम संदेश जोड़ना चाहता हूँ',
+    Italian: 'Vorrei aggiungere un messaggio personalizzato',
+    Japanese: 'カスタムメッセージを追加したいです',
+    Korean: '커스텀 메시지를 추가하고 싶습니다',
+    Mandarin: '我想添加自定义消息',
+    Portuguese: 'Gostaria de adicionar uma mensagem personalizada',
+    Russian: 'Я хочу добавить персонализированное сообщение',
+    Spanish: 'Me gustaría añadir un mensaje personalizado',
+    Swahili: 'Ningependa kuongeza ujumbe wa kibinafsi',
+    Farsi: 'مایلم یک پیام سفارشی اضافه کنم',
+  },
+  contactUsMessagePlaceholder: {
+    Arabic: 'أدخل رسالتك',
+    English: 'Enter your message',
+    French: 'Entrez votre message',
+    German: 'Gib deine Nachricht ein',
+    Hindi: 'अपना संदेश दर्ज करें',
+    Italian: 'Inserisci il tuo messaggio',
+    Japanese: 'メッセージを入力してください',
+    Korean: '메시지를 입력하세요',
+    Mandarin: '输入您的消息',
+    Portuguese: 'Digite sua mensagem',
+    Russian: 'Введите ваше сообщение',
+    Spanish: 'Ingresa tu mensaje',
+    Swahili: 'Ingiza ujumbe wako',
+    Farsi: 'پیام خود را وارد کنید',
+  },
+  contactUsSubmit: {
+    Arabic: 'إرسال',
+    English: 'Submit',
+    French: 'Envoyer',
+    German: 'Absenden',
+    Hindi: 'जमा करें',
+    Italian: 'Invia',
+    Japanese: '送信',
+    Korean: '제출',
+    Mandarin: '提交',
+    Portuguese: 'Enviar',
+    Russian: 'Отправить',
+    Spanish: 'Enviar',
+    Swahili: 'Tuma',
+    Farsi: 'ارسال',
+  },
+  contactUsThankYouTitle: {
+    Arabic: 'شكرًا لك!',
+    English: 'Thank You!',
+    French: 'Merci !',
+    German: 'Danke schön!',
+    Hindi: 'धन्यवाद!',
+    Italian: 'Grazie!',
+    Japanese: 'ありがとう！',
+    Korean: '감사합니다!',
+    Mandarin: '谢谢！',
+    Portuguese: 'Obrigado!',
+    Russian: 'Спасибо!',
+    Spanish: '¡Gracias!',
+    Swahili: 'Asante!',
+    Farsi: 'متشکرم!',
+  },
+  contactUsThankYouMessage: {
+    Arabic: 'لقد تلقينا طلبك وسنتواصل معك قريبًا.',
+    English: 'We have received your submission and will reach out to you soon.',
+    French: 'Nous avons reçu votre demande et nous vous contacterons bientôt.',
+    German: 'Wir haben deine Anfrage erhalten und werden uns bald bei dir melden.',
+    Hindi: 'हमें आपका अनुरोध प्राप्त हो गया है और हम जल्द ही आपसे संपर्क करेंगे।',
+    Italian: 'Abbiamo ricevuto la tua richiesta e ti contatteremo presto.',
+    Japanese: 'ご依頼を受け付けました。近日中にお返事いたします。',
+    Korean: '요청을 접수했습니다. 곧 연락드리겠습니다.',
+    Mandarin: '我们已收到您的提交，将很快与您联系。',
+    Portuguese: 'Recebemos tua solicitação e entraremos em contato em breve.',
+    Russian: 'Мы получили твой запрос и скоро с тобой свяжемся.',
+    Spanish: 'Hemos recibido tu solicitud y nos pondremos en contacto contigo pronto.',
+    Swahili: 'Tumepokea ombi lako na tutawasiliana nawe hivi karibuni.',
+    Farsi: 'ما درخواست شما را دریافت کردیم و به زودی با شما تماس خواهیم گرفت.',
+  },
+  contactUsPhoneLabel: {
+    Arabic: 'رقم الهاتف (اختياري)',
+    English: 'Phone number (optional)',
+    French: 'Numéro de téléphone (facultatif)',
+    German: 'Telefonnummer (optional)',
+    Hindi: 'फोन नंबर (वैकल्पिक)',
+    Italian: 'Numero di telefono (opzionale)',
+    Japanese: '電話番号（任意）',
+    Korean: '전화번호 (선택 사항)',
+    Mandarin: '电话号码（可选）',
+    Portuguese: 'Número de telefone (opcional)',
+    Russian: 'Номер телефона (необязательно)',
+    Spanish: 'Número de teléfono (opcional)',
+    Swahili: 'Nambari ya simu (hiari)',
+    Farsi: 'شماره تلفن (اختیاری)',
+  },
+  formRequiredError: {
+    Arabic: 'يرجى ملء هذا الحقل',
+    English: 'Please fill out this field.',
+    Farsi: 'لطفاً این فیلد را پر کنید',
+    French: 'Veuillez remplir ce champ.',
+    German: 'Bitte fülle dieses Feld aus.',
+    Hindi: 'कृपया इस फ़ील्ड को भरें.',
+    Italian: 'Compila questo campo.',
+    Japanese: 'このフィールドを入力してください',
+    Korean: '이 필드를 작성해 주세요',
+    Mandarin: '请填写此字段',
+    Portuguese: 'Por favor, preencha este campo.',
+    Russian: 'Пожалуйста, заполни это поле.',
+    Spanish: 'Por favor, completa este campo.',
+    Swahili: 'Tafadhali jaza sehemu hii.',
+  },
 };
 
 export function t(key: keyof Messages, lang: Language, concern?: string): string {
   const translation = messages[key];
-  if (key === 'concerns' && concern) {
-    return (translation as ConcernTranslation)[concern]?.[lang] ?? (translation as ConcernTranslation)[concern].English;
-  }
-  if (key === 'questionnaireOptions') {
-    const index = messages[key].findIndex((opt) => opt.English.toLowerCase() === concern?.toLowerCase());
+  if (key === 'questionnaireOptions' && concern) {
+    const index = messages[key].findIndex(opt => opt.English.toLowerCase() === concern?.toLowerCase());
     if (index !== -1) {
       return messages[key][index][lang] ?? messages[key][index].English;
     }
