@@ -5,6 +5,10 @@ type Translation = {
 };
 
 type Messages = {
+  languageNames: Translation;
+  chooseLanguagePrompt: Translation;
+  nextButton: Translation;
+  getItNowForFree: Translation;
   aboutPrefix: Translation;
   aboutContent: Translation;
   questionnaireTitle: Translation;
@@ -12,8 +16,6 @@ type Messages = {
   otherPrompt: Translation;
   enterYourIssuePrompt: Translation;
   finalOpening: Translation;
-  chooseLanguagePrompt: Translation;
-  getItNowForFree: Translation;
   tellMeMore: Translation;
   contactUsTitle: Translation;
   contactUsEmailPlaceholder: Translation;
@@ -27,6 +29,70 @@ type Messages = {
 };
 
 export const messages: Messages = {
+  languageNames: {
+    Arabic: 'العربية',
+    English: 'English',
+    French: 'Français',
+    German: 'Deutsch',
+    Hindi: 'हिन्दी',
+    Italian: 'Italiano',
+    Japanese: '日本語',
+    Korean: '한국어',
+    Mandarin: '中文',
+    Portuguese: 'Português',
+    Russian: 'Русский',
+    Spanish: 'Español',
+    Swahili: 'Kiswahili',
+    Farsi: 'فارسی',
+  },
+  chooseLanguagePrompt: {
+    Arabic: 'اختر لغتك',
+    English: 'Please choose your language',
+    Farsi: 'لطفاً زبان خود را انتخاب کنید',
+    French: 'Choisissez votre langue',
+    German: 'Wähle deine Sprache',
+    Hindi: 'अपनी भाषा चुनें',
+    Italian: 'Scegli la tua lingua',
+    Japanese: '言語を選んでください',
+    Korean: '언어를 선택하세요',
+    Mandarin: '请选择您的语言',
+    Portuguese: 'Escolha seu idioma',
+    Russian: 'Выбери свой язык',
+    Spanish: 'Elige tu idioma',
+    Swahili: 'Chagua lugha yako',
+  },
+  nextButton: {
+    Arabic: 'التالي',
+    English: 'Next',
+    French: 'Suivant',
+    German: 'Weiter',
+    Hindi: 'आगे',
+    Italian: 'Avanti',
+    Japanese: '次へ',
+    Korean: '다음',
+    Mandarin: '下一个',
+    Portuguese: 'Próximo',
+    Russian: 'Далее',
+    Spanish: 'Siguiente',
+    Swahili: 'Inayofuata',
+    Farsi: 'بعدی',
+  },
+  getItNowForFree: {
+    Arabic: 'احصل عليه الآن مجانًا',
+    English: 'Get it now for free',
+    Farsi: 'الان رایگان دریافت کن',
+    French: 'Obtiens-le maintenant gratuitement',
+    German: 'Hol es dir jetzt kostenlos',
+    Hindi: 'इसे अभी मुफ्त में प्राप्त करें',
+    Italian: 'Ottienilo ora gratis',
+    Japanese: '今すぐ無料で手に入れよう',
+    Korean: '지금 무료로 받기',
+    Mandarin: '现在免费获取',
+    Portuguese: 'Pegue agora de graça',
+    Russian: 'Получи сейчас бесплатно',
+    Spanish: 'Consíguelo ahora gratis',
+    Swahili: 'Pata sasa bila malipo',
+  },
   aboutPrefix: {
     Arabic: 'عنّا:',
     English: 'About us:',
@@ -286,7 +352,7 @@ export const messages: Messages = {
     English: 'There is a story so ancient, it is part of our DNA. That story explains the root cause of your [issue].',
     Farsi: 'داستانی خیلی قدیمی وجود داره که بخشی از DNA توئه. اون داستان دلیل اصلی [issue] تو رو توضیح می‌ده.',
     French: 'Y’a une histoire si ancienne qu’elle fait partie de ton ADN. Cette histoire explique pourquoi t’as [issue].',
-    German: 'Es gibt eine Geschichte, die ist so alt, dass sie Teil unserer DNA geworden ist. Diese Geschichte ist der Grund deiner [issue].',
+    German: 'Es gibt eine Geschichte, die ist so alt, dass sie Teil unserer DNA ist. Diese Geschichte ist der Grund deiner [issue].',
     Hindi: 'एक कहानी है जो इतनी पुरानी है कि वो तेरे डीएनए का हिस्सा है। वो कहानी बताती है कि तेरे [issue] की जड़ क्या है।',
     Italian: 'C’è una storia così antica che è parte del tuo DNA. Quella storia spiega perché hai [issue].',
     Japanese: 'すげえ古い話があって、それはお前のDNAの一部なんだ。その話はお前の[issue]の原因を説明してるよ。',
@@ -296,38 +362,6 @@ export const messages: Messages = {
     Russian: 'Есть история на столько древняя, что она стала частью нашей ДНК. Эта история объясняет, почему у тебя [issue].',
     Spanish: 'Hay una historia tan antigua que está en tu ADN. Esa historia explica por qué tienes [issue].',
     Swahili: 'Kuna hadithi ya zamani sana, ni sehemu ya DNA yako. Hadithi hiyo inaelezea sababu ya [issue] yako.',
-  },
-  chooseLanguagePrompt: {
-    Arabic: 'اختر لغتك',
-    English: 'Please choose your language',
-    Farsi: 'لطفاً زبان خود را انتخاب کنید',
-    French: 'Choisissez votre langue',
-    German: 'Wähle deine Sprache',
-    Hindi: 'अपनी भाषा चुनें',
-    Italian: 'Scegli la tua lingua',
-    Japanese: '言語を選んでください',
-    Korean: '언어를 선택하세요',
-    Mandarin: '请选择您的语言',
-    Portuguese: 'Escolha seu idioma',
-    Russian: 'Выбери свой язык',
-    Spanish: 'Elige tu idioma',
-    Swahili: 'Chagua lugha yako',
-  },
-  getItNowForFree: {
-    Arabic: 'احصل عليه الآن مجانًا',
-    English: 'Get it now for free',
-    Farsi: 'الان رایگان دریافت کن',
-    French: 'Obtiens-le maintenant gratuitement',
-    German: 'Hol es dir jetzt kostenlos',
-    Hindi: 'इसे अभी मुफ्त में प्राप्त करें',
-    Italian: 'Ottienilo ora gratis',
-    Japanese: '今すぐ無料で手に入れよう',
-    Korean: '지금 무료로 받기',
-    Mandarin: '现在免费获取',
-    Portuguese: 'Pegue agora de graça',
-    Russian: 'Получи сейчас бесплатно',
-    Spanish: 'Consíguelo ahora gratis',
-    Swahili: 'Pata sasa bila malipo',
   },
   tellMeMore: {
     Arabic: 'أخبرني المزيد!',

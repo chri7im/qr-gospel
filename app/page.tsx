@@ -11,7 +11,6 @@ const generateVisitorId = (): string => {
   return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 };
 
-
 export default function Home() {
   const languages: Language[] = [
     'Arabic',
@@ -29,35 +28,48 @@ export default function Home() {
     'Spanish',
     'Swahili',
   ];
-  const [selectedLanguage, setSelectedLanguage] = useState<Language>('English');
-  const [selectedIndex, setSelectedIndex] = useState<number>(languages.indexOf('English')); // Track selected index
-  const [isSelecting, setIsSelecting] = useState(false); // Track if a selection change is in progress
-  const [visitorId] = useState<string>(generateVisitorId()); // Generate visitor ID on mount
+
+  // Default to English
+  const defaultLanguage: Language = 'English';
+  const defaultIndex = languages.indexOf(defaultLanguage);
+
+  const [selectedLanguage, setSelectedLanguage] = useState<Language>(defaultLanguage);
+  const [selectedIndex, setSelectedIndex] = useState<number>(defaultIndex);
+  const [isSelecting, setIsSelecting] = useState(false);
+  const [visitorId, setVisitorId] = useState<string | null>(null); // Initialize as null
 
   const router = useRouter();
   const wheelRef = useRef<HTMLDivElement>(null);
 
-  // Track visitor on mount
+  // Generate visitorId on the client side only
   useEffect(() => {
-    fetch('/api/track-visitor', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ visitorId }),
-    }).catch((error) => console.error('Error tracking visitor:', error));
+    const id = generateVisitorId();
+    setVisitorId(id);
+    console.log('Generated visitorId:', id);
+  }, []);
+
+  // Track visitor once visitorId is available
+  useEffect(() => {
+    if (visitorId) {
+      fetch('/api/track-visitor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ visitorId }),
+      }).catch((error) => console.error('Error tracking visitor:', error));
+    }
   }, [visitorId]);
 
-  // Map languages to their translated "chooseLanguagePrompt" strings
-  const items = languages.map((lang) => t('chooseLanguagePrompt', lang));
+  // Map languages to their native names for the wheel items
+  const items = languages.map((lang) => t('languageNames', lang as Language));
 
   // Handle selection change
   const handleChange = (index: number) => {
     console.log('WheelPicker onChange triggered:', index, 'Previous index:', selectedIndex);
-    setIsSelecting(true); // Mark that a selection change is in progress
+    setIsSelecting(true);
     setSelectedLanguage(languages[index]);
     setSelectedIndex(index);
     console.log('Selected language:', languages[index], 'Index:', index);
 
-    // Reset isSelecting after a short delay to allow click handler to differentiate
     setTimeout(() => {
       setIsSelecting(false);
     }, 200);
@@ -65,10 +77,8 @@ export default function Home() {
 
   // Handle click on the WheelPicker container to navigate
   const handleClick = () => {
-    if (!isSelecting) {
-      // Only navigate if not in the middle of a selection change
+    if (!isSelecting && visitorId) {
       console.log('WheelPicker clicked, navigating to:', `/about?lang=${selectedLanguage}`);
-      // Track language selection before navigating
       fetch('/api/track-language', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -83,10 +93,9 @@ export default function Home() {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       console.log('Document key pressed:', e.key, 'Target:', e.target);
-      if (e.key === 'Enter') {
+      if (e.key === 'Enter' && visitorId) {
         e.preventDefault();
         console.log('Enter key pressed, navigating to:', `/about?lang=${selectedLanguage}`);
-        // Track language selection before navigating
         fetch('/api/track-language', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -113,11 +122,13 @@ export default function Home() {
 
   // Track language selection when clicking the "Next" button
   const handleNextClick = () => {
-    fetch('/api/track-language', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ visitorId, language: selectedLanguage }),
-    }).catch((error) => console.error('Error tracking language selection:', error));
+    if (visitorId) {
+      fetch('/api/track-language', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ visitorId, language: selectedLanguage }),
+      }).catch((error) => console.error('Error tracking language selection:', error));
+    }
   };
 
   return (
@@ -130,30 +141,45 @@ export default function Home() {
           box-shadow: none !important;
         }
       `}</style>
+      <h1 className='text-xl font-bold mb-4 text-center'>
+        {t('chooseLanguagePrompt', selectedLanguage)}
+      </h1>
       <div
         ref={wheelRef}
         className='relative wheel-container'
-        tabIndex={0} // Keep the wheel focusable
-        onClick={handleClick} // Add click handler for navigation
+        tabIndex={0}
+        onClick={handleClick}
       >
         <WheelPicker
           items={items}
           visibleCount={5}
           itemHeight={40}
           onChange={handleChange}
+          selectedIndex={selectedIndex}
         />
       </div>
       <div className='mt-12 z-20'>
-        <Link href={`/about?lang=${selectedLanguage}`}>
+        {/* Only render the Link when visitorId is available to avoid hydration mismatch */}
+        {visitorId ? (
+          <Link href={`/about?lang=${selectedLanguage}&visitorId=${visitorId}`}>
+            <button
+              className='px-6 py-2 bg-blue-500 text-white rounded-full disabled:opacity-50'
+              type='button'
+              disabled={!selectedLanguage}
+              onClick={handleNextClick}
+            >
+              {t('nextButton', selectedLanguage)}
+            </button>
+          </Link>
+        ) : (
           <button
             className='px-6 py-2 bg-blue-500 text-white rounded-full disabled:opacity-50'
             type='button'
-            disabled={!selectedLanguage}
-            onClick={handleNextClick} // Track language selection on button click
+            disabled={true}
           >
-            ➔
+            {t('nextButton', selectedLanguage)}
           </button>
-        </Link>
+        )}
       </div>
     </div>
   );
