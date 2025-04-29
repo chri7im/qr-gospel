@@ -6,6 +6,7 @@ type WheelPickerProps = {
   visibleCount?: number; // odd number, e.g. 5 or 7
   itemHeight?: number; // in px
   onChange?: (index: number) => void;
+  selectedIndex?: number; // New prop to control the initial selected index
 };
 
 export function WheelPicker({
@@ -13,8 +14,9 @@ export function WheelPicker({
   visibleCount = 5,
   itemHeight = 40,
   onChange,
+  selectedIndex = 0, // Default to 0 if not provided
 }: WheelPickerProps) {
-  const [selected, setSelected] = useState(0);
+  const [selected, setSelected] = useState(selectedIndex);
   const y = useMotionValue(0);
   const springY = useSpring(y, { stiffness: 300, damping: 30 }); // Smooth scrolling
   const totalHeight = items.length * itemHeight;
@@ -22,6 +24,15 @@ export function WheelPicker({
 
   // Derive the “selected index” by rounding scroll / itemHeight
   const currentIndex = useTransform(springY, (y) => Math.round(-y / itemHeight) + centerOffset);
+
+  // Set the initial scroll position based on selectedIndex
+  useEffect(() => {
+    const initialY = -(selectedIndex - centerOffset) * itemHeight;
+    const boundedInitialY = Math.min(itemHeight * centerOffset, Math.max(-(totalHeight - itemHeight * (centerOffset + 1)), initialY));
+    y.set(boundedInitialY);
+    setSelected(selectedIndex);
+    console.log('WheelPicker initialized with selectedIndex:', selectedIndex, 'Initial y:', boundedInitialY);
+  }, [selectedIndex, itemHeight, centerOffset, totalHeight, y]);
 
   // When the derived index changes, clamp it and call onChange
   useEffect(() => {
@@ -64,7 +75,7 @@ export function WheelPicker({
         wheelElement.removeEventListener('wheel', handleWheel);
       }
     };
-  }, [y]);
+  }, [y, itemHeight, centerOffset, totalHeight]);
 
   const wheelRef = useRef<HTMLDivElement>(null);
 
