@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>Good News</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after {
+  box-sizing: border-box; margin: 0; padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: #ffffff;
+}
+body {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── APP SHELL ── */
+#app {
+  position: fixed; inset: 0;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+/* ── PAGE TRANSITIONS ── */
+.page {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.32s ease, transform 0.32s ease;
+  transform: translateX(28px);
+  overflow: hidden;
+}
+.page.active {
+  opacity: 1; pointer-events: all;
+  transform: translateX(0);
+}
+.page.exit {
+  opacity: 0; transform: translateX(-28px);
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+/* ── BACK BUTTON ── */
+.back-btn {
+  position: absolute;
+  z-index: 20;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+  -webkit-appearance: none;
+}
+.back-btn.light {
+  top: 14px; left: 14px;
+  background: rgba(30,58,95,0.08);
+}
+.back-btn.dark {
+  top: 14px; left: 14px;
+  background: rgba(26,35,50,0.08);
+}
+[dir="rtl"] .back-btn { left: auto; right: 14px; }
+.back-btn:active { background: rgba(30,58,95,0.22); }
+
+/* ── SHARED BUTTON STYLES ── */
+.primary-btn {
+  display: block; width: 100%;
+  padding: 18px 22px;
+  background: #1e3a5f;
+  color: #fff;
+  border: none; border-radius: 14px;
+  font-size: 17px; font-weight: 500;
+  font-family: inherit; cursor: pointer;
+  text-align: center;
+  transition: all 0.16s;
+  -webkit-appearance: none;
+}
+.primary-btn:active { transform: scale(0.975); opacity: 0.88; }
+
+/* ═══════════════════════════════════════
+   PAGE 1 — LANGUAGE SELECTOR
+═══════════════════════════════════════ */
+#page1 { background: #ffffff; }
+
+.p1-header {
+  flex-shrink: 0;
+  height: 88px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 28px; text-align: center;
+}
+#p1-header-text {
+  font-size: 13px; font-weight: 400;
+  color: #1e3a5f;
+  letter-spacing: 0.03em;
+  line-height: 1.5;
+  max-width: 270px;
+  transition: opacity 0.15s;
+}
+
+.p1-scroll-area {
+  flex: 1; position: relative; overflow: hidden;
+}
+.p1-fade-top {
+  position: absolute; top: 0; left: 0; right: 0; height: 46%;
+  background: linear-gradient(to bottom, #ffffff 10%, transparent);
+  pointer-events: none; z-index: 5;
+}
+.p1-fade-bottom {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 46%;
+  background: linear-gradient(to top, #ffffff 10%, transparent);
+  pointer-events: none; z-index: 5;
+}
+.p1-band {
+  position: absolute;
+  top: calc(50% - 42px); bottom: calc(50% - 42px);
+  left: 24px; right: 24px;
+  border-top: 1px solid rgba(30,58,95,0.28);
+  border-bottom: 1px solid rgba(30,58,95,0.28);
+  pointer-events: none; z-index: 6;
+}
+#p1-scroll {
+  position: absolute; inset: 0;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+#p1-scroll::-webkit-scrollbar { display: none; }
+
+.lang-pad { display: block; }
+.lang-item {
+  scroll-snap-align: center;
+  height: 84px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 5px; cursor: pointer;
+}
+.lang-name {
+  font-size: 19px; font-weight: 300;
+  color: rgba(26,35,50,0.35);
+  transition: all 0.22s ease;
+  text-align: center; line-height: 1;
+}
+.lang-en {
+  font-size: 9px; letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(26,35,50,0.2);
+  transition: all 0.22s ease;
+}
+.lang-item.hi .lang-name {
+  font-size: 30px; font-weight: 500;
+  color: #1a2332;
+}
+.lang-item.hi .lang-en {
+  font-size: 9px; letter-spacing: 2.5px;
+  color: #1e3a5f;
+}
+
+.p1-footer {
+  flex-shrink: 0;
+  height: 88px;
+  display: flex; align-items: center; justify-content: flex-end;
+  padding: 0 28px;
+}
+.arrow-btn {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: #1e3a5f;
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transform: scale(0.55);
+  transition: opacity 0.32s cubic-bezier(0.34,1.56,0.64,1),
+              transform 0.32s cubic-bezier(0.34,1.56,0.64,1);
+  flex-shrink: 0;
+}
+.arrow-btn.show { opacity: 1; transform: scale(1); }
+.arrow-btn:active { transform: scale(0.9); }
+.arrow-btn svg { width: 20px; height: 20px; }
+
+/* ═══════════════════════════════════════
+   PAGE 2 — ABOUT US
+═══════════════════════════════════════ */
+#page2 {
+  background: #ffffff;
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+}
+.p2-hero {
+  background: #ffffff;
+  padding: 62px 28px 42px; flex-shrink: 0;
+  text-align: center;
+}
+.p2-eyebrow {
+  font-size: 9px; letter-spacing: 3px;
+  color: #1e3a5f; text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.p2-title {
+  font-size: 30px; font-weight: 500;
+  color: #1a2332; line-height: 1.3;
+  font-family: 'Lora', serif;
+}
+.p2-body {
+  padding: 36px 28px; flex: 1;
+  text-align: center;
+}
+.p2-text {
+  font-size: 22px; line-height: 1.78;
+  color: #1a2332;
+  font-family: 'Lora', serif;
+}
+.p2-footer {
+  padding: 8px 28px 48px; flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════
+   PAGE 3 — ISSUE SELECTOR
+═══════════════════════════════════════ */
+#page3 { background: #ffffff; overflow: hidden; }
+
+.p3-header {
+  flex-shrink: 0;
+  padding: 36px 24px 16px;
+  background: #ffffff;
+  border-bottom: 1px solid rgba(26,35,50,0.08);
+  text-align: center;
+}
+.p3-eyebrow {
+  font-size: 9px; letter-spacing: 3px;
+  color: #8494a7; text-transform: uppercase; margin-bottom: 9px;
+}
+.p3-title {
+  font-size: 18px; font-weight: 500;
+  color: #1a2332; line-height: 1.4;
+  font-family: 'Lora', serif;
+}
+.p3-list {
+  flex: 1;
+  overflow-y: scroll; -webkit-overflow-scrolling: touch;
+  padding: 12px 16px 28px;
+  scrollbar-width: none;
+}
+.p3-list::-webkit-scrollbar { display: none; }
+
+.issue-btn {
+  display: block; width: 100%;
+  padding: 15px 20px; margin-bottom: 8px;
+  background: #fff;
+  border: 1.5px solid rgba(26,35,50,0.1);
+  border-radius: 13px;
+  font-size: 16px; color: #1a2332;
+  cursor: pointer; text-align: center;
+  transition: all 0.14s;
+  font-family: inherit;
+  -webkit-appearance: none;
+}
+.issue-btn:active {
+  background: #eef2f7; border-color: #1e3a5f; color: #1e3a5f;
+}
+.issue-btn.other-opt {
+  background: transparent;
+  border-style: dashed; border-color: rgba(26,35,50,0.18);
+  color: #6b7a8d; margin-top: 4px;
+}
+.issue-btn.other-opt:active {
+  background: #eef2f7; border-color: #1e3a5f;
+}
+
+/* ═══════════════════════════════════════
+   PAGE 4 — OTHER INPUT
+═══════════════════════════════════════ */
+#page4 {
+  background: #ffffff;
+  padding: 70px 28px 40px;
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+  text-align: center;
+}
+.p4-title {
+  font-size: 23px; font-weight: 500;
+  color: #1a2332; margin-bottom: 10px;
+  font-family: 'Lora', serif;
+}
+.p4-sub {
+  font-size: 15px; color: #6b7a8d;
+  line-height: 1.65; margin-bottom: 26px;
+}
+.p4-textarea {
+  width: 100%; padding: 16px;
+  border: 1.5px solid rgba(26,35,50,0.14);
+  border-radius: 13px;
+  font-size: 16px; color: #1a2332;
+  background: #fff; min-height: 140px;
+  resize: none; outline: none;
+  font-family: inherit;
+  transition: border-color 0.2s, background 0.2s;
+  margin-bottom: 24px;
+  -webkit-appearance: none;
+  display: block;
+  text-align: center;
+}
+.p4-textarea:focus {
+  border-color: #1e3a5f; background: #f5f8fb;
+}
+
+/* ═══════════════════════════════════════
+   PAGE 5 — GOSPEL
+═══════════════════════════════════════ */
+#page5 { background: #f0f4f8; }
+
+.p5-header {
+  flex-shrink: 0;
+  padding: 26px 24px 16px;
+  border-bottom: 1px solid rgba(26,35,50,0.08);
+  text-align: center;
+}
+.p5-tag {
+  font-size: 9px; letter-spacing: 3px;
+  color: #1e3a5f; text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.p5-body {
+  flex: 1;
+  overflow-y: scroll; -webkit-overflow-scrolling: touch;
+  padding: 26px 24px;
+  scrollbar-width: none;
+}
+.p5-body::-webkit-scrollbar { display: none; }
+
+/* Loading */
+.p5-loading {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  min-height: 260px; gap: 18px;
+}
+.spinner {
+  width: 36px; height: 36px;
+  border: 2.5px solid rgba(30,58,95,0.18);
+  border-top-color: #1e3a5f;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-txt { font-size: 13px; color: rgba(26,35,50,0.32); }
+
+/* Gospel content */
+.gospel-wrap { display: none; }
+.gospel-opening {
+  font-size: 18px; line-height: 1.82;
+  color: #1e3a5f;
+  font-family: 'Lora', serif;
+  font-style: italic;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(30,58,95,0.25);
+  text-align: center;
+}
+.gospel-body {
+  font-size: 16px; line-height: 1.92;
+  color: #2c3e50;
+  font-family: 'Lora', serif;
+  text-align: center;
+}
+.gospel-body p { margin-bottom: 18px; }
+.gospel-body p:last-child { margin-bottom: 0; }
+
+.p5-footer {
+  flex-shrink: 0;
+  padding: 14px 24px 28px;
+  border-top: 1px solid rgba(26,35,50,0.08);
+}
+.learn-btn {
+  display: none; width: 100%;
+  padding: 16px 20px;
+  background: rgba(26,35,50,0.05);
+  color: #2c3e50;
+  border: 1px solid rgba(26,35,50,0.12);
+  border-radius: 14px;
+  font-size: 16px; font-weight: 400;
+  cursor: pointer; text-align: center;
+  font-family: inherit;
+  transition: all 0.16s;
+  -webkit-appearance: none;
+}
+.learn-btn:active { background: rgba(26,35,50,0.1); }
+
+/* ═══════════════════════════════════════
+   PAGE 6 — CONTACT
+═══════════════════════════════════════ */
+#page6 {
+  background: #ffffff;
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+  padding: 52px 28px 48px;
+  text-align: center;
+}
+.p6-title {
+  font-size: 25px; font-weight: 500;
+  color: #1a2332; margin-bottom: 10px;
+  font-family: 'Lora', serif;
+}
+.p6-sub {
+  font-size: 15px; color: #6b7a8d;
+  line-height: 1.65; margin-bottom: 30px;
+}
+.f-label {
+  display: block; font-size: 12px; font-weight: 500;
+  color: #3d5068; margin-bottom: 7px;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+.f-input {
+  width: 100%; padding: 14px 16px;
+  border: 1.5px solid rgba(26,35,50,0.13);
+  border-radius: 12px;
+  font-size: 16px; color: #1a2332;
+  background: #fff; outline: none;
+  margin-bottom: 16px;
+  transition: border-color 0.2s, background 0.2s;
+  font-family: inherit;
+  -webkit-appearance: none;
+  display: block;
+  text-align: center;
+}
+.f-input:focus { border-color: #1e3a5f; background: #f5f8fb; }
+.skip-link {
+  text-align: center; margin-top: 18px;
+  font-size: 14px; color: #8494a7;
+  cursor: pointer; padding: 8px;
+}
+
+/* Thank you */
+.ty-wrap {
+  display: none; text-align: center;
+  padding: 72px 0 40px;
+}
+.ty-star {
+  font-size: 28px; color: #1e3a5f;
+  margin-bottom: 20px; display: block;
+}
+.ty-title {
+  font-size: 26px; font-weight: 500;
+  color: #1a2332; margin-bottom: 12px;
+  font-family: 'Lora', serif;
+}
+.ty-sub {
+  font-size: 16px; color: #6b7a8d;
+  line-height: 1.7;
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ══════════ PAGE 1: LANGUAGE ══════════ -->
+  <div id="page1" class="page active">
+    <div class="p1-header">
+      <div id="p1-header-text">Please select your language</div>
+    </div>
+    <div class="p1-scroll-area">
+      <div class="p1-fade-top"></div>
+      <div class="p1-band"></div>
+      <div id="p1-scroll">
+        <div class="lang-pad" id="pad-top"></div>
+        <!-- items injected by JS -->
+        <div class="lang-pad" id="pad-bottom"></div>
+      </div>
+      <div class="p1-fade-bottom"></div>
+    </div>
+    <div class="p1-footer">
+      <button class="arrow-btn" id="arrow-btn" onclick="goTo('page2')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════ PAGE 2: ABOUT US ══════════ -->
+  <div id="page2" class="page">
+    <button class="back-btn dark" onclick="goTo('page1')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(26,35,50,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+    </button>
+    <div class="p2-hero">
+      <div class="p2-eyebrow" id="p2-eyebrow">About us</div>
+      <div class="p2-title" id="p2-title">About us</div>
+    </div>
+    <div class="p2-body">
+      <p class="p2-text" id="p2-text"></p>
+    </div>
+    <div class="p2-footer">
+      <button class="primary-btn" id="p2-cta" onclick="goTo('page3')"></button>
+    </div>
+  </div>
+
+  <!-- ══════════ PAGE 3: ISSUE SELECTOR ══════════ -->
+  <div id="page3" class="page">
+    <button class="back-btn dark" onclick="goTo('page2')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(26,35,50,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+    </button>
+    <div class="p3-header">
+      <div class="p3-eyebrow" id="p3-eyebrow">Questionnaire</div>
+      <div class="p3-title" id="p3-title">What bothers you most in life?</div>
+    </div>
+    <div class="p3-list" id="p3-list"></div>
+  </div>
+
+  <!-- ══════════ PAGE 4: OTHER INPUT ══════════ -->
+  <div id="page4" class="page">
+    <button class="back-btn dark" onclick="goTo('page3')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(26,35,50,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+    </button>
+    <h2 class="p4-title" id="p4-title">What weighs on your heart?</h2>
+    <p class="p4-sub" id="p4-sub">Describe in your own words.</p>
+    <textarea class="p4-textarea" id="p4-input" rows="5"></textarea>
+    <button class="primary-btn" id="p4-cta" onclick="submitOther()"></button>
+  </div>
+
+  <!-- ══════════ PAGE 5: GOSPEL ══════════ -->
+  <div id="page5" class="page">
+    <button class="back-btn dark" id="p5-back" onclick="goTo('page3')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(26,35,50,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+    </button>
+    <div class="p5-header">
+      <div class="p5-tag" id="p5-tag">A message for you</div>
+    </div>
+    <div class="p5-body" id="p5-body">
+      <div class="p5-loading" id="p5-loading">
+        <div class="spinner"></div>
+        <div class="loading-txt" id="p5-loading-txt">Preparing your message…</div>
+      </div>
+      <div class="gospel-wrap" id="gospel-wrap">
+        <p class="gospel-opening" id="gospel-opening"></p>
+        <div class="gospel-body" id="gospel-body"></div>
+      </div>
+    </div>
+    <div class="p5-footer">
+      <button class="learn-btn" id="learn-btn" onclick="goTo('page6')"></button>
+    </div>
+  </div>
+
+  <!-- ══════════ PAGE 6: CONTACT ══════════ -->
+  <div id="page6" class="page">
+    <button class="back-btn dark" onclick="goTo('page5')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(26,35,50,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+    </button>
+    <div id="p6-form">
+      <h2 class="p6-title" id="p6-title">Would you like to learn more?</h2>
+      <p class="p6-sub" id="p6-sub">Leave your details and we'll be in touch.</p>
+      <label class="f-label" id="lbl-name">Name</label>
+      <input type="text" class="f-input" id="f-name" autocomplete="name"/>
+      <label class="f-label" id="lbl-email">Email</label>
+      <input type="email" class="f-input" id="f-email" autocomplete="email"/>
+      <label class="f-label" id="lbl-phone">Phone (optional)</label>
+      <input type="tel" class="f-input" id="f-phone" autocomplete="tel"/>
+      <button class="primary-btn" id="p6-cta" onclick="submitContact()">Submit</button>
+      <div class="skip-link" id="skip-link" onclick="showTY(true)"></div>
+    </div>
+    <div class="ty-wrap" id="ty-wrap">
+      <span class="ty-star">✦</span>
+      <div class="ty-title" id="ty-title">Thank you!</div>
+      <div class="ty-sub" id="ty-sub">We'll be in touch soon.</div>
+    </div>
+  </div>
+
+</div><!-- #app -->
+
+<script>
+// ═══════════════════════════════════════════════════════
+// LANGUAGE DATA
+// ═══════════════════════════════════════════════════════
+const LANGS = [
+  {
+    code:'ar', name:'العربية', en:'Arabic', dir:'rtl',
+    hdr:'يرجى اختيار لغتك',
+    ey:'من نحن', ti:'من نحن',
+    body:'مهمتنا الوحيدة في هذا العالم هي نشر أعظم خبر سمعه هذا العالم على الإطلاق! الحب والأمل والغاية — كلها في متناول يدك!',
+    cta:'احصل عليه الآن مجاناً ←',
+    qEy:'استبيان', qTi:'ما الذي يزعجك أكثر في الحياة؟',
+    iss:['الإدمان','القلق','الاكتئاب','الخوف','الذنب','الوحدة','نوبات الهلع','غياب الهدف','العار','الغضب','الحزن','الغيرة','المرارة','الفراغ الداخلي'],
+    otl:'شيء آخر...',
+    t4:'ما الذي يثقل قلبك؟', s4:'صف بكلماتك الخاصة.', ph4:'اكتب هنا...', b4:'متابعة ←',
+    tag:'رسالة لك', ldg:'يتم تحضير رسالتك...', lmr:'أريد معرفة المزيد ←',
+    t6:'هل تريد معرفة المزيد؟', s6:'اترك بياناتك وسنتواصل معك.',
+    ln:'الاسم', le:'البريد الإلكتروني', lp:'الهاتف (اختياري)',
+    sb:'إرسال', sk:'لا شكراً',
+    tyT:'شكراً لك!', tyS:'سنتواصل معك قريباً.', tySkip:'نتمنى لك السلام.',
+    pn:'سامي', lng:'Arabic'
+  },
+  {
+    code:'en', name:'English', en:'English', dir:'ltr',
+    hdr:'Please select your language',
+    ey:'About us', ti:'About us',
+    body:"Our only mission in this world is to spread the greatest news this world has ever heard! Love, Hope, Purpose — all are up for grabs — for you!",
+    cta:'Get it now for free →',
+    qEy:'Questionnaire', qTi:'What bothers you most in life?',
+    iss:['Addiction','Anxiety','Depression','Fear','Guilt','Loneliness','Panic attacks','Lack of Purpose','Shame','Anger','Grief','Envy','Bitterness','Emptiness'],
+    otl:'Something else...',
+    t4:'What weighs on your heart?', s4:'Please describe in your own words what troubles you most.', ph4:'Write here...', b4:'Continue →',
+    tag:'A message for you', ldg:'Preparing your message…', lmr:"I'd like to learn more →",
+    t6:'Would you like to learn more?', s6:"Leave your details and we'll be in touch.",
+    ln:'Name', le:'Email', lp:'Phone (optional)',
+    sb:'Submit', sk:"No thanks, I'm good",
+    tyT:'Thank you!', tyS:"We'll be in touch soon.", tySkip:'May you find peace.',
+    pn:'Paul', lng:'English'
+  },
+  {
+    code:'fa', name:'فارسی', en:'Farsi', dir:'rtl',
+    hdr:'لطفاً زبان خود را انتخاب کنید',
+    ey:'درباره ما', ti:'درباره ما',
+    body:'تنها مأموریت ما در این دنیا، گسترش بزرگ‌ترین خبری است که این دنیا تاکنون شنیده! عشق، امید، هدف — همه برای شما در دسترس است!',
+    cta:'همین الان رایگان دریافت کنید ←',
+    qEy:'پرسشنامه', qTi:'چه چیزی بیشتر از همه در زندگی آزارت می‌دهد؟',
+    iss:['اعتیاد','اضطراب','افسردگی','ترس','احساس گناه','تنهایی','حملات پانیک','نبود هدف','شرم','خشم','غم','حسادت','کینه','پوچی'],
+    otl:'چیز دیگری...',
+    t4:'چه چیزی دلت را سنگین می‌کند؟', s4:'به زبان خودت توضیح بده.', ph4:'اینجا بنویس...', b4:'ادامه دهید ←',
+    tag:'پیامی برای شما', ldg:'در حال آماده‌سازی پیام شما...', lmr:'می‌خواهم بیشتر بدانم ←',
+    t6:'آیا می‌خواهید بیشتر بدانید؟', s6:'مشخصات خود را بگذارید تا با شما تماس بگیریم.',
+    ln:'نام', le:'ایمیل', lp:'تلفن (اختیاری)',
+    sb:'ارسال', sk:'نه ممنون',
+    tyT:'متشکرم!', tyS:'به زودی با شما تماس می‌گیریم.', tySkip:'برایت آرامش آرزو می‌کنیم.',
+    pn:'علی', lng:'Persian (Farsi)'
+  },
+  {
+    code:'fr', name:'Français', en:'French', dir:'ltr',
+    hdr:'Veuillez sélectionner votre langue',
+    ey:'Qui sommes-nous', ti:'Qui sommes-nous',
+    body:"Notre seule mission dans ce monde est de répandre la plus grande nouvelle que ce monde ait jamais entendue ! L'amour, l'espoir, le but — tout cela est accessible pour vous !",
+    cta:'Obtenez-le maintenant gratuitement →',
+    qEy:'Questionnaire', qTi:'Qu\'est-ce qui vous dérange le plus dans la vie ?',
+    iss:['Dépendance','Anxiété','Dépression','Peur','Culpabilité','Solitude','Crises de panique','Manque de sens','Honte','Colère','Deuil','Envie','Amertume','Vide intérieur'],
+    otl:'Autre chose...',
+    t4:'Que pèse sur votre cœur ?', s4:'Décrivez avec vos propres mots.', ph4:'Écrivez ici...', b4:'Continuer →',
+    tag:'Un message pour vous', ldg:'Préparation de votre message…', lmr:"J'aimerais en savoir plus →",
+    t6:'Souhaitez-vous en savoir plus ?', s6:'Laissez vos coordonnées et nous vous contacterons.',
+    ln:'Nom', le:'E-mail', lp:'Téléphone (facultatif)',
+    sb:'Envoyer', sk:'Non merci',
+    tyT:'Merci !', tyS:'Nous vous contacterons bientôt.', tySkip:'Que la paix soit avec vous.',
+    pn:'Paul', lng:'French'
+  },
+  {
+    code:'de', name:'Deutsch', en:'German', dir:'ltr',
+    hdr:'Bitte wählen Sie Ihre Sprache',
+    ey:'Über uns', ti:'Über uns',
+    body:'Unsere einzige Mission in dieser Welt ist es, die größte Neuigkeit zu verbreiten, die diese Welt je gehört hat! Liebe, Hoffnung, Sinn — alles ist für dich erreichbar!',
+    cta:'Jetzt kostenlos erhalten →',
+    qEy:'Fragebogen', qTi:'Was belastet dich am meisten im Leben?',
+    iss:['Sucht','Angst','Depression','Furcht','Schuldgefühle','Einsamkeit','Panikattacken','Sinnlosigkeit','Scham','Wut','Trauer','Neid','Bitterkeit','Innere Leere'],
+    otl:'Etwas anderes...',
+    t4:'Was lastet auf deinem Herzen?', s4:'Beschreibe mit eigenen Worten, was dich am meisten bewegt.', ph4:'Schreibe hier...', b4:'Weiter →',
+    tag:'Eine Botschaft für dich', ldg:'Deine Nachricht wird vorbereitet…', lmr:'Ich möchte mehr erfahren →',
+    t6:'Möchtest du mehr erfahren?', s6:'Hinterlasse deine Daten und wir melden uns.',
+    ln:'Name', le:'E-Mail', lp:'Telefon (optional)',
+    sb:'Senden', sk:'Nein danke',
+    tyT:'Danke!', tyS:'Wir melden uns bald bei dir.', tySkip:'Wir wünschen dir Frieden.',
+    pn:'Paul', lng:'German'
+  },
+  {
+    code:'hi', name:'हिन्दी', en:'Hindi', dir:'ltr',
+    hdr:'कृपया अपनी भाषा चुनें',
+    ey:'हमारे बारे में', ti:'हमारे बारे में',
+    body:'इस दुनिया में हमारा एकमात्र मिशन उस सबसे बड़ी खबर को फैलाना है जो इस दुनिया ने कभी सुनी है! प्रेम, आशा, उद्देश्य — सब कुछ आपके लिए उपलब्ध है!',
+    cta:'अभी मुफ़्त में पाएं →',
+    qEy:'प्रश्नावली', qTi:'जीवन में आपको सबसे अधिक क्या परेशान करता है?',
+    iss:['लत','चिंता','अवसाद','डर','अपराध-बोध','अकेलापन','पैनिक अटैक','उद्देश्य की कमी','शर्म','क्रोध','दुःख','ईर्ष्या','कड़वाहट','खालीपन'],
+    otl:'कुछ और...',
+    t4:'आपके दिल पर क्या भारी है?', s4:'अपने शब्दों में बताएं।', ph4:'यहाँ लिखें...', b4:'जारी रखें →',
+    tag:'आपके लिए एक संदेश', ldg:'आपका संदेश तैयार हो रहा है…', lmr:'मैं अधिक जानना चाहता/चाहती हूँ →',
+    t6:'क्या आप अधिक जानना चाहते हैं?', s6:'अपनी जानकारी छोड़ें और हम आपसे संपर्क करेंगे।',
+    ln:'नाम', le:'ईमेल', lp:'फ़ोन (वैकल्पिक)',
+    sb:'भेजें', sk:'नहीं, धन्यवाद',
+    tyT:'धन्यवाद!', tyS:'हम जल्द ही आपसे संपर्क करेंगे।', tySkip:'आपको शांति मिले।',
+    pn:'पॉल', lng:'Hindi'
+  },
+  {
+    code:'it', name:'Italiano', en:'Italian', dir:'ltr',
+    hdr:'Seleziona la tua lingua',
+    ey:'Chi siamo', ti:'Chi siamo',
+    body:"La nostra unica missione in questo mondo è diffondere la notizia più grande che questo mondo abbia mai sentito! Amore, Speranza, Scopo — tutto è disponibile per te!",
+    cta:'Ottienilo ora gratuitamente →',
+    qEy:'Questionario', qTi:'Cosa ti disturba di più nella vita?',
+    iss:['Dipendenza','Ansia','Depressione','Paura','Senso di colpa','Solitudine','Attacchi di panico','Mancanza di scopo','Vergogna','Rabbia','Dolore','Invidia','Amarezza','Vuoto interiore'],
+    otl:"Qualcos'altro...",
+    t4:'Cosa pesa sul tuo cuore?', s4:'Descrivi con le tue parole.', ph4:'Scrivi qui...', b4:'Continua →',
+    tag:'Un messaggio per te', ldg:'Preparando il tuo messaggio…', lmr:'Vorrei saperne di più →',
+    t6:'Vorresti saperne di più?', s6:'Lascia i tuoi dati e ti contatteremo.',
+    ln:'Nome', le:'Email', lp:'Telefono (opzionale)',
+    sb:'Invia', sk:'No grazie',
+    tyT:'Grazie!', tyS:'Ci faremo vivi presto.', tySkip:'Ti auguriamo pace.',
+    pn:'Paolo', lng:'Italian'
+  },
+  {
+    code:'ja', name:'日本語', en:'Japanese', dir:'ltr',
+    hdr:'言語を選択してください',
+    ey:'私たちについて', ti:'私たちについて',
+    body:'この世界における私たちの唯一の使命は、この世界が今まで聞いたことのある最も素晴らしいニュースを広めることです！愛、希望、目的 — すべてがあなたのために用意されています！',
+    cta:'今すぐ無料で入手 →',
+    qEy:'アンケート', qTi:'人生で最もあなたを悩ませているものは何ですか？',
+    iss:['依存症','不安','うつ病','恐怖','罪悪感','孤独','パニック発作','目的の欠如','羞恥心','怒り','悲しみ','嫉妬','苦々しさ','虚しさ'],
+    otl:'その他...',
+    t4:'あなたの心を重くしているものは何ですか？', s4:'ご自身の言葉でお書きください。', ph4:'ここに書いてください...', b4:'続ける →',
+    tag:'あなたへのメッセージ', ldg:'メッセージを準備しています…', lmr:'もっと詳しく知りたい →',
+    t6:'もっと詳しく知りたいですか？', s6:'お名前とご連絡先をお残しください。',
+    ln:'お名前', le:'メール', lp:'電話番号（任意）',
+    sb:'送信', sk:'いいえ、結構です',
+    tyT:'ありがとうございます！', tyS:'まもなくご連絡いたします。', tySkip:'平安がありますように。',
+    pn:'ポール', lng:'Japanese'
+  },
+  {
+    code:'ko', name:'한국어', en:'Korean', dir:'ltr',
+    hdr:'언어를 선택하세요',
+    ey:'우리에 대해', ti:'우리에 대해',
+    body:'이 세상에서 우리의 유일한 사명은 이 세상이 들어본 가장 위대한 소식을 전파하는 것입니다! 사랑, 희망, 목적 — 모두 당신을 위한 것입니다!',
+    cta:'지금 무료로 받으세요 →',
+    qEy:'설문', qTi:'삶에서 당신을 가장 괴롭히는 것은 무엇인가요?',
+    iss:['중독','불안','우울','두려움','죄책감','외로움','공황발작','목적 부재','수치심','분노','슬픔','질투','쓴 마음','공허함'],
+    otl:'다른 것...',
+    t4:'무엇이 마음을 무겁게 하나요?', s4:'마음에 가장 무거운 것을 써 주세요.', ph4:'여기에 쓰세요...', b4:'계속 →',
+    tag:'당신을 위한 메시지', ldg:'메시지를 준비 중입니다…', lmr:'더 알고 싶습니다 →',
+    t6:'더 알고 싶으신가요?', s6:'연락처를 남겨 주시면 곧 연락드리겠습니다.',
+    ln:'이름', le:'이메일', lp:'전화번호 (선택)',
+    sb:'제출', sk:'아니요, 괜찮습니다',
+    tyT:'감사합니다!', tyS:'곧 연락드리겠습니다.', tySkip:'평안하시길 바랍니다.',
+    pn:'바울', lng:'Korean'
+  },
+  {
+    code:'zh', name:'中文', en:'Mandarin', dir:'ltr',
+    hdr:'请选择您的语言',
+    ey:'关于我们', ti:'关于我们',
+    body:'我们在这个世界上唯一的使命就是传播这个世界有史以来听过的最伟大的消息！爱、希望、目标——这一切都是为你准备的！',
+    cta:'立即免费获取 →',
+    qEy:'问卷', qTi:'什么是生活中最困扰你的事？',
+    iss:['成瘾','焦虑','抑郁','恐惧','内疚','孤独','惊恐发作','缺乏目标','羞耻','愤怒','悲伤','嫉妒','苦涩','空虚'],
+    otl:'其他...',
+    t4:'什么压在你的心上？', s4:'请用自己的话描述最困扰你的事。', ph4:'在这里写...', b4:'继续 →',
+    tag:'给您的信息', ldg:'正在准备您的信息…', lmr:'我想了解更多 →',
+    t6:'您想了解更多吗？', s6:'留下您的联系方式，我们将与您联系。',
+    ln:'姓名', le:'电子邮件', lp:'电话（可选）',
+    sb:'提交', sk:'不了，谢谢',
+    tyT:'谢谢！', tyS:'我们很快会与您联系。', tySkip:'愿你找到平安。',
+    pn:'保罗', lng:'Mandarin Chinese'
+  },
+  {
+    code:'pt', name:'Português', en:'Portuguese', dir:'ltr',
+    hdr:'Por favor, selecione seu idioma',
+    ey:'Sobre nós', ti:'Sobre nós',
+    body:'Nossa única missão neste mundo é espalhar a maior notícia que este mundo já ouviu! Amor, Esperança, Propósito — tudo está ao seu alcance!',
+    cta:'Obtenha agora gratuitamente →',
+    qEy:'Questionário', qTi:'O que mais te incomoda na vida?',
+    iss:['Vício','Ansiedade','Depressão','Medo','Culpa','Solidão','Ataques de pânico','Falta de propósito','Vergonha','Raiva','Luto','Inveja','Amargura','Vazio'],
+    otl:'Outra coisa...',
+    t4:'O que pesa no seu coração?', s4:'Descreva com suas próprias palavras.', ph4:'Escreva aqui...', b4:'Continuar →',
+    tag:'Uma mensagem para você', ldg:'Preparando sua mensagem…', lmr:'Gostaria de saber mais →',
+    t6:'Gostaria de saber mais?', s6:'Deixe seus dados e entraremos em contato.',
+    ln:'Nome', le:'E-mail', lp:'Telefone (opcional)',
+    sb:'Enviar', sk:'Não, obrigado',
+    tyT:'Obrigado!', tyS:'Entraremos em contato em breve.', tySkip:'Que você encontre paz.',
+    pn:'Paulo', lng:'Brazilian Portuguese'
+  },
+  {
+    code:'ru', name:'Русский', en:'Russian', dir:'ltr',
+    hdr:'Пожалуйста, выбери свой язык',
+    ey:'О нас', ti:'О нас',
+    body:'Наша единственная миссия в этом мире — нести величайшую весть, которую когда-либо слышал этот мир! Любовь, Надежда, Цель — всё это доступно для тебя!',
+    cta:'Получи это сейчас бесплатно →',
+    qEy:'Опрос', qTi:'Что больше всего беспокоит тебя в жизни?',
+    iss:['Зависимость','Тревога','Депрессия','Страх','Вина','Одиночество','Панические атаки','Отсутствие цели','Стыд','Гнев','Горе','Зависть','Горечь','Пустота'],
+    otl:'Что-то ещё...',
+    t4:'Что лежит на твоём сердце?', s4:'Опиши своими словами, что беспокоит тебя больше всего.', ph4:'Напиши здесь...', b4:'Продолжить →',
+    tag:'Послание для тебя', ldg:'Твоё сообщение готовится…', lmr:'Хочу узнать больше →',
+    t6:'Хочешь узнать больше?', s6:'Оставь свои данные, и мы свяжемся с тобой.',
+    ln:'Имя', le:'Эл. почта', lp:'Телефон (необязательно)',
+    sb:'Отправить', sk:'Нет, спасибо',
+    tyT:'Спасибо!', tyS:'Мы скоро свяжемся с тобой.', tySkip:'Желаем тебе мира.',
+    pn:'Павел', lng:'Russian'
+  },
+  {
+    code:'es', name:'Español', en:'Spanish', dir:'ltr',
+    hdr:'Por favor selecciona tu idioma',
+    ey:'Sobre nosotros', ti:'Sobre nosotros',
+    body:'¡Nuestra única misión en este mundo es difundir la noticia más grande que este mundo haya escuchado! Amor, Esperanza, Propósito — todo está al alcance de tu mano, ¡para ti!',
+    cta:'Consíguelo ahora gratis →',
+    qEy:'Cuestionario', qTi:'¿Qué es lo que más te molesta en la vida?',
+    iss:['Adicción','Ansiedad','Depresión','Miedo','Culpa','Soledad','Ataques de pánico','Falta de propósito','Vergüenza','Ira','Duelo','Envidia','Amargura','Vacío'],
+    otl:'Algo más...',
+    t4:'¿Qué pesa en tu corazón?', s4:'Describe con tus propias palabras lo que más te afecta.', ph4:'Escribe aquí...', b4:'Continuar →',
+    tag:'Un mensaje para ti', ldg:'Preparando tu mensaje…', lmr:'Me gustaría saber más →',
+    t6:'¿Te gustaría saber más?', s6:'Deja tus datos y nos pondremos en contacto.',
+    ln:'Nombre', le:'Correo electrónico', lp:'Teléfono (opcional)',
+    sb:'Enviar', sk:'No, gracias',
+    tyT:'¡Gracias!', tyS:'Nos pondremos en contacto pronto.', tySkip:'Que encuentres paz.',
+    pn:'Pablo', lng:'Spanish'
+  },
+  {
+    code:'sw', name:'Kiswahili', en:'Swahili', dir:'ltr',
+    hdr:'Tafadhali chagua lugha yako',
+    ey:'Kuhusu sisi', ti:'Kuhusu sisi',
+    body:'Dhamira yetu pekee duniani ni kusambaza habari njema zaidi ambayo dunia hii imewahi kusikia! Upendo, Tumaini, Kusudi — vyote vipo kwa ajili yako!',
+    cta:'Ipate sasa bure →',
+    qEy:'Dodoso', qTi:'Ni nini kinachokusumbua zaidi maishani?',
+    iss:['Uraibu','Wasiwasi','Unyogovu','Hofu','Hatia','Upweke','Mashambulizi ya hofu','Ukosefu wa kusudi','Aibu','Hasira','Huzuni','Wivu','Uchungu','Utupu'],
+    otl:'Kingine...',
+    t4:'Ni nini kinachokuzito moyoni?', s4:'Eleza kwa maneno yako mwenyewe.', ph4:'Andika hapa...', b4:'Endelea →',
+    tag:'Ujumbe kwa ajili yako', ldg:'Inaandaa ujumbe wako…', lmr:'Ningependa kujua zaidi →',
+    t6:'Je, ungependa kujua zaidi?', s6:'Acha maelezo yako na tutawasiliana nawe.',
+    ln:'Jina', le:'Barua pepe', lp:'Simu (si lazima)',
+    sb:'Tuma', sk:'Hapana, asante',
+    tyT:'Asante!', tyS:'Tutawasiliana nawe hivi karibuni.', tySkip:'Tunakuletea amani.',
+    pn:'Paulo', lng:'Swahili'
+  }
+];
+
+// ═══════════════════════════════════════════════════════
+// ISSUE KEYS (map index in iss[] to static file name)
+// ═══════════════════════════════════════════════════════
+const ISSUE_KEYS = [
+  'addiction','anxiety','depression','fear','guilt','loneliness',
+  'panic-attacks','lack-of-purpose','shame','anger','grief','envy',
+  'bitterness','emptiness'
+];
+
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+let L = LANGS[1];          // selected language, default English
+let issue = '';            // selected or typed issue
+let issueKey = '';         // file key for static text lookup
+let fromOther = false;     // whether user typed a custom issue
+let cur = 'page1';         // current page id
+
+// ═══════════════════════════════════════════════════════
+// LANGUAGE DETECTION
+// ═══════════════════════════════════════════════════════
+// Map browser language codes to our LANGS index
+const LANG_CODE_MAP = {};
+LANGS.forEach((l, i) => { LANG_CODE_MAP[l.code] = i; });
+
+// Map country codes to best-fit language
+const COUNTRY_LANG = {
+  SA:'ar',EG:'ar',AE:'ar',IQ:'ar',MA:'ar',DZ:'ar',TN:'ar',JO:'ar',LB:'ar',KW:'ar',QA:'ar',BH:'ar',OM:'ar',YE:'ar',LY:'ar',SD:'ar',SY:'ar',PS:'ar',
+  IR:'fa',AF:'fa',TJ:'fa',
+  FR:'fr',BE:'fr',SN:'fr',CI:'fr',CM:'fr',CD:'fr',MG:'fr',ML:'fr',BF:'fr',NE:'fr',TD:'fr',GN:'fr',RW:'fr',HT:'fr',
+  DE:'de',AT:'de',CH:'de',LI:'de',LU:'de',
+  IN:'hi',NP:'hi',
+  IT:'it',SM:'it',
+  JP:'ja',
+  KR:'ko',KP:'ko',
+  CN:'zh',TW:'zh',HK:'zh',MO:'zh',SG:'zh',
+  BR:'pt',PT:'pt',AO:'pt',MZ:'pt',
+  RU:'ru',BY:'ru',KZ:'ru',KG:'ru',
+  ES:'es',MX:'es',CO:'es',AR:'es',PE:'es',VE:'es',CL:'es',EC:'es',GT:'es',CU:'es',BO:'es',DO:'es',HN:'es',PY:'es',SV:'es',NI:'es',CR:'es',PA:'es',UY:'es',PR:'es',
+  KE:'sw',TZ:'sw',UG:'sw',
+  US:'en',GB:'en',AU:'en',NZ:'en',CA:'en',IE:'en',ZA:'en',NG:'en',GH:'en',PH:'en',JM:'en'
+};
+
+function getDeviceLangCode() {
+  const browserLangs = navigator.languages || [navigator.language || ''];
+  for (const tag of browserLangs) {
+    const code = tag.split('-')[0].toLowerCase();
+    if (code) return code;
+  }
+  return '';
+}
+
+function detectLangIndex() {
+  const code = getDeviceLangCode();
+  if (code in LANG_CODE_MAP) return { idx: LANG_CODE_MAP[code], code: code, miss: false };
+  return { idx: -1, code: code, miss: !!code };
+}
+
+async function detectCountryLangCode() {
+  try {
+    const res = await fetch('/api/geo');
+    if (!res.ok) return '';
+    const data = await res.json();
+    return COUNTRY_LANG[data.country] || '';
+  } catch (e) { return ''; }
+}
+
+// Load or fetch translations for an unsupported language
+async function loadDynamicLang(code) {
+  // Check localStorage cache first
+  const cacheKey = 'lang_' + code;
+  const cached = localStorage.getItem(cacheKey);
+  if (cached) {
+    try { return JSON.parse(cached); } catch (e) {}
+  }
+
+  // Fetch from API
+  try {
+    const res = await fetch('/api/translate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ lang: code })
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!data.iss || data.iss.length !== 14) return null;
+
+    // Cache for future visits
+    localStorage.setItem(cacheKey, JSON.stringify(data));
+    return data;
+  } catch (e) { return null; }
+}
+
+// Build a full LANGS entry from translated UI strings
+function buildLangEntry(code, t) {
+  // Get native language name via Intl API
+  let nativeName = code;
+  try {
+    const dn = new Intl.DisplayNames([code], { type: 'language' });
+    nativeName = dn.of(code);
+    nativeName = nativeName.charAt(0).toUpperCase() + nativeName.slice(1);
+  } catch (e) {}
+
+  let enName = code;
+  try {
+    const dn = new Intl.DisplayNames(['en'], { type: 'language' });
+    enName = dn.of(code);
+    enName = enName.charAt(0).toUpperCase() + enName.slice(1);
+  } catch (e) {}
+
+  return {
+    code: code, name: nativeName, en: enName, dir: t.dir || 'ltr',
+    hdr: t.hdr, ey: t.ey, ti: t.ti, body: t.body, cta: t.cta,
+    qEy: t.qEy, qTi: t.qTi, iss: t.iss, otl: t.otl,
+    t4: t.t4, s4: t.s4, ph4: t.ph4, b4: t.b4,
+    tag: t.tag, ldg: t.ldg, lmr: t.lmr,
+    t6: t.t6, s6: t.s6,
+    ln: t.ln, le: t.le, lp: t.lp,
+    sb: t.sb, sk: t.sk,
+    tyT: t.tyT, tyS: t.tyS, tySkip: t.tySkip,
+    pn: t.pn || 'Paul', lng: enName
+  };
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT: LANGUAGE SCROLL
+// ═══════════════════════════════════════════════════════
+(function initLangScroll() {
+  const scroll = document.getElementById('p1-scroll');
+  const padB = document.getElementById('pad-bottom');
+  const ITEM_H = 84;
+
+  function addLangItem(lang, i) {
+    const el = document.createElement('div');
+    el.className = 'lang-item';
+    el.id = 'li-' + i;
+    el.innerHTML = `<span class="lang-name">${lang.name}</span><span class="lang-en">${lang.en}</span>`;
+    el.addEventListener('click', () => {
+      scroll.scrollTo({ top: i * ITEM_H, behavior: 'smooth' });
+      L = LANGS[i];
+      setTimeout(() => goTo('page2'), 300);
+    });
+    scroll.insertBefore(el, padB);
+  }
+
+  LANGS.forEach((lang, i) => addLangItem(lang, i));
+
+  function setPads() {
+    const areaH = scroll.parentElement.clientHeight;
+    const pad = Math.max(0, (areaH / 2) - (ITEM_H / 2));
+    document.getElementById('pad-top').style.height = pad + 'px';
+    document.getElementById('pad-bottom').style.height = pad + 'px';
+  }
+  setPads();
+  window.addEventListener('resize', setPads);
+
+  function highlight() {
+    const top = scroll.scrollTop;
+    const idx = Math.round(top / ITEM_H);
+    const clamped = Math.max(0, Math.min(LANGS.length - 1, idx));
+    document.querySelectorAll('.lang-item').forEach((el, i) => {
+      el.classList.toggle('hi', i === clamped);
+    });
+    L = LANGS[clamped];
+    document.getElementById('p1-header-text').textContent = L.hdr;
+    document.getElementById('arrow-btn').classList.add('show');
+  }
+
+  scroll.addEventListener('scroll', highlight, { passive: true });
+
+  // ── KEYBOARD NAVIGATION (global) ──
+  document.addEventListener('keydown', (e) => {
+    const key = e.key;
+
+    // ── Backspace / Escape → go back ──
+    if (key === 'Backspace' || key === 'Escape') {
+      // Don't intercept if user is typing in an input/textarea
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      e.preventDefault();
+      if (cur === 'page2') goTo('page1');
+      else if (cur === 'page3') goTo('page2');
+      else if (cur === 'page4') goTo('page3');
+      else if (cur === 'page5') goTo('page3');
+      else if (cur === 'page6') goTo('page5');
+      return;
+    }
+
+    // ── Page 1: language picker ──
+    if (cur === 'page1') {
+      if (key === 'ArrowUp' || key === 'ArrowLeft') {
+        e.preventDefault();
+        const idx = Math.round(scroll.scrollTop / ITEM_H);
+        const target = Math.max(0, idx - 1);
+        scroll.scrollTo({ top: target * ITEM_H, behavior: 'smooth' });
+      } else if (key === 'ArrowDown' || key === 'ArrowRight') {
+        e.preventDefault();
+        const idx = Math.round(scroll.scrollTop / ITEM_H);
+        const target = Math.min(LANGS.length - 1, idx + 1);
+        scroll.scrollTo({ top: target * ITEM_H, behavior: 'smooth' });
+      } else if (key === 'Enter' || key === ' ') {
+        e.preventDefault();
+        goTo('page2');
+      }
+      return;
+    }
+
+    // ── Page 2: about us ──
+    if (cur === 'page2') {
+      if (key === 'Enter' || key === ' ' || key === 'ArrowRight' || key === 'ArrowDown') {
+        e.preventDefault();
+        goTo('page3');
+      }
+      return;
+    }
+
+    // ── Page 3: issue selector ──
+    if (cur === 'page3') {
+      // Number keys 1-9,0 to pick issue quickly
+      const num = parseInt(key);
+      if (!isNaN(num)) {
+        const idx = num === 0 ? 9 : num - 1;
+        if (idx < L.iss.length) {
+          e.preventDefault();
+          pickIssue(L.iss[idx], idx);
+        }
+        return;
+      }
+      // Arrow keys scroll the issue list
+      if (key === 'ArrowDown' || key === 'ArrowUp') {
+        // Let natural scroll happen on the list
+        return;
+      }
+      return;
+    }
+
+    // ── Page 4: custom input ──
+    if (cur === 'page4') {
+      if (key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        submitOther();
+      }
+      return;
+    }
+
+    // ── Page 5: gospel ──
+    if (cur === 'page5') {
+      if (key === 'Enter' || key === ' ' || key === 'ArrowRight' || key === 'ArrowDown') {
+        e.preventDefault();
+        goTo('page6');
+      }
+      return;
+    }
+
+    // ── Page 6: contact ──
+    if (cur === 'page6') {
+      if (key === 'Enter' && e.target.tagName !== 'INPUT') {
+        e.preventDefault();
+        submitContact();
+      }
+      return;
+    }
+  });
+
+  function scrollToLang(idx) {
+    setPads();
+    scroll.scrollTop = idx * ITEM_H;
+    highlight();
+  }
+
+  // Insert a new dynamic language at position 0 and rebuild the list
+  function injectLang(entry) {
+    LANGS.unshift(entry);
+    // Rebuild the code→index map
+    Object.keys(LANG_CODE_MAP).forEach(k => LANG_CODE_MAP[k]++);
+    LANG_CODE_MAP[entry.code] = 0;
+    // Rebuild DOM items
+    document.querySelectorAll('.lang-item').forEach(el => el.remove());
+    LANGS.forEach((lang, i) => addLangItem(lang, i));
+    setPads();
+  }
+
+  // Detect language: phone first, then geo, then dynamic translation
+  requestAnimationFrame(async () => {
+    const detected = detectLangIndex();
+
+    if (!detected.miss) {
+      // Supported language found
+      scrollToLang(detected.idx >= 0 ? detected.idx : 1);
+      return;
+    }
+
+    // Unsupported language — start on English while we load
+    scrollToLang(1);
+    const missCode = detected.code;
+
+    // Try loading dynamic translation
+    const translated = await loadDynamicLang(missCode);
+    if (translated) {
+      const entry = buildLangEntry(missCode, translated);
+      injectLang(entry);
+      scrollToLang(0);
+      return;
+    }
+
+    // If translation failed, try geo fallback for a supported lang
+    const geoCode = await detectCountryLangCode();
+    if (geoCode && geoCode in LANG_CODE_MAP) {
+      scrollToLang(LANG_CODE_MAP[geoCode]);
+    }
+  });
+})();
+
+// ═══════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════
+function goTo(pageId) {
+  if (pageId === cur) return;
+  const prev = document.getElementById(cur);
+  const next = document.getElementById(pageId);
+  if (!prev || !next) return;
+
+  prev.classList.add('exit');
+  prev.classList.remove('active');
+  setTimeout(() => prev.classList.remove('exit'), 280);
+
+  next.classList.add('active');
+  cur = pageId;
+
+  // Apply RTL/LTR
+  document.documentElement.setAttribute('dir', L.dir);
+  document.documentElement.setAttribute('lang', L.code);
+
+  // Fill page content
+  if (pageId === 'page2') fillP2();
+  if (pageId === 'page3') fillP3();
+  if (pageId === 'page4') fillP4();
+  if (pageId === 'page5') fillP5Header(false);
+  if (pageId === 'page6') fillP6();
+}
+
+// ═══════════════════════════════════════════════════════
+// PAGE FILLERS
+// ═══════════════════════════════════════════════════════
+function set(id, txt, dir) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = txt;
+  if (dir) el.setAttribute('dir', dir);
+}
+
+function fillP2() {
+  set('p2-eyebrow', L.ey);
+  set('p2-title', L.ti, L.dir);
+  const el = document.getElementById('p2-text');
+  const sentences = L.body.split('!');
+  if (sentences.length > 1) {
+    el.innerHTML = '';
+    el.setAttribute('dir', L.dir);
+    const s1 = document.createElement('span');
+    s1.textContent = sentences[0] + '!';
+    el.appendChild(s1);
+    el.appendChild(document.createElement('br'));
+    el.appendChild(document.createElement('br'));
+    const s2 = document.createElement('span');
+    s2.textContent = sentences.slice(1).join('!').trim();
+    el.appendChild(s2);
+  } else {
+    set('p2-text', L.body, L.dir);
+  }
+  set('p2-cta', L.cta);
+}
+
+function fillP3() {
+  set('p3-eyebrow', L.qEy);
+  set('p3-title', L.qTi, L.dir);
+  const list = document.getElementById('p3-list');
+  list.setAttribute('dir', L.dir);
+  list.innerHTML = '';
+
+  L.iss.forEach((iss, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'issue-btn';
+    btn.textContent = iss;
+    btn.onclick = () => pickIssue(iss, idx);
+    list.appendChild(btn);
+  });
+
+  const other = document.createElement('button');
+  other.className = 'issue-btn other-opt';
+  other.textContent = L.otl;
+  other.onclick = () => { fromOther = true; goTo('page4'); };
+  list.appendChild(other);
+}
+
+function fillP4() {
+  set('p4-title', L.t4, L.dir);
+  set('p4-sub', L.s4, L.dir);
+  const ta = document.getElementById('p4-input');
+  ta.placeholder = L.ph4;
+  ta.setAttribute('dir', L.dir);
+  ta.value = '';
+  set('p4-cta', L.b4);
+}
+
+function fillP5Header(reset) {
+  set('p5-tag', L.tag);
+  set('p5-loading-txt', L.ldg);
+  document.getElementById('learn-btn').textContent = L.lmr;
+  if (reset) {
+    document.getElementById('p5-loading').style.display = 'flex';
+    document.getElementById('gospel-wrap').style.display = 'none';
+    document.getElementById('learn-btn').style.display = 'none';
+    document.getElementById('gospel-opening').textContent = '';
+    document.getElementById('gospel-body').innerHTML = '';
+  }
+}
+
+function fillP6() {
+  set('p6-title', L.t6, L.dir);
+  set('p6-sub', L.s6, L.dir);
+  set('lbl-name', L.ln);
+  set('lbl-email', L.le);
+  set('lbl-phone', L.lp);
+  document.getElementById('p6-cta').textContent = L.sb;
+  set('skip-link', L.sk);
+  // Reset
+  document.getElementById('p6-form').style.display = 'block';
+  document.getElementById('ty-wrap').style.display = 'none';
+}
+
+// ═══════════════════════════════════════════════════════
+// ISSUE SELECTION
+// ═══════════════════════════════════════════════════════
+function pickIssue(iss, idx) {
+  issue = iss;
+  issueKey = ISSUE_KEYS[idx] || '';
+  fromOther = false;
+  fillP5Header(true);
+  goTo('page5');
+  fetchGospel();
+}
+
+function submitOther() {
+  const val = document.getElementById('p4-input').value.trim();
+  if (!val) return;
+  issue = val;
+  fromOther = true;
+  fillP5Header(true);
+  goTo('page5');
+  fetchGospel();
+}
+
+// ═══════════════════════════════════════════════════════
+// GOSPEL FETCH
+// ═══════════════════════════════════════════════════════
+async function fetchGospel() {
+  // For preset issues, try static text first
+  if (!fromOther && issueKey) {
+    try {
+      const res = await fetch(`/texts/${L.code}/${issueKey}.htm`);
+      if (res.ok) {
+        const html = await res.text();
+        renderGospelHTML(html);
+        return;
+      }
+    } catch (e) { /* fall through to API */ }
+  }
+
+  // Fall back to API — send only lang code + issue text (prompt built server-side)
+  try {
+    const res = await fetch('/api/gospel', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ lang: L.code, issue: issue })
+    });
+    if (!res.ok) throw new Error('API error ' + res.status);
+    const data = await res.json();
+    renderGospel(data.text);
+  } catch (e) {
+    renderGospel(fallback());
+  }
+}
+
+function renderGospelHTML(html) {
+  // Static text is already HTML — first <p> is the opening, rest is the body
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  const paragraphs = Array.from(tmp.querySelectorAll('p'));
+  const d = L.dir;
+
+  if (paragraphs.length > 0) {
+    const opening = paragraphs[0];
+    opening.setAttribute('dir', d);
+    document.getElementById('gospel-opening').innerHTML = opening.innerHTML;
+    document.getElementById('gospel-opening').setAttribute('dir', d);
+
+    const bodyEl = document.getElementById('gospel-body');
+    bodyEl.innerHTML = '';
+    paragraphs.slice(1).forEach(p => {
+      p.setAttribute('dir', d);
+      bodyEl.appendChild(p);
+    });
+  }
+
+  document.getElementById('p5-loading').style.display = 'none';
+  document.getElementById('gospel-wrap').style.display = 'block';
+  document.getElementById('learn-btn').style.display = 'block';
+}
+
+function renderGospel(text) {
+  // API response is plain text — split on double newlines
+  const parts = text.trim().split(/\n\n+/);
+  const opening = parts[0] || '';
+  const rest = parts.slice(1);
+
+  const d = L.dir;
+  document.getElementById('gospel-opening').textContent = opening;
+  document.getElementById('gospel-opening').setAttribute('dir', d);
+  document.getElementById('gospel-body').innerHTML =
+    rest.map(p => `<p dir="${d}">${p.trim()}</p>`).join('');
+
+  document.getElementById('p5-loading').style.display = 'none';
+  document.getElementById('gospel-wrap').style.display = 'block';
+  document.getElementById('learn-btn').style.display = 'block';
+}
+
+function fallback() {
+  return (
+    `There is a story so ancient, it is part of our DNA. That story explains the root cause of your ${issue}.\n\n` +
+    `From the very beginning, human beings were made for a deep relationship of love and trust with their Creator. But we turned away — seeking to define life on our own terms. That fracture is the hidden root beneath every form of human suffering, including ${issue}.\n\n` +
+    `Yet the great news is this: God did not abandon us to our brokenness. In Jesus Christ, God himself entered our world. He lived among us, suffered alongside us, and ultimately bore the full weight of human failure and pain on the cross.\n\n` +
+    `The resurrection declares that death and brokenness do not have the final word. The same power that raised Jesus is available to you — not as a technique or a self-improvement programme, but as a living relationship.\n\n` +
+    `To receive this gospel is to discover that you are fully known — every darkness, every wound, every hidden shame — and yet fully and unconditionally loved. This is not sentimentality. It is the only healing that reaches all the way to the root of ${issue}.\n\n` +
+    `You don't have to carry this alone.`
+  );
+}
+
+// ═══════════════════════════════════════════════════════
+// CONTACT FORM
+// ═══════════════════════════════════════════════════════
+function submitContact() {
+  const name = document.getElementById('f-name').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const phone = document.getElementById('f-phone').value.trim();
+
+  if (!name && !email) return; // require at least one
+
+  // Send to API (fire-and-forget — don't block the thank-you)
+  fetch('/api/contact', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, email, phone, lang: L.code, issue })
+  }).catch(() => {});
+
+  showTY(false);
+}
+
+function showTY(skipped) {
+  document.getElementById('p6-form').style.display = 'none';
+  document.getElementById('ty-wrap').style.display = 'block';
+  set('ty-title', L.tyT);
+  set('ty-sub', skipped ? L.tySkip : L.tyS, L.dir);
+}
+</script>
+</body>
+</html>
