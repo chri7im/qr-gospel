@@ -78,8 +78,8 @@ export default async function handler(req, res) {
     `My friend ${localName} is suffering from severe ${cleanIssue}. ` +
     `Please explain the FULL gospel to him BIBLICALLY, just like Tim Keller would, ` +
     `and explain how the gospel is the ONLY REAL FULL CURE for his ${cleanIssue}. ` +
-    `Do NOT include any opening line like "There is a story so ancient..." — that is added separately. ` +
-    `Start directly with the gospel presentation connecting ${cleanIssue} to the biblical narrative. ` +
+    `The response should begin with "There is a story so ancient, it is part of our DNA. ` +
+    `That story explains the root cause of your ${cleanIssue}." and then continue from there. ` +
     `Do not mention ${localName}'s name anywhere in the text. ` +
     `Write entirely in ${langName}.`;
 

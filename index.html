@@ -1383,15 +1383,18 @@ function renderGospelHTML(html) {
 }
 
 function renderGospel(text) {
-  // API response is body only — opening is hardcoded from OPENING templates
+  // API still generates the DNA opening to ground the tone, but we discard it
+  // and use our hardcoded translated version instead
   const opening = buildOpening(L.code, issue);
-  const paragraphs = text.trim().split(/\n\n+/);
+  const parts = text.trim().split(/\n\n+/);
+  // Drop the first paragraph (the API's opening sentences)
+  const body = parts.length > 1 ? parts.slice(1) : parts;
 
   const d = L.dir;
   document.getElementById('gospel-opening').textContent = opening;
   document.getElementById('gospel-opening').setAttribute('dir', d);
   document.getElementById('gospel-body').innerHTML =
-    paragraphs.map(p => `<p dir="${d}">${p.trim()}</p>`).join('');
+    body.map(p => `<p dir="${d}">${p.trim()}</p>`).join('');
 
   document.getElementById('p5-loading').style.display = 'none';
   document.getElementById('gospel-wrap').style.display = 'block';
