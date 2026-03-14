@@ -77,28 +77,26 @@ async function commitToGitHub(path, content, message) {
 }
 
 async function translateLang(lang) {
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-api-key': process.env.ANTHROPIC_API_KEY,
-      'anthropic-version': '2023-06-01'
+      'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
     },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
+      model: 'gpt-4o',
       max_tokens: 2000,
-      system: SYSTEM,
-      messages: [{
-        role: 'user',
-        content: `Translate this JSON into the language with code "${lang}":\n\n${JSON.stringify(TEMPLATE)}`
-      }]
+      messages: [
+        { role: 'system', content: SYSTEM },
+        { role: 'user', content: `Translate this JSON into the language with code "${lang}":\n\n${JSON.stringify(TEMPLATE)}` }
+      ]
     })
   });
 
-  if (!response.ok) throw new Error('Anthropic API error: ' + response.status);
+  if (!response.ok) throw new Error('OpenAI API error: ' + response.status);
 
   const data = await response.json();
-  const translated = JSON.parse(data.content[0].text.trim());
+  const translated = JSON.parse(data.choices[0].message.content.trim());
 
   if (!translated.iss || !Array.isArray(translated.iss) || translated.iss.length !== 14) {
     throw new Error('Invalid translation structure');
