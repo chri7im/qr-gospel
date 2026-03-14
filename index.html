@@ -1360,8 +1360,17 @@ function renderGospelHTML(html) {
 function renderGospel(text) {
   // API response is plain text — split on double newlines
   const parts = text.trim().split(/\n\n+/);
-  const opening = parts[0] || '';
-  const rest = parts.slice(1);
+  let opening = parts[0] || '';
+  let rest = parts.slice(1);
+
+  // Safety: if the first paragraph has more than 2 sentences, extract only the first two
+  // (the DNA opening) and push the remainder into the body
+  const sentences = opening.match(/[^.!?。！？]+[.!?。！？]+[\s]*/g);
+  if (sentences && sentences.length > 2) {
+    opening = sentences.slice(0, 2).join('').trim();
+    const remainder = sentences.slice(2).join('').trim();
+    if (remainder) rest = [remainder, ...rest];
+  }
 
   const d = L.dir;
   document.getElementById('gospel-opening').textContent = opening;
