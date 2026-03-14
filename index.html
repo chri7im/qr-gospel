@@ -832,6 +832,31 @@ const LANGS = [
 ];
 
 // ═══════════════════════════════════════════════════════
+// OPENING SENTENCES (hardcoded per language: [sentence1, sentence2_before, sentence2_after])
+// ═══════════════════════════════════════════════════════
+const OPENING = {
+  ar: ['هناك قصة قديمة جدًا، إنها جزء من حمضنا النووي.', 'هذه القصة تفسر السبب الحقيقي لـ', '.'],
+  de: ['Es gibt eine Geschichte, die ist so alt, dass sie Teil unserer DNA ist.', 'Diese Geschichte erklärt die wahre Ursache deiner ', '.'],
+  en: ['There is a story so ancient, it is part of our DNA.', 'That story explains the root cause of your ', '.'],
+  es: ['Hay una historia tan antigua que forma parte de nuestro ADN.', 'Esa historia explica la verdadera causa de tu ', '.'],
+  fa: ['داستانی وجود دارد به قدمت بشریت، که در DNA ما حک شده است.', 'این داستان ریشه واقعی ', ' را توضیح می\u200Cدهد.'],
+  fr: ["Il existe une histoire si ancienne qu'elle fait partie de notre ADN.", 'Cette histoire explique la véritable cause de ta ', '.'],
+  hi: ['एक कहानी है जो इतनी पुरानी है कि यह हमारे DNA का हिस्सा है।', 'यह कहानी तुम्हारी ', ' की असली जड़ को समझाती है।'],
+  it: ["C'\u00E8 una storia cos\u00EC antica che fa parte del nostro DNA.", 'Questa storia spiega la vera causa della tua ', '.'],
+  ja: ['私たちのDNAに刻まれているほど古い物語があります。', 'その物語は、あなたの', 'の本当の原因を説明しています。'],
+  ko: ['우리의 DNA에 새겨져 있을 만큼 오래된 이야기가 있습니다.', '그 이야기는 당신의 ', '의 진정한 원인을 설명합니다.'],
+  pt: ['Existe uma história tão antiga que faz parte do nosso DNA.', 'Essa história explica a verdadeira causa do seu ', '.'],
+  ru: ['Есть история настолько древняя, что она записана в нашей ДНК.', 'Эта история объясняет истинную причину твоей ', '.'],
+  sw: ['Kuna hadithi ya kale sana hivi kwamba ni sehemu ya DNA yetu.', 'Hadithi hiyo inaeleza chanzo cha kweli cha ', '.'],
+  zh: ['有一个古老到刻在我们DNA中的故事。', '这个故事解释了你', '的真正根源。'],
+};
+
+function buildOpening(langCode, issueText) {
+  const t = OPENING[langCode] || OPENING.en;
+  return t[0] + ' ' + t[1] + issueText + t[2];
+}
+
+// ═══════════════════════════════════════════════════════
 // ISSUE KEYS (map index in iss[] to static file name)
 // ═══════════════════════════════════════════════════════
 const ISSUE_KEYS = [
@@ -1358,25 +1383,15 @@ function renderGospelHTML(html) {
 }
 
 function renderGospel(text) {
-  // API response is plain text — split on double newlines
-  const parts = text.trim().split(/\n\n+/);
-  let opening = parts[0] || '';
-  let rest = parts.slice(1);
-
-  // Safety: if the first paragraph has more than 2 sentences, extract only the first two
-  // (the DNA opening) and push the remainder into the body
-  const sentences = opening.match(/[^.!?。！？]+[.!?。！？]+[\s]*/g);
-  if (sentences && sentences.length > 2) {
-    opening = sentences.slice(0, 2).join('').trim();
-    const remainder = sentences.slice(2).join('').trim();
-    if (remainder) rest = [remainder, ...rest];
-  }
+  // API response is body only — opening is hardcoded from OPENING templates
+  const opening = buildOpening(L.code, issue);
+  const paragraphs = text.trim().split(/\n\n+/);
 
   const d = L.dir;
   document.getElementById('gospel-opening').textContent = opening;
   document.getElementById('gospel-opening').setAttribute('dir', d);
   document.getElementById('gospel-body').innerHTML =
-    rest.map(p => `<p dir="${d}">${p.trim()}</p>`).join('');
+    paragraphs.map(p => `<p dir="${d}">${p.trim()}</p>`).join('');
 
   document.getElementById('p5-loading').style.display = 'none';
   document.getElementById('gospel-wrap').style.display = 'block';
@@ -1385,7 +1400,6 @@ function renderGospel(text) {
 
 function fallback() {
   return (
-    `There is a story so ancient, it is part of our DNA. That story explains the root cause of your ${issue}.\n\n` +
     `From the very beginning, human beings were made for a deep relationship of love and trust with their Creator. But we turned away — seeking to define life on our own terms. That fracture is the hidden root beneath every form of human suffering, including ${issue}.\n\n` +
     `Yet the great news is this: God did not abandon us to our brokenness. In Jesus Christ, God himself entered our world. He lived among us, suffered alongside us, and ultimately bore the full weight of human failure and pain on the cross.\n\n` +
     `The resurrection declares that death and brokenness do not have the final word. The same power that raised Jesus is available to you — not as a technique or a self-improvement programme, but as a living relationship.\n\n` +
