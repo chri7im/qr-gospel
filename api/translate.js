@@ -27,13 +27,32 @@ const TEMPLATE = {
   pn: 'Paul', dir: 'ltr'
 };
 
+// Valid ISO 639-1 language codes (prevents fake codes from burning API credits)
+const VALID_ISO = new Set([
+  'aa','ab','af','ak','am','an','as','av','ay','az','ba','be','bg','bh','bi','bm','bn','bo',
+  'br','bs','ca','ce','ch','co','cr','cs','cu','cv','cy','da','dv','dz','ee','el','eo','et',
+  'eu','ff','fi','fj','fo','fy','ga','gd','gl','gn','gu','gv','ha','he','ho','hr','ht','hu',
+  'hy','hz','ia','id','ie','ig','ii','ik','io','is','iu','jv','ka','kg','ki','kj','kk','kl',
+  'km','kn','kr','ks','ku','kv','kw','ky','la','lb','lg','li','ln','lo','lt','lu','lv','mg',
+  'mh','mi','mk','ml','mn','mr','ms','mt','my','na','nb','nd','ne','ng','nl','nn','no','nr',
+  'nv','ny','oc','oj','om','or','os','pa','pi','pl','ps','qu','rm','rn','ro','rw','sa','sc',
+  'sd','se','sg','si','sk','sl','sm','sn','so','sq','sr','ss','st','su','sv','ta','te','tg',
+  'th','ti','tk','tl','tn','to','tr','ts','tt','tw','ty','ug','uk','ur','uz','ve','vi','vo',
+  'wa','wo','xh','yi','yo','za','zu'
+]);
+
+// Languages we already have built-in (no need to translate)
+const BUILTIN = new Set(['ar','en','fa','fr','de','hi','it','ja','ko','zh','pt','ru','es','sw']);
+
 const REPO = 'chri7im/qr-gospel';
 const BRANCH = 'master';
 
-// Commit a file to GitHub via the API
+// In-flight translations — prevents stampede (multiple concurrent requests for same lang)
+const inFlight = new Map();
+
 async function commitToGitHub(path, content, message) {
   const token = process.env.GITHUB_TOKEN;
-  if (!token) return; // silently skip if no token configured
+  if (!token) return;
 
   const apiBase = `https://api.github.com/repos/${REPO}/contents/${path}`;
   const headers = {
@@ -42,7 +61,6 @@ async function commitToGitHub(path, content, message) {
     'Accept': 'application/vnd.github.v3+json'
   };
 
-  // Check if file already exists (get its SHA if so)
   let sha;
   try {
     const existing = await fetch(`${apiBase}?ref=${BRANCH}`, { headers });
@@ -52,15 +70,41 @@ async function commitToGitHub(path, content, message) {
     }
   } catch (e) {}
 
-  // Create or update the file
-  const body = {
-    message,
-    content: Buffer.from(content).toString('base64'),
-    branch: BRANCH
-  };
+  const body = { message, content: Buffer.from(content).toString('base64'), branch: BRANCH };
   if (sha) body.sha = sha;
 
   await fetch(apiBase, { method: 'PUT', headers, body: JSON.stringify(body) });
+}
+
+async function translateLang(lang) {
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': process.env.ANTHROPIC_API_KEY,
+      'anthropic-version': '2023-06-01'
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 2000,
+      system: SYSTEM,
+      messages: [{
+        role: 'user',
+        content: `Translate this JSON into the language with code "${lang}":\n\n${JSON.stringify(TEMPLATE)}`
+      }]
+    })
+  });
+
+  if (!response.ok) throw new Error('Anthropic API error: ' + response.status);
+
+  const data = await response.json();
+  const translated = JSON.parse(data.content[0].text.trim());
+
+  if (!translated.iss || !Array.isArray(translated.iss) || translated.iss.length !== 14) {
+    throw new Error('Invalid translation structure');
+  }
+
+  return translated;
 }
 
 export default async function handler(req, res) {
@@ -72,68 +116,58 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const { lang } = req.body;
-  if (!lang || typeof lang !== 'string' || !/^[a-z]{2,5}$/.test(lang)) {
+
+  // Validate: must be a real ISO 639-1 code and not already built-in
+  if (!lang || typeof lang !== 'string' || !/^[a-z]{2,3}$/.test(lang)) {
     return res.status(400).json({ error: 'Invalid language code' });
   }
+  if (!VALID_ISO.has(lang)) {
+    return res.status(400).json({ error: 'Unknown language code' });
+  }
+  if (BUILTIN.has(lang)) {
+    return res.status(400).json({ error: 'Language already built-in' });
+  }
 
-  // Check if this language was already translated and committed
-  // by trying to fetch the static ui.json file first
+  // 1. Check if already committed to GitHub (static cache)
   try {
     const staticCheck = await fetch(
       `https://raw.githubusercontent.com/${REPO}/${BRANCH}/texts/${lang}/ui.json`
     );
     if (staticCheck.ok) {
-      const cached = await staticCheck.json();
-      return res.status(200).json(cached);
+      return res.status(200).json(await staticCheck.json());
     }
   } catch (e) {}
 
-  // Not cached — translate via Anthropic
+  // 2. Deduplicate: if a translation for this lang is already in progress, wait for it
+  if (inFlight.has(lang)) {
+    try {
+      const result = await inFlight.get(lang);
+      return res.status(200).json(result);
+    } catch (err) {
+      return res.status(500).json({ error: 'Translation failed' });
+    }
+  }
+
+  // 3. Translate (single API call, shared across concurrent requests)
+  const promise = translateLang(lang);
+  inFlight.set(lang, promise);
+
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 2000,
-        system: SYSTEM,
-        messages: [{
-          role: 'user',
-          content: `Translate this JSON into the language with code "${lang}":\n\n${JSON.stringify(TEMPLATE)}`
-        }]
-      })
-    });
-
-    if (!response.ok) {
-      const err = await response.text();
-      return res.status(response.status).json({ error: err });
-    }
-
-    const data = await response.json();
-    const text = data.content[0].text.trim();
-    const translated = JSON.parse(text);
-
-    // Validate structure
-    if (!translated.iss || !Array.isArray(translated.iss) || translated.iss.length !== 14) {
-      return res.status(500).json({ error: 'Invalid translation structure' });
-    }
-
-    // Return to user immediately
+    const translated = await promise;
     res.status(200).json(translated);
 
-    // Commit to GitHub in the background (don't block the response)
+    // Commit to GitHub in the background
     const jsonContent = JSON.stringify(translated, null, 2);
     commitToGitHub(
       `texts/${lang}/ui.json`,
       jsonContent,
       `Add auto-translated UI strings for language: ${lang}`
-    ).catch(() => {}); // fire-and-forget
+    ).catch(() => {});
 
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message });
+  } finally {
+    // Clean up after a delay (keep the result cached for 60s for any stragglers)
+    setTimeout(() => inFlight.delete(lang), 60000);
   }
 }

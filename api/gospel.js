@@ -24,6 +24,26 @@ STRICT RULES:
 - Never mention personal names in the output.
 - Write 5-6 paragraphs entirely in the requested language.`;
 
+// Simple per-IP rate limiter (max 10 requests per minute per IP)
+const rateMap = new Map();
+function rateLimit(ip) {
+  const now = Date.now();
+  const window = 60000;
+  const max = 10;
+  const entries = rateMap.get(ip) || [];
+  const recent = entries.filter(t => now - t < window);
+  if (recent.length >= max) return false;
+  recent.push(now);
+  rateMap.set(ip, recent);
+  // Clean old entries periodically
+  if (rateMap.size > 10000) {
+    for (const [k, v] of rateMap) {
+      if (v.every(t => now - t > window)) rateMap.delete(k);
+    }
+  }
+  return true;
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -31,6 +51,11 @@ export default async function handler(req, res) {
 
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+
+  const ip = req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || 'unknown';
+  if (!rateLimit(ip)) {
+    return res.status(429).json({ error: 'Too many requests. Please wait a moment.' });
+  }
 
   const { lang, issue } = req.body;
 
