@@ -1240,7 +1240,7 @@ function fillP6() {
   const s6 = L.s6;
   const dotIdx = s6.indexOf('. ');
   if (dotIdx > 0) {
-    subEl.innerHTML = s6.slice(0, dotIdx + 1) + '<br><br>' + s6.slice(dotIdx + 2);
+    subEl.innerHTML = s6.slice(0, dotIdx + 1) + '<br>' + s6.slice(dotIdx + 2);
   } else {
     subEl.textContent = s6;
   }
