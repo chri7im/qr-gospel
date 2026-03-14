@@ -893,14 +893,26 @@ async function detectCountryLangCode() {
 
 // Load or fetch translations for an unsupported language
 async function loadDynamicLang(code) {
-  // Check localStorage cache first
+  // 1. Check localStorage cache
   const cacheKey = 'lang_' + code;
   const cached = localStorage.getItem(cacheKey);
   if (cached) {
     try { return JSON.parse(cached); } catch (e) {}
   }
 
-  // Fetch from API
+  // 2. Check for static ui.json (committed by a previous translation)
+  try {
+    const staticRes = await fetch(`/texts/${code}/ui.json`);
+    if (staticRes.ok) {
+      const data = await staticRes.json();
+      if (data.iss && data.iss.length === 14) {
+        localStorage.setItem(cacheKey, JSON.stringify(data));
+        return data;
+      }
+    }
+  } catch (e) {}
+
+  // 3. Translate via API (which also commits to GitHub for future users)
   try {
     const res = await fetch('/api/translate', {
       method: 'POST',
@@ -911,7 +923,6 @@ async function loadDynamicLang(code) {
     const data = await res.json();
     if (!data.iss || data.iss.length !== 14) return null;
 
-    // Cache for future visits
     localStorage.setItem(cacheKey, JSON.stringify(data));
     return data;
   } catch (e) { return null; }

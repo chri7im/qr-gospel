@@ -27,6 +27,42 @@ const TEMPLATE = {
   pn: 'Paul', dir: 'ltr'
 };
 
+const REPO = 'chri7im/qr-gospel';
+const BRANCH = 'master';
+
+// Commit a file to GitHub via the API
+async function commitToGitHub(path, content, message) {
+  const token = process.env.GITHUB_TOKEN;
+  if (!token) return; // silently skip if no token configured
+
+  const apiBase = `https://api.github.com/repos/${REPO}/contents/${path}`;
+  const headers = {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json',
+    'Accept': 'application/vnd.github.v3+json'
+  };
+
+  // Check if file already exists (get its SHA if so)
+  let sha;
+  try {
+    const existing = await fetch(`${apiBase}?ref=${BRANCH}`, { headers });
+    if (existing.ok) {
+      const data = await existing.json();
+      sha = data.sha;
+    }
+  } catch (e) {}
+
+  // Create or update the file
+  const body = {
+    message,
+    content: Buffer.from(content).toString('base64'),
+    branch: BRANCH
+  };
+  if (sha) body.sha = sha;
+
+  await fetch(apiBase, { method: 'PUT', headers, body: JSON.stringify(body) });
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -36,10 +72,23 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const { lang } = req.body;
-  if (!lang || typeof lang !== 'string' || lang.length > 10) {
+  if (!lang || typeof lang !== 'string' || !/^[a-z]{2,5}$/.test(lang)) {
     return res.status(400).json({ error: 'Invalid language code' });
   }
 
+  // Check if this language was already translated and committed
+  // by trying to fetch the static ui.json file first
+  try {
+    const staticCheck = await fetch(
+      `https://raw.githubusercontent.com/${REPO}/${BRANCH}/texts/${lang}/ui.json`
+    );
+    if (staticCheck.ok) {
+      const cached = await staticCheck.json();
+      return res.status(200).json(cached);
+    }
+  } catch (e) {}
+
+  // Not cached — translate via Anthropic
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -66,8 +115,6 @@ export default async function handler(req, res) {
 
     const data = await response.json();
     const text = data.content[0].text.trim();
-
-    // Parse the JSON response
     const translated = JSON.parse(text);
 
     // Validate structure
@@ -75,7 +122,17 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Invalid translation structure' });
     }
 
-    return res.status(200).json(translated);
+    // Return to user immediately
+    res.status(200).json(translated);
+
+    // Commit to GitHub in the background (don't block the response)
+    const jsonContent = JSON.stringify(translated, null, 2);
+    commitToGitHub(
+      `texts/${lang}/ui.json`,
+      jsonContent,
+      `Add auto-translated UI strings for language: ${lang}`
+    ).catch(() => {}); // fire-and-forget
+
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
