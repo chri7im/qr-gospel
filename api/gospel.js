@@ -78,8 +78,8 @@ export default async function handler(req, res) {
     `My friend ${localName} is suffering from severe ${cleanIssue}. ` +
     `Please explain the FULL gospel to him BIBLICALLY, just like Tim Keller would, ` +
     `and explain how the gospel is the ONLY REAL FULL CURE for his ${cleanIssue}. ` +
-    `The response MUST begin with exactly these two sentences as their own paragraph: "There is a story so ancient, it is part of our DNA. ` +
-    `That story explains the root cause of your ${cleanIssue}." followed by a blank line, and then continue from there. ` +
+    `The response MUST begin with these two sentences (translated into ${langName}) as their own paragraph: "There is a story so ancient, it is part of our DNA. ` +
+    `That story explains the root cause of your ${cleanIssue}." Then leave a blank line before continuing with the next paragraph. ` +
     `Do not mention ${localName}'s name anywhere in the text. ` +
     `Write entirely in ${langName}.`;
 
