@@ -197,11 +197,6 @@ body {
   padding: 62px 28px 42px; flex-shrink: 0;
   text-align: center;
 }
-.p2-eyebrow {
-  font-size: 9px; letter-spacing: 3px;
-  color: #1e3a5f; text-transform: uppercase;
-  margin-bottom: 14px;
-}
 .p2-title {
   font-size: 30px; font-weight: 500;
   color: #1a2332; line-height: 1.3;
@@ -231,10 +226,6 @@ body {
   background: #ffffff;
   border-bottom: 1px solid rgba(26,35,50,0.08);
   text-align: center;
-}
-.p3-eyebrow {
-  font-size: 9px; letter-spacing: 3px;
-  color: #8494a7; text-transform: uppercase; margin-bottom: 9px;
 }
 .p3-title {
   font-size: 18px; font-weight: 500;
@@ -319,11 +310,6 @@ body {
   padding: 26px 24px 16px;
   border-bottom: 1px solid rgba(26,35,50,0.08);
   text-align: center;
-}
-.p5-tag {
-  font-size: 9px; letter-spacing: 3px;
-  color: #1e3a5f; text-transform: uppercase;
-  margin-bottom: 6px;
 }
 .p5-body {
   flex: 1;
@@ -489,7 +475,6 @@ body {
       </svg>
     </button>
     <div class="p2-hero">
-      <div class="p2-eyebrow" id="p2-eyebrow">About us</div>
       <div class="p2-title" id="p2-title">About us</div>
     </div>
     <div class="p2-body">
@@ -508,7 +493,6 @@ body {
       </svg>
     </button>
     <div class="p3-header">
-      <div class="p3-eyebrow" id="p3-eyebrow">Questionnaire</div>
       <div class="p3-title" id="p3-title">What bothers you most in life?</div>
     </div>
     <div class="p3-list" id="p3-list"></div>
@@ -534,9 +518,7 @@ body {
         <polyline points="15 18 9 12 15 6"/>
       </svg>
     </button>
-    <div class="p5-header">
-      <div class="p5-tag" id="p5-tag">A message for you</div>
-    </div>
+    <div class="p5-header" style="padding:14px;"></div>
     <div class="p5-body" id="p5-body">
       <div class="p5-loading" id="p5-loading">
         <div class="spinner"></div>
@@ -1187,7 +1169,6 @@ function set(id, txt, dir) {
 }
 
 function fillP2() {
-  set('p2-eyebrow', L.ey);
   set('p2-title', L.ti, L.dir);
   const el = document.getElementById('p2-text');
   const sentences = L.body.split('!');
@@ -1209,7 +1190,6 @@ function fillP2() {
 }
 
 function fillP3() {
-  set('p3-eyebrow', L.qEy);
   set('p3-title', L.qTi, L.dir);
   const list = document.getElementById('p3-list');
   list.setAttribute('dir', L.dir);
@@ -1241,7 +1221,6 @@ function fillP4() {
 }
 
 function fillP5Header(reset) {
-  set('p5-tag', L.tag);
   set('p5-loading-txt', L.ldg);
   document.getElementById('learn-btn').textContent = L.lmr;
   if (reset) {
@@ -1255,7 +1234,16 @@ function fillP5Header(reset) {
 
 function fillP6() {
   set('p6-title', L.t6, L.dir);
-  set('p6-sub', L.s6, L.dir);
+  const subEl = document.getElementById('p6-sub');
+  subEl.setAttribute('dir', L.dir);
+  // Split on first period+space or period+end to add a line break between sentences
+  const s6 = L.s6;
+  const dotIdx = s6.indexOf('. ');
+  if (dotIdx > 0) {
+    subEl.innerHTML = s6.slice(0, dotIdx + 1) + '<br><br>' + s6.slice(dotIdx + 2);
+  } else {
+    subEl.textContent = s6;
+  }
   set('lbl-name', L.ln);
   set('lbl-email', L.le);
   set('lbl-phone', L.lp);
