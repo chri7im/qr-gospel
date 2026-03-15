@@ -1350,7 +1350,23 @@ async function fetchGospel() {
     });
     if (!res.ok) throw new Error('API error ' + res.status);
     const data = await res.json();
-    renderGospel(data.text, data.cleanIssue || issue);
+    const cleaned = data.cleanIssue || issue;
+
+    // If the cleaned issue matches one of our 14 preset issues, use static text instead
+    const matchIdx = L.iss.findIndex(
+      name => name.toLowerCase() === cleaned.toLowerCase()
+    );
+    if (matchIdx !== -1 && ISSUE_KEYS[matchIdx]) {
+      try {
+        const sRes = await fetch(`/texts/${L.code}/${ISSUE_KEYS[matchIdx]}.htm`);
+        if (sRes.ok) {
+          renderGospelHTML(await sRes.text());
+          return;
+        }
+      } catch (e2) { /* fall through to API text */ }
+    }
+
+    renderGospel(data.text, cleaned);
   } catch (e) {
     renderGospel(fallback(), issue);
   }
