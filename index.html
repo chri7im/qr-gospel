@@ -420,6 +420,36 @@ body {
   text-align: center;
 }
 .f-input:focus { border-color: #1e3a5f; background: #f5f8fb; }
+.f-input.f-phone {
+  opacity: 0.7;
+  border-style: dashed;
+}
+.f-input.f-phone:focus { opacity: 1; border-style: solid; }
+.consent-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  margin: 8px 0 4px; text-align: start;
+}
+.consent-row input[type="checkbox"] {
+  flex-shrink: 0; margin-top: 3px;
+  width: 18px; height: 18px; accent-color: #1e3a5f;
+  cursor: pointer;
+}
+.consent-row label {
+  font-size: 13px; color: #6b7a8d; line-height: 1.55;
+  cursor: pointer;
+}
+.consent-row label a { color: #1e3a5f; text-decoration: underline; }
+.consent-error {
+  font-size: 13px; color: #c0392b; text-align: start;
+  margin-bottom: 12px; display: none;
+}
+.p6-footer {
+  text-align: center; margin-top: 12px;
+}
+.p6-footer a {
+  font-size: 12px; color: #8494a7; text-decoration: none;
+}
+.p6-footer a:hover { text-decoration: underline; }
 .skip-link {
   text-align: center; margin-top: 18px;
   font-size: 14px; color: #8494a7;
@@ -566,9 +596,15 @@ body {
       <label class="f-label" id="lbl-email">Email</label>
       <input type="email" class="f-input" id="f-email" autocomplete="email"/>
       <label class="f-label" id="lbl-phone">Phone (optional)</label>
-      <input type="tel" class="f-input" id="f-phone" autocomplete="tel"/>
+      <input type="tel" class="f-input f-phone" id="f-phone" autocomplete="tel"/>
+      <div class="consent-row" id="consent-row">
+        <input type="checkbox" id="f-consent"/>
+        <label for="f-consent" id="consent-label">I agree to be contacted by QR Gospel about faith-related topics. I can unsubscribe at any time. <a href="/privacy" target="_blank" id="consent-privacy-link">Privacy Policy</a></label>
+      </div>
+      <div class="consent-error" id="consent-error">Please check the box above before submitting.</div>
       <button class="primary-btn" id="p6-cta" onclick="submitContact()">Submit</button>
       <div class="skip-link" id="skip-link" onclick="showTY(true)"></div>
+      <div class="p6-footer"><a href="/privacy" target="_blank" id="p6-privacy-link">Privacy Policy</a></div>
     </div>
     <div class="ty-wrap" id="ty-wrap">
       <span class="ty-star">✦</span>
@@ -606,7 +642,10 @@ const LANGS = [
     ln:'الاسم', le:'البريد الإلكتروني', lp:'الهاتف (اختياري)',
     sb:'إرسال', sk:'لا شكراً',
     tyT:'شكراً لك!', tyS:'سنتواصل معك قريباً.', tySkip:'نتمنى لك السلام.',
-    pn:'سامي', lng:'Arabic'
+    pn:'سامي', lng:'Arabic',
+    consentLabel:'أوافق على أن يتواصل معي فريق QR Gospel حول مواضيع الإيمان. يمكنني إلغاء الاشتراك في أي وقت.',
+    consentError:'يرجى الموافقة قبل الإرسال.',
+    privacyLink:'سياسة الخصوصية'
   },
   {
     code:'en', name:'English', en:'English', dir:'ltr',
@@ -623,7 +662,10 @@ const LANGS = [
     ln:'Name', le:'Email', lp:'Phone (optional)',
     sb:'Submit', sk:"No thanks, I'm good",
     tyT:'Thank you!', tyS:"We'll be in touch soon.", tySkip:'May you find peace.',
-    pn:'Paul', lng:'English'
+    pn:'Paul', lng:'English',
+    consentLabel:'I agree to be contacted by QR Gospel about faith-related topics. I can unsubscribe at any time.',
+    consentError:'Please check the box above before submitting.',
+    privacyLink:'Privacy Policy'
   },
   {
     code:'fa', name:'فارسی', en:'Farsi', dir:'rtl',
@@ -640,7 +682,10 @@ const LANGS = [
     ln:'نام', le:'ایمیل', lp:'تلفن (اختیاری)',
     sb:'ارسال', sk:'نه ممنون',
     tyT:'متشکرم!', tyS:'به زودی با شما تماس می‌گیریم.', tySkip:'برایت آرامش آرزو می‌کنیم.',
-    pn:'علی', lng:'Persian (Farsi)'
+    pn:'علی', lng:'Persian (Farsi)',
+    consentLabel:'موافقم که تیم QR Gospel درباره موضوعات ایمانی با من تماس بگیرد. هر زمان می‌توانم لغو اشتراک کنم.',
+    consentError:'لطفاً قبل از ارسال موافقت کنید.',
+    privacyLink:'سیاست حریم خصوصی'
   },
   {
     code:'fr', name:'Français', en:'French', dir:'ltr',
@@ -657,7 +702,10 @@ const LANGS = [
     ln:'Nom', le:'E-mail', lp:'Téléphone (facultatif)',
     sb:'Envoyer', sk:'Non merci',
     tyT:'Merci !', tyS:'Nous te contacterons bientôt.', tySkip:'Que la paix soit avec toi.',
-    pn:'Paul', lng:'French'
+    pn:'Paul', lng:'French',
+    consentLabel:'J\'accepte d\'être contacté(e) par QR Gospel sur des sujets liés à la foi. Je peux me désinscrire à tout moment.',
+    consentError:'Merci de cocher la case ci-dessus avant d\'envoyer.',
+    privacyLink:'Politique de confidentialité'
   },
   {
     code:'de', name:'Deutsch', en:'German', dir:'ltr',
@@ -674,7 +722,10 @@ const LANGS = [
     ln:'Name', le:'E-Mail', lp:'Telefon (optional)',
     sb:'Senden', sk:'Nein danke',
     tyT:'Danke!', tyS:'Wir melden uns bald bei dir.', tySkip:'Wir wünschen dir Frieden.',
-    pn:'Paul', lng:'German'
+    pn:'Paul', lng:'German',
+    consentLabel:'Ich bin einverstanden, von QR Gospel zu Glaubensthemen kontaktiert zu werden. Ich kann mich jederzeit abmelden.',
+    consentError:'Bitte stimme oben zu, bevor du absendest.',
+    privacyLink:'Datenschutzerklärung'
   },
   {
     code:'hi', name:'हिन्दी', en:'Hindi', dir:'ltr',
@@ -691,7 +742,10 @@ const LANGS = [
     ln:'नाम', le:'ईमेल', lp:'फ़ोन (वैकल्पिक)',
     sb:'भेजें', sk:'नहीं, धन्यवाद',
     tyT:'धन्यवाद!', tyS:'हम जल्द ही आपसे संपर्क करेंगे।', tySkip:'आपको शांति मिले।',
-    pn:'पॉल', lng:'Hindi'
+    pn:'पॉल', lng:'Hindi',
+    consentLabel:'मैं सहमत हूँ कि QR Gospel आस्था से जुड़े विषयों पर मुझसे संपर्क करे। मैं कभी भी सदस्यता रद्द कर सकता/सकती हूँ।',
+    consentError:'कृपया भेजने से पहले ऊपर सहमति दें।',
+    privacyLink:'गोपनीयता नीति'
   },
   {
     code:'it', name:'Italiano', en:'Italian', dir:'ltr',
@@ -708,7 +762,10 @@ const LANGS = [
     ln:'Nome', le:'Email', lp:'Telefono (opzionale)',
     sb:'Invia', sk:'No grazie',
     tyT:'Grazie!', tyS:'Ci faremo vivi presto.', tySkip:'Ti auguriamo pace.',
-    pn:'Paolo', lng:'Italian'
+    pn:'Paolo', lng:'Italian',
+    consentLabel:'Accetto di essere contattato/a da QR Gospel su argomenti di fede. Posso annullare l\'iscrizione in qualsiasi momento.',
+    consentError:'Per favore, spunta la casella sopra prima di inviare.',
+    privacyLink:'Informativa sulla privacy'
   },
   {
     code:'ja', name:'日本語', en:'Japanese', dir:'ltr',
@@ -725,7 +782,10 @@ const LANGS = [
     ln:'お名前', le:'メール', lp:'電話番号（任意）',
     sb:'送信', sk:'いいえ、結構です',
     tyT:'ありがとうございます！', tyS:'まもなくご連絡いたします。', tySkip:'平安がありますように。',
-    pn:'ポール', lng:'Japanese'
+    pn:'ポール', lng:'Japanese',
+    consentLabel:'QR Gospelから信仰に関する連絡を受けることに同意します。いつでも配信停止できます。',
+    consentError:'送信前に上のチェックボックスにチェックを入れてください。',
+    privacyLink:'プライバシーポリシー'
   },
   {
     code:'ko', name:'한국어', en:'Korean', dir:'ltr',
@@ -742,7 +802,10 @@ const LANGS = [
     ln:'이름', le:'이메일', lp:'전화번호 (선택)',
     sb:'제출', sk:'아니요, 괜찮습니다',
     tyT:'감사합니다!', tyS:'곧 연락드리겠습니다.', tySkip:'평안하시길 바랍니다.',
-    pn:'바울', lng:'Korean'
+    pn:'바울', lng:'Korean',
+    consentLabel:'QR Gospel이 신앙 관련 주제로 연락하는 것에 동의합니다. 언제든지 구독을 취소할 수 있습니다.',
+    consentError:'제출하기 전에 위의 체크박스를 선택해 주세요.',
+    privacyLink:'개인정보 처리방침'
   },
   {
     code:'zh', name:'中文', en:'Mandarin', dir:'ltr',
@@ -759,7 +822,10 @@ const LANGS = [
     ln:'姓名', le:'电子邮件', lp:'电话（可选）',
     sb:'提交', sk:'不了，谢谢',
     tyT:'谢谢！', tyS:'我们很快会与您联系。', tySkip:'愿你找到平安。',
-    pn:'保罗', lng:'Mandarin Chinese'
+    pn:'保罗', lng:'Mandarin Chinese',
+    consentLabel:'我同意 QR Gospel 就信仰相关话题与我联系。我可以随时取消订阅。',
+    consentError:'请在提交前勾选上方的同意框。',
+    privacyLink:'隐私政策'
   },
   {
     code:'pt', name:'Português', en:'Portuguese', dir:'ltr',
@@ -776,7 +842,10 @@ const LANGS = [
     ln:'Nome', le:'E-mail', lp:'Telefone (opcional)',
     sb:'Enviar', sk:'Não, obrigado',
     tyT:'Obrigado!', tyS:'Entraremos em contato em breve.', tySkip:'Que você encontre paz.',
-    pn:'Paulo', lng:'Brazilian Portuguese'
+    pn:'Paulo', lng:'Brazilian Portuguese',
+    consentLabel:'Concordo em ser contactado(a) pela QR Gospel sobre temas de fé. Posso cancelar a subscrição a qualquer momento.',
+    consentError:'Por favor, marque a caixa acima antes de enviar.',
+    privacyLink:'Política de Privacidade'
   },
   {
     code:'ru', name:'Русский', en:'Russian', dir:'ltr',
@@ -793,7 +862,10 @@ const LANGS = [
     ln:'Имя', le:'Эл. почта', lp:'Телефон (необязательно)',
     sb:'Отправить', sk:'Нет, спасибо',
     tyT:'Спасибо!', tyS:'Мы скоро свяжемся с тобой.', tySkip:'Желаем тебе мира.',
-    pn:'Павел', lng:'Russian'
+    pn:'Павел', lng:'Russian',
+    consentLabel:'Я согласен(на), чтобы QR Gospel связывался со мной по вопросам веры. Я могу отписаться в любое время.',
+    consentError:'Пожалуйста, поставьте галочку выше перед отправкой.',
+    privacyLink:'Политика конфиденциальности'
   },
   {
     code:'es', name:'Español', en:'Spanish', dir:'ltr',
@@ -810,7 +882,10 @@ const LANGS = [
     ln:'Nombre', le:'Correo electrónico', lp:'Teléfono (opcional)',
     sb:'Enviar', sk:'No, gracias',
     tyT:'¡Gracias!', tyS:'Nos pondremos en contacto pronto.', tySkip:'Que encuentres paz.',
-    pn:'Pablo', lng:'Spanish'
+    pn:'Pablo', lng:'Spanish',
+    consentLabel:'Acepto que QR Gospel me contacte sobre temas de fe. Puedo darme de baja en cualquier momento.',
+    consentError:'Por favor, marca la casilla de arriba antes de enviar.',
+    privacyLink:'Política de privacidad'
   },
   {
     code:'sw', name:'Kiswahili', en:'Swahili', dir:'ltr',
@@ -827,7 +902,10 @@ const LANGS = [
     ln:'Jina', le:'Barua pepe', lp:'Simu (si lazima)',
     sb:'Tuma', sk:'Hapana, asante',
     tyT:'Asante!', tyS:'Tutawasiliana nawe hivi karibuni.', tySkip:'Tunakuletea amani.',
-    pn:'Paulo', lng:'Swahili'
+    pn:'Paulo', lng:'Swahili',
+    consentLabel:'Ninakubali kuwasiliana na QR Gospel kuhusu mada za imani. Ninaweza kujiondoa wakati wowote.',
+    consentError:'Tafadhali weka alama kwenye kisanduku hapo juu kabla ya kutuma.',
+    privacyLink:'Sera ya Faragha'
   }
 ];
 
@@ -1298,6 +1376,19 @@ function fillP6() {
   set('lbl-phone', L.lp);
   document.getElementById('p6-cta').textContent = L.sb;
   set('skip-link', L.sk);
+  // Consent checkbox
+  const consentLabel = document.getElementById('consent-label');
+  const privacyLinkText = L.privacyLink || 'Privacy Policy';
+  consentLabel.innerHTML = L.consentLabel + ' <a href="/privacy?lang=' + L.code + '" target="_blank" id="consent-privacy-link">' + privacyLinkText + '</a>';
+  consentLabel.setAttribute('dir', L.dir);
+  document.getElementById('consent-error').textContent = L.consentError;
+  document.getElementById('consent-error').setAttribute('dir', L.dir);
+  document.getElementById('f-consent').checked = false;
+  document.getElementById('consent-error').style.display = 'none';
+  // Privacy footer
+  const footerLink = document.getElementById('p6-privacy-link');
+  footerLink.textContent = privacyLinkText;
+  footerLink.href = '/privacy?lang=' + L.code;
   // Reset
   document.getElementById('p6-form').style.display = 'block';
   document.getElementById('ty-wrap').style.display = 'none';
@@ -1451,11 +1542,22 @@ function submitContact() {
 
   if (!name && !email) return; // require at least one
 
+  // Check consent
+  const consentBox = document.getElementById('f-consent');
+  const consentErr = document.getElementById('consent-error');
+  if (!consentBox.checked) {
+    consentErr.style.display = 'block';
+    return;
+  }
+  consentErr.style.display = 'none';
+
+  const consentedAt = new Date().toISOString();
+
   // Send to API (fire-and-forget — don't block the thank-you)
   fetch('/api/contact', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, email, phone, lang: L.code, issue })
+    body: JSON.stringify({ name, email, phone, lang: L.code, issue, consentedAt })
   }).catch(() => {});
 
   showTY(false);

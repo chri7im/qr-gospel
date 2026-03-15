@@ -8,7 +8,8 @@ const WELCOME = {
 نريدك أن تعرف أنك لست وحدك. هناك من يهتم بك ويريد أن يسير معك في هذا الطريق.
 
 سنتواصل معك قريباً. وحتى ذلك الحين، تذكّر: أنت محبوب أكثر مما تتخيل.`,
-    closing: 'بمحبة،\nفريق Good News'
+    closing: 'بمحبة،\nفريق Good News',
+    unsubscribe: 'إذا لم تعد ترغب في تلقي رسائل منّا، ببساطة قم بالرد على هذا البريد بكلمة "إلغاء الاشتراك" وسنقوم بإزالة بياناتك فوراً.'
   },
   en: {
     subject: 'Thank you — a message from the Good News team',
@@ -18,7 +19,8 @@ const WELCOME = {
 We want you to know that you are not alone. There are people who care about you and who would love to walk this journey with you.
 
 We'll be in touch soon. Until then, remember this: you are loved more than you could ever imagine.`,
-    closing: 'With warmth,\nThe Good News team'
+    closing: 'With warmth,\nThe Good News team',
+    unsubscribe: 'If you no longer wish to receive messages from us, simply reply to this email with the word "Unsubscribe" and we will remove your details immediately.'
   },
   fa: {
     subject: 'متشکریم — پیامی از تیم Good News',
@@ -28,7 +30,8 @@ We'll be in touch soon. Until then, remember this: you are loved more than you c
 می‌خواهیم بدانی که تنها نیستی. کسانی هستند که به تو اهمیت می‌دهند و دوست دارند در این مسیر همراهت باشند.
 
 به زودی با تو تماس خواهیم گرفت. تا آن زمان به یاد داشته باش: تو بیش از آنچه تصور کنی دوست داشته می‌شوی.`,
-    closing: 'با مهر،\nتیم Good News'
+    closing: 'با مهر،\nتیم Good News',
+    unsubscribe: 'اگر دیگر مایل به دریافت پیام از ما نیستید، کافیست به این ایمیل با کلمه «لغو اشتراک» پاسخ دهید و ما بلافاصله اطلاعات شما را حذف خواهیم کرد.'
   },
   fr: {
     subject: 'Merci — un message de l\'équipe Good News',
@@ -38,7 +41,8 @@ We'll be in touch soon. Until then, remember this: you are loved more than you c
 Nous voulons que tu saches que tu n'es pas seul(e). Il y a des personnes qui se soucient de toi et qui aimeraient marcher avec toi sur ce chemin.
 
 Nous te contacterons bientôt. En attendant, souviens-toi : tu es aimé(e) plus que tu ne pourrais jamais l'imaginer.`,
-    closing: 'Avec chaleur,\nL\'équipe Good News'
+    closing: 'Avec chaleur,\nL\'équipe Good News',
+    unsubscribe: 'Si tu ne souhaites plus recevoir de messages de notre part, réponds simplement à cet e-mail avec le mot « Désabonnement » et nous supprimerons tes données immédiatement.'
   },
   de: {
     subject: 'Danke — eine Nachricht vom Good News Team',
@@ -48,7 +52,8 @@ Nous te contacterons bientôt. En attendant, souviens-toi : tu es aimé(e) plus 
 Wir möchten, dass du weißt: Du bist nicht allein. Es gibt Menschen, denen du am Herzen liegst und die diesen Weg gerne mit dir gehen möchten.
 
 Wir melden uns bald bei dir. Bis dahin denk daran: Du bist mehr geliebt, als du dir jemals vorstellen kannst.`,
-    closing: 'Herzlich,\nDas Good News Team'
+    closing: 'Herzlich,\nDas Good News Team',
+    unsubscribe: 'Wenn du keine Nachrichten mehr von uns erhalten möchtest, antworte einfach auf diese E-Mail mit dem Wort „Abmelden" und wir werden deine Daten umgehend entfernen.'
   },
   hi: {
     subject: 'धन्यवाद — Good News टीम की ओर से एक संदेश',
@@ -58,7 +63,8 @@ Wir melden uns bald bei dir. Bis dahin denk daran: Du bist mehr geliebt, als du 
 हम चाहते हैं कि तुम जानो — तुम अकेले नहीं हो। ऐसे लोग हैं जो तुम्हारी परवाह करते हैं और इस यात्रा में तुम्हारे साथ चलना चाहते हैं।
 
 हम जल्द ही तुमसे संपर्क करेंगे। तब तक याद रखो: तुम जितना सोच सकते हो उससे कहीं अधिक प्रेम किए जाते हो।`,
-    closing: 'स्नेह से,\nGood News टीम'
+    closing: 'स्नेह से,\nGood News टीम',
+    unsubscribe: 'अगर तुम हमसे और संदेश नहीं चाहते, तो बस इस ईमेल का जवाब "सदस्यता रद्द करें" लिखकर दो और हम तुम्हारी जानकारी तुरंत हटा देंगे।'
   },
   it: {
     subject: 'Grazie — un messaggio dal team Good News',
@@ -68,7 +74,8 @@ Wir melden uns bald bei dir. Bis dahin denk daran: Du bist mehr geliebt, als du 
 Vogliamo che tu sappia che non sei solo/a. Ci sono persone a cui stai a cuore e che vorrebbero camminare con te in questo percorso.
 
 Ti contatteremo presto. Nel frattempo, ricorda: sei amato/a più di quanto tu possa mai immaginare.`,
-    closing: 'Con affetto,\nIl team Good News'
+    closing: 'Con affetto,\nIl team Good News',
+    unsubscribe: 'Se non desideri più ricevere messaggi da noi, rispondi semplicemente a questa e-mail con la parola "Cancellami" e rimuoveremo immediatamente i tuoi dati.'
   },
   ja: {
     subject: 'ありがとうございます — Good Newsチームからのメッセージ',
@@ -78,7 +85,8 @@ Ti contatteremo presto. Nel frattempo, ricorda: sei amato/a più di quanto tu po
 あなたは一人ではないことを知ってください。あなたを大切に思い、この道を一緒に歩みたいと願う人たちがいます。
 
 近いうちにご連絡いたします。それまで覚えていてください：あなたは想像以上に愛されています。`,
-    closing: '心を込めて、\nGood Newsチーム'
+    closing: '心を込めて、\nGood Newsチーム',
+    unsubscribe: '今後メッセージの受信を希望されない場合は、このメールに「配信停止」と返信してください。すぐにあなたの情報を削除いたします。'
   },
   ko: {
     subject: '감사합니다 — Good News 팀의 메시지',
@@ -88,7 +96,8 @@ Ti contatteremo presto. Nel frattempo, ricorda: sei amato/a più di quanto tu po
 당신은 혼자가 아니라는 것을 알아주세요. 당신을 소중히 여기며 이 여정을 함께 걷고 싶어하는 사람들이 있습니다.
 
 곧 연락드리겠습니다. 그때까지 기억해 주세요: 당신은 상상할 수 있는 것보다 훨씬 더 사랑받고 있습니다.`,
-    closing: '따뜻한 마음을 담아,\nGood News 팀'
+    closing: '따뜻한 마음을 담아,\nGood News 팀',
+    unsubscribe: '더 이상 메시지를 받고 싶지 않으시면 이 이메일에 "구독 취소"라고 답장해 주세요. 즉시 정보를 삭제하겠습니다.'
   },
   zh: {
     subject: '谢谢你 — 来自 Good News 团队的一封信',
@@ -98,7 +107,8 @@ Ti contatteremo presto. Nel frattempo, ricorda: sei amato/a più di quanto tu po
 我们希望你知道：你并不孤单。有人在乎你，有人愿意陪你走这段路。
 
 我们很快会与你联系。在此之前，请记住：你被爱的程度，远超你的想象。`,
-    closing: '温暖地，\nGood News 团队'
+    closing: '温暖地，\nGood News 团队',
+    unsubscribe: '如果你不再希望收到我们的消息，只需回复此邮件并写上"取消订阅"，我们会立即删除你的信息。'
   },
   pt: {
     subject: 'Obrigado — uma mensagem da equipe Good News',
@@ -108,7 +118,8 @@ Ti contatteremo presto. Nel frattempo, ricorda: sei amato/a più di quanto tu po
 Queremos que você saiba que não está sozinho(a). Existem pessoas que se importam com você e que gostariam de caminhar junto com você nessa jornada.
 
 Entraremos em contato em breve. Até lá, lembre-se: você é amado(a) mais do que jamais poderia imaginar.`,
-    closing: 'Com carinho,\nA equipe Good News'
+    closing: 'Com carinho,\nA equipe Good News',
+    unsubscribe: 'Se não deseja mais receber mensagens nossas, basta responder a este e-mail com a palavra "Cancelar" e removeremos seus dados imediatamente.'
   },
   ru: {
     subject: 'Спасибо — сообщение от команды Good News',
@@ -118,7 +129,8 @@ Entraremos em contato em breve. Até lá, lembre-se: você é amado(a) mais do q
 Мы хотим, чтобы ты знал: ты не один. Есть люди, которым ты не безразличен, и которые хотели бы пройти этот путь вместе с тобой.
 
 Мы скоро свяжемся с тобой. А пока помни: ты любим больше, чем можешь себе представить.`,
-    closing: 'С теплом,\nКоманда Good News'
+    closing: 'С теплом,\nКоманда Good News',
+    unsubscribe: 'Если ты больше не хочешь получать от нас сообщения, просто ответь на это письмо словом «Отписаться», и мы немедленно удалим твои данные.'
   },
   es: {
     subject: 'Gracias — un mensaje del equipo Good News',
@@ -128,7 +140,8 @@ Entraremos em contato em breve. Até lá, lembre-se: você é amado(a) mais do q
 Queremos que sepas que no estás solo/a. Hay personas que se preocupan por ti y que quieren caminar contigo en este camino.
 
 Nos pondremos en contacto pronto. Hasta entonces, recuerda: eres amado/a más de lo que jamás podrías imaginar.`,
-    closing: 'Con cariño,\nEl equipo Good News'
+    closing: 'Con cariño,\nEl equipo Good News',
+    unsubscribe: 'Si ya no deseas recibir mensajes de nuestra parte, simplemente responde a este correo con la palabra "Cancelar suscripción" y eliminaremos tus datos de inmediato.'
   },
   sw: {
     subject: 'Asante — ujumbe kutoka kwa timu ya Good News',
@@ -138,7 +151,8 @@ Nos pondremos en contacto pronto. Hasta entonces, recuerda: eres amado/a más de
 Tunataka ujue kwamba huko peke yako. Kuna watu wanaokujali na ambao wangependa kutembea nawe katika safari hii.
 
 Tutawasiliana nawe hivi karibuni. Hadi wakati huo, kumbuka: unapendwa zaidi kuliko unavyoweza kuwazia.`,
-    closing: 'Kwa joto,\nTimu ya Good News'
+    closing: 'Kwa joto,\nTimu ya Good News',
+    unsubscribe: 'Ikiwa hutaki tena kupokea ujumbe kutoka kwetu, jibu tu barua pepe hii na neno "Jiondoe" na tutaondoa maelezo yako mara moja.'
   }
 };
 
@@ -169,8 +183,13 @@ function buildWelcomeEmail(name, lang) {
       ${bodyHtml}
       <p style="margin:24px 0 0 0;color:#6b7a8d;">${closingHtml}</p>
     </div>
-    <div style="padding:20px 36px;background:#f0f4f8;text-align:center;">
+    <div style="padding:24px 36px 16px;text-align:${align};">
+      <p style="margin:0;font-size:12px;color:#9ba8b5;line-height:1.6;">${w.unsubscribe || WELCOME.en.unsubscribe}</p>
+    </div>
+    <div style="padding:12px 36px 20px;background:#f0f4f8;text-align:center;">
       <a href="https://qr-gospel.com" style="color:#1e3a5f;font-size:13px;text-decoration:none;">qr-gospel.com</a>
+      <span style="color:#ccc;margin:0 8px;">·</span>
+      <a href="https://qr-gospel.com/privacy?lang=${lang || 'en'}" style="color:#9ba8b5;font-size:12px;text-decoration:none;">Privacy</a>
     </div>
   </div>
 </body>
@@ -186,7 +205,7 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { name, email, phone, lang, issue } = req.body;
+  const { name, email, phone, lang, issue, consentedAt } = req.body;
 
   if (!name && !email) {
     return res.status(400).json({ error: 'Name or email required' });
@@ -224,6 +243,7 @@ export default async function handler(req, res) {
             <tr><td style="padding:8px;font-weight:bold;">Phone</td><td style="padding:8px;">${phone || '—'}</td></tr>
             <tr><td style="padding:8px;font-weight:bold;">Language</td><td style="padding:8px;">${lang || '—'}</td></tr>
             <tr><td style="padding:8px;font-weight:bold;">Issue</td><td style="padding:8px;">${issue || '—'}</td></tr>
+            <tr><td style="padding:8px;font-weight:bold;">Consent</td><td style="padding:8px;">✅ Given at ${consentedAt || new Date().toISOString()}</td></tr>
           </table>
         `
       })
