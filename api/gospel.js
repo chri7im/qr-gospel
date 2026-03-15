@@ -75,13 +75,17 @@ export default async function handler(req, res) {
 
   // Construct the prompt server-side
   const userPrompt =
-    `My friend ${localName} is suffering from severe ${cleanIssue}. ` +
+    `My friend ${localName} is suffering from: "${cleanIssue}". ` +
     `Please explain the FULL gospel to him BIBLICALLY, just like Tim Keller would, ` +
-    `and explain how the gospel is the ONLY REAL FULL CURE for his ${cleanIssue}. ` +
+    `and explain how the gospel is the ONLY REAL FULL CURE for his issue. ` +
     `The response should begin with "There is a story so ancient, it is part of our DNA. ` +
-    `That story explains the root cause of your ${cleanIssue}." and then continue from there. ` +
+    `That story explains the root cause of your [issue]." and then continue from there. ` +
     `Do not mention ${localName}'s name anywhere in the text. ` +
-    `Write entirely in ${langName}.`;
+    `Write entirely in ${langName}.\n\n` +
+    `IMPORTANT: On the very FIRST line of your response, write ONLY the single noun or short noun phrase ` +
+    `(in ${langName}) that best names this person's issue — e.g. if they said "I am tired" write "tiredness", ` +
+    `if they said "Ich bin muede" write "Müdigkeit". Just the noun, nothing else. ` +
+    `Then leave one blank line, then write the full gospel text.`;
 
   try {
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -106,7 +110,20 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json();
-    return res.status(200).json({ text: data.choices[0].message.content.trim() });
+    const raw = data.choices[0].message.content.trim();
+    // First line = cleaned issue noun, then blank line, then gospel text
+    const nlIdx = raw.indexOf('\n');
+    let cleanedIssue = cleanIssue;
+    let gospelText = raw;
+    if (nlIdx !== -1) {
+      const firstLine = raw.slice(0, nlIdx).trim();
+      // Only accept it as a clean issue if it's short (a noun/phrase, not a sentence)
+      if (firstLine.length > 0 && firstLine.length <= 60) {
+        cleanedIssue = firstLine;
+      }
+      gospelText = raw.slice(nlIdx).trim();
+    }
+    return res.status(200).json({ text: gospelText, cleanIssue: cleanedIssue });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }

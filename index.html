@@ -1350,9 +1350,9 @@ async function fetchGospel() {
     });
     if (!res.ok) throw new Error('API error ' + res.status);
     const data = await res.json();
-    renderGospel(data.text);
+    renderGospel(data.text, data.cleanIssue || issue);
   } catch (e) {
-    renderGospel(fallback());
+    renderGospel(fallback(), issue);
   }
 }
 
@@ -1382,19 +1382,33 @@ function renderGospelHTML(html) {
   document.getElementById('learn-btn').style.display = 'block';
 }
 
-function renderGospel(text) {
-  // API still generates the DNA opening to ground the tone, but we discard it
-  // and use our hardcoded translated version instead
-  const opening = buildOpening(L.code, issue);
-  const parts = text.trim().split(/\n\n+/);
-  // Drop the first paragraph (the API's opening sentences)
-  const body = parts.length > 1 ? parts.slice(1) : parts;
+function renderGospel(text, displayIssue) {
+  // Opening is hardcoded from our translations; strip the API's version if present
+  const opening = buildOpening(L.code, displayIssue);
+  let stripped = text.trim();
+  // Detect the DNA opening (appears in first ~300 chars in all languages)
+  const head = stripped.slice(0, 300);
+  if (head.indexOf('DNA') !== -1 || head.indexOf('ДНК') !== -1) {
+    // Strip the first two sentences (DNA sentence + root-cause sentence)
+    let dots = 0;
+    for (let i = 0; i < stripped.length && i < 500; i++) {
+      const c = stripped[i];
+      if (c === '.' || c === '。' || c === '।') {
+        dots++;
+        if (dots === 2) {
+          stripped = stripped.slice(i + 1).trim();
+          break;
+        }
+      }
+    }
+  }
+  const paragraphs = stripped.split(/\n\n+/);
 
   const d = L.dir;
   document.getElementById('gospel-opening').textContent = opening;
   document.getElementById('gospel-opening').setAttribute('dir', d);
   document.getElementById('gospel-body').innerHTML =
-    body.map(p => `<p dir="${d}">${p.trim()}</p>`).join('');
+    paragraphs.map(p => `<p dir="${d}">${p.trim()}</p>`).join('');
 
   document.getElementById('p5-loading').style.display = 'none';
   document.getElementById('gospel-wrap').style.display = 'block';
