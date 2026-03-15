@@ -599,7 +599,7 @@ body {
       <input type="tel" class="f-input f-phone" id="f-phone" autocomplete="tel"/>
       <div class="consent-row" id="consent-row">
         <input type="checkbox" id="f-consent"/>
-        <label for="f-consent" id="consent-label">I agree to be contacted by QR Gospel about faith-related topics. I can unsubscribe at any time. <a href="/privacy" id="consent-privacy-link">Privacy Policy</a></label>
+        <label for="f-consent" id="consent-label">I agree to be contacted by QR Gospel about faith-related topics. I can unsubscribe at any time.</label>
       </div>
       <div class="consent-error" id="consent-error">Please check the box above before submitting.</div>
       <button class="primary-btn" id="p6-cta" onclick="submitContact()">Submit</button>
@@ -1379,7 +1379,7 @@ function fillP6() {
   // Consent checkbox
   const consentLabel = document.getElementById('consent-label');
   const privacyLinkText = L.privacyLink || 'Privacy Policy';
-  consentLabel.innerHTML = L.consentLabel + ' <a href="/privacy?lang=' + L.code + '" id="consent-privacy-link">' + privacyLinkText + '</a>';
+  consentLabel.textContent = L.consentLabel;
   consentLabel.setAttribute('dir', L.dir);
   document.getElementById('consent-error').textContent = L.consentError;
   document.getElementById('consent-error').setAttribute('dir', L.dir);
