@@ -23,6 +23,9 @@ const TEMPLATE = {
   t6: 'Would you like to learn more?', s6: "Leave your details and we'll be in touch.",
   ln: 'Name', le: 'Email', lp: 'Phone (optional)',
   sb: 'Submit', sk: "No thanks, I'm good",
+  consentLabel: 'I agree to be contacted by QR Gospel about faith-related topics. I can unsubscribe at any time.',
+  consentError: 'Please check the box above before submitting.',
+  privacyLink: 'Privacy Policy',
   tyT: 'Thank you!', tyS: "We'll be in touch soon.", tySkip: 'May you find peace.',
   pn: 'Paul', dir: 'ltr'
 };
@@ -49,6 +52,25 @@ const BRANCH = 'master';
 
 // In-flight translations — prevents stampede (multiple concurrent requests for same lang)
 const inFlight = new Map();
+
+// Per-IP rate limiter (max 6 translations per 10 min). Translation is expensive — an OpenAI
+// call plus a GitHub commit — so guard against abuse across the ~180 valid ISO codes.
+const rateMap = new Map();
+function rateLimit(ip) {
+  const now = Date.now();
+  const windowMs = 10 * 60 * 1000;
+  const max = 6;
+  const recent = (rateMap.get(ip) || []).filter(t => now - t < windowMs);
+  if (recent.length >= max) return false;
+  recent.push(now);
+  rateMap.set(ip, recent);
+  if (rateMap.size > 10000) {
+    for (const [k, v] of rateMap) {
+      if (v.every(t => now - t > windowMs)) rateMap.delete(k);
+    }
+  }
+  return true;
+}
 
 async function commitToGitHub(path, content, message) {
   const token = process.env.GITHUB_TOKEN;
@@ -86,6 +108,7 @@ async function translateLang(lang) {
     body: JSON.stringify({
       model: 'gpt-4o',
       max_tokens: 2000,
+      response_format: { type: 'json_object' },
       messages: [
         { role: 'system', content: SYSTEM },
         { role: 'user', content: `Translate this JSON into the language with code "${lang}":\n\n${JSON.stringify(TEMPLATE)}` }
@@ -96,7 +119,9 @@ async function translateLang(lang) {
   if (!response.ok) throw new Error('OpenAI API error: ' + response.status);
 
   const data = await response.json();
-  const translated = JSON.parse(data.choices[0].message.content.trim());
+  // Defensive: strip any markdown code fences before parsing
+  const content = data.choices[0].message.content.trim().replace(/^```(?:json)?\s*|\s*```$/g, '');
+  const translated = JSON.parse(content);
 
   if (!translated.iss || !Array.isArray(translated.iss) || translated.iss.length !== 14) {
     throw new Error('Invalid translation structure');
@@ -113,7 +138,12 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { lang } = req.body;
+  const ip = req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || 'unknown';
+  if (!rateLimit(ip)) {
+    return res.status(429).json({ error: 'Too many requests. Please wait a moment.' });
+  }
+
+  const { lang } = req.body || {};
 
   // Validate: must be a real ISO 639-1 code and not already built-in
   if (!lang || typeof lang !== 'string' || !/^[a-z]{2,3}$/.test(lang)) {
@@ -163,7 +193,8 @@ export default async function handler(req, res) {
     ).catch(() => {});
 
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error('Translate error:', err);
+    res.status(500).json({ error: 'Translation failed' });
   } finally {
     // Clean up after a delay (keep the result cached for 60s for any stragglers)
     setTimeout(() => inFlight.delete(lang), 60000);

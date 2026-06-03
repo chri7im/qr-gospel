@@ -2,17 +2,23 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
 <title>Good News</title>
+<meta name="description" content="Love, hope, and purpose — a free message for you, in your language. Choose what weighs on you most and read a few words of good news.">
 <link rel="icon" type="image/svg+xml" href="/public/favicon.svg">
 <meta property="og:title" content="Good News">
 <meta property="og:description" content="Love, Hope, Purpose — a message for you.">
 <meta property="og:image" content="https://qr-gospel.com/public/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Good News — Love, Hope, Purpose">
+<meta property="og:site_name" content="QR Gospel">
 <meta property="og:url" content="https://qr-gospel.com">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after {
@@ -506,7 +512,7 @@ body {
       <div class="p1-fade-bottom"></div>
     </div>
     <div class="p1-footer">
-      <button class="arrow-btn" id="arrow-btn" onclick="goTo('page2')">
+      <button class="arrow-btn" id="arrow-btn" type="button" aria-label="Continue" onclick="goTo('page2')">
         <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="9 18 15 12 9 6"/>
         </svg>
@@ -516,7 +522,7 @@ body {
 
   <!-- ══════════ PAGE 2: ABOUT US ══════════ -->
   <div id="page2" class="page">
-    <button class="back-btn dark" onclick="goTo('page1')">
+    <button class="back-btn dark" type="button" aria-label="Go back" onclick="goTo('page1')">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(26,35,50,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="15 18 9 12 15 6"/>
       </svg>
@@ -534,7 +540,7 @@ body {
 
   <!-- ══════════ PAGE 3: ISSUE SELECTOR ══════════ -->
   <div id="page3" class="page">
-    <button class="back-btn dark" onclick="goTo('page2')">
+    <button class="back-btn dark" type="button" aria-label="Go back" onclick="goTo('page2')">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(26,35,50,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="15 18 9 12 15 6"/>
       </svg>
@@ -547,20 +553,20 @@ body {
 
   <!-- ══════════ PAGE 4: OTHER INPUT ══════════ -->
   <div id="page4" class="page">
-    <button class="back-btn dark" onclick="goTo('page3')">
+    <button class="back-btn dark" type="button" aria-label="Go back" onclick="goTo('page3')">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(26,35,50,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="15 18 9 12 15 6"/>
       </svg>
     </button>
     <h2 class="p4-title" id="p4-title">What weighs on your heart?</h2>
     <p class="p4-sub" id="p4-sub">Describe in your own words.</p>
-    <textarea class="p4-textarea" id="p4-input" rows="5"></textarea>
+    <textarea class="p4-textarea" id="p4-input" rows="5" maxlength="200"></textarea>
     <button class="primary-btn" id="p4-cta" onclick="submitOther()"></button>
   </div>
 
   <!-- ══════════ PAGE 5: GOSPEL ══════════ -->
   <div id="page5" class="page">
-    <button class="back-btn dark" id="p5-back" onclick="goTo('page3')">
+    <button class="back-btn dark" id="p5-back" type="button" aria-label="Go back" onclick="goTo('page3')">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(26,35,50,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="15 18 9 12 15 6"/>
       </svg>
@@ -583,7 +589,7 @@ body {
 
   <!-- ══════════ PAGE 6: CONTACT ══════════ -->
   <div id="page6" class="page">
-    <button class="back-btn dark" onclick="goTo('page5')">
+    <button class="back-btn dark" type="button" aria-label="Go back" onclick="goTo('page5')">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(26,35,50,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="15 18 9 12 15 6"/>
       </svg>
@@ -591,18 +597,19 @@ body {
     <div id="p6-form">
       <h2 class="p6-title" id="p6-title">Would you like to learn more?</h2>
       <p class="p6-sub" id="p6-sub">Leave your details and we'll be in touch.</p>
-      <label class="f-label" id="lbl-name">Name</label>
-      <input type="text" class="f-input" id="f-name" autocomplete="name"/>
-      <label class="f-label" id="lbl-email">Email</label>
-      <input type="email" class="f-input" id="f-email" autocomplete="email"/>
-      <label class="f-label" id="lbl-phone">Phone (optional)</label>
-      <input type="tel" class="f-input f-phone" id="f-phone" autocomplete="tel"/>
+      <label class="f-label" id="lbl-name" for="f-name">Name</label>
+      <input type="text" class="f-input" id="f-name" maxlength="100" autocomplete="name"/>
+      <label class="f-label" id="lbl-email" for="f-email">Email</label>
+      <input type="email" class="f-input" id="f-email" maxlength="200" autocomplete="email" inputmode="email"/>
+      <label class="f-label" id="lbl-phone" for="f-phone">Phone (optional)</label>
+      <input type="tel" class="f-input f-phone" id="f-phone" maxlength="40" autocomplete="tel"/>
       <div class="consent-row" id="consent-row">
         <input type="checkbox" id="f-consent"/>
         <label for="f-consent" id="consent-label">I agree to be contacted by QR Gospel about faith-related topics. I can unsubscribe at any time.</label>
       </div>
       <div class="consent-error" id="consent-error">Please check the box above before submitting.</div>
-      <button class="primary-btn" id="p6-cta" onclick="submitContact()">Submit</button>
+      <div class="consent-error" id="form-error">Please enter your name or email.</div>
+      <button class="primary-btn" id="p6-cta" type="button" onclick="submitContact()">Submit</button>
       <div class="skip-link" id="skip-link" onclick="showTY(true)"></div>
       <div class="p6-footer"><a href="/privacy" id="p6-privacy-link">Privacy Policy</a></div>
     </div>
@@ -943,6 +950,24 @@ const ISSUE_KEYS = [
   'bitterness','emptiness'
 ];
 
+// "Name or email required" message, per built-in language code (dynamic languages fall back to en)
+const FORM_ERR = {
+  ar:'يرجى إدخال اسمك أو بريدك الإلكتروني.',
+  en:'Please enter your name or email.',
+  fa:'لطفاً نام یا ایمیلت را وارد کن.',
+  fr:'Merci d’entrer ton nom ou ton e-mail.',
+  de:'Bitte gib deinen Namen oder deine E-Mail ein.',
+  hi:'कृपया अपना नाम या ईमेल दर्ज करें।',
+  it:'Inserisci il tuo nome o la tua email.',
+  ja:'お名前またはメールアドレスを入力してください。',
+  ko:'이름 또는 이메일을 입력해 주세요.',
+  zh:'请输入你的姓名或电子邮件。',
+  pt:'Indica o teu nome ou e-mail.',
+  ru:'Пожалуйста, укажи имя или эл. почту.',
+  es:'Por favor, introduce tu nombre o correo.',
+  sw:'Tafadhali weka jina au barua pepe yako.'
+};
+
 // ═══════════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════════
@@ -1065,6 +1090,9 @@ function buildLangEntry(code, t) {
     ln: t.ln, le: t.le, lp: t.lp,
     sb: t.sb, sk: t.sk,
     tyT: t.tyT, tyS: t.tyS, tySkip: t.tySkip,
+    consentLabel: t.consentLabel || LANGS[1].consentLabel,
+    consentError: t.consentError || LANGS[1].consentError,
+    privacyLink: t.privacyLink || LANGS[1].privacyLink,
     pn: t.pn || 'Paul', lng: enName
   };
 }
@@ -1379,12 +1407,17 @@ function fillP6() {
   // Consent checkbox
   const consentLabel = document.getElementById('consent-label');
   const privacyLinkText = L.privacyLink || 'Privacy Policy';
-  consentLabel.textContent = L.consentLabel;
+  consentLabel.textContent = L.consentLabel || LANGS[1].consentLabel;
   consentLabel.setAttribute('dir', L.dir);
-  document.getElementById('consent-error').textContent = L.consentError;
-  document.getElementById('consent-error').setAttribute('dir', L.dir);
+  const consentErrEl = document.getElementById('consent-error');
+  consentErrEl.textContent = L.consentError || LANGS[1].consentError;
+  consentErrEl.setAttribute('dir', L.dir);
   document.getElementById('f-consent').checked = false;
-  document.getElementById('consent-error').style.display = 'none';
+  consentErrEl.style.display = 'none';
+  const formErrEl = document.getElementById('form-error');
+  formErrEl.textContent = FORM_ERR[L.code] || FORM_ERR.en;
+  formErrEl.setAttribute('dir', L.dir);
+  formErrEl.style.display = 'none';
   // Privacy footer
   const footerLink = document.getElementById('p6-privacy-link');
   footerLink.textContent = privacyLinkText;
@@ -1514,8 +1547,14 @@ function renderGospel(text, displayIssue) {
   const d = L.dir;
   document.getElementById('gospel-opening').textContent = opening;
   document.getElementById('gospel-opening').setAttribute('dir', d);
-  document.getElementById('gospel-body').innerHTML =
-    paragraphs.map(p => `<p dir="${d}">${p.trim()}</p>`).join('');
+  const bodyEl = document.getElementById('gospel-body');
+  bodyEl.innerHTML = '';
+  paragraphs.forEach(p => {
+    const el = document.createElement('p');
+    el.setAttribute('dir', d);
+    el.textContent = p.trim();
+    bodyEl.appendChild(el);
+  });
 
   document.getElementById('p5-loading').style.display = 'none';
   document.getElementById('gospel-wrap').style.display = 'block';
@@ -1540,7 +1579,14 @@ function submitContact() {
   const email = document.getElementById('f-email').value.trim();
   const phone = document.getElementById('f-phone').value.trim();
 
-  if (!name && !email) return; // require at least one
+  // Require at least one of name/email — show a gentle inline error rather than failing silently
+  const formErr = document.getElementById('form-error');
+  if (!name && !email) {
+    formErr.style.display = 'block';
+    document.getElementById('f-name').focus();
+    return;
+  }
+  formErr.style.display = 'none';
 
   // Check consent
   const consentBox = document.getElementById('f-consent');

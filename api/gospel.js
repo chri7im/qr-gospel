@@ -105,8 +105,9 @@ export default async function handler(req, res) {
     });
 
     if (!response.ok) {
-      const err = await response.text();
-      return res.status(response.status).json({ error: err });
+      const detail = await response.text();
+      console.error('OpenAI gospel error:', response.status, detail);
+      return res.status(502).json({ error: 'Upstream service error' });
     }
 
     const data = await response.json();
@@ -125,6 +126,7 @@ export default async function handler(req, res) {
     }
     return res.status(200).json({ text: gospelText, cleanIssue: cleanedIssue });
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    console.error('Gospel handler error:', err);
+    return res.status(500).json({ error: 'Something went wrong. Please try again.' });
   }
 }

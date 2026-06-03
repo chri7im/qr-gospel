@@ -156,6 +156,36 @@ Tutawasiliana nawe hivi karibuni. Hadi wakati huo, kumbuka: unapendwa zaidi kuli
   }
 };
 
+// Escape user-supplied text before inserting it into email HTML (prevents HTML/markup injection).
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// Per-IP rate limiter (max 5 submissions per 10 min per IP) to prevent spam / email-bombing.
+// In-memory and per-instance — adequate for low traffic; use a shared store (e.g. Vercel KV)
+// if this ever runs across many concurrent instances.
+const rateMap = new Map();
+function rateLimit(ip) {
+  const now = Date.now();
+  const windowMs = 10 * 60 * 1000;
+  const max = 5;
+  const recent = (rateMap.get(ip) || []).filter(t => now - t < windowMs);
+  if (recent.length >= max) return false;
+  recent.push(now);
+  rateMap.set(ip, recent);
+  if (rateMap.size > 10000) {
+    for (const [k, v] of rateMap) {
+      if (v.every(t => now - t > windowMs)) rateMap.delete(k);
+    }
+  }
+  return true;
+}
+
 function buildWelcomeEmail(name, lang) {
   const w = WELCOME[lang] || WELCOME.en;
   const dir = ['ar', 'fa'].includes(lang) ? 'rtl' : 'ltr';
@@ -179,7 +209,7 @@ function buildWelcomeEmail(name, lang) {
       <h1 style="margin:0;color:#ffffff;font-size:22px;font-weight:400;letter-spacing:0.5px;">Good News</h1>
     </div>
     <div style="padding:36px;text-align:${align};color:#1a2332;font-size:16px;line-height:1.8;">
-      <p style="margin:0 0 24px 0;font-size:17px;">${w.greeting(name)}</p>
+      <p style="margin:0 0 24px 0;font-size:17px;">${w.greeting(esc(name))}</p>
       ${bodyHtml}
       <p style="margin:24px 0 0 0;color:#6b7a8d;">${closingHtml}</p>
     </div>
@@ -205,7 +235,20 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { name, email, phone, lang, issue, consentedAt } = req.body;
+  const ip = req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || 'unknown';
+  if (!rateLimit(ip)) {
+    return res.status(429).json({ error: 'Too many requests. Please wait a moment.' });
+  }
+
+  // Parse, trim and length-cap every field (defends against oversized / malformed payloads).
+  const body = req.body || {};
+  const str = (v, max) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
+  const name = str(body.name, 100);
+  const email = str(body.email, 200);
+  const phone = str(body.phone, 40);
+  const lang = str(body.lang, 10) || 'en';
+  const issue = str(body.issue, 200);
+  const consentedAt = str(body.consentedAt, 40);
 
   if (!name && !email) {
     return res.status(400).json({ error: 'Name or email required' });
@@ -219,7 +262,8 @@ export default async function handler(req, res) {
   const toEmail = process.env.CONTACT_EMAIL;
 
   if (!apiKey || !toEmail) {
-    console.log('Contact submission (Resend not configured):', { name, email, phone, lang, issue });
+    // Resend not configured — acknowledge without logging personal data.
+    console.log('Contact submission received (Resend not configured)');
     return res.status(200).json({ ok: true });
   }
 
@@ -234,16 +278,18 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         from: 'QR Gospel <noreply@qr-gospel.com>',
         to: toEmail,
+        // Let the owner reply straight to the visitor (when an email was given)
+        reply_to: email || undefined,
         subject: `New contact from QR Gospel — ${name || 'Anonymous'}`,
         html: `
           <h2>New Contact Submission</h2>
           <table style="border-collapse:collapse;font-family:sans-serif;">
-            <tr><td style="padding:8px;font-weight:bold;">Name</td><td style="padding:8px;">${name || '—'}</td></tr>
-            <tr><td style="padding:8px;font-weight:bold;">Email</td><td style="padding:8px;">${email || '—'}</td></tr>
-            <tr><td style="padding:8px;font-weight:bold;">Phone</td><td style="padding:8px;">${phone || '—'}</td></tr>
-            <tr><td style="padding:8px;font-weight:bold;">Language</td><td style="padding:8px;">${lang || '—'}</td></tr>
-            <tr><td style="padding:8px;font-weight:bold;">Issue</td><td style="padding:8px;">${issue || '—'}</td></tr>
-            <tr><td style="padding:8px;font-weight:bold;">Consent</td><td style="padding:8px;">✅ Given at ${consentedAt || new Date().toISOString()}</td></tr>
+            <tr><td style="padding:8px;font-weight:bold;">Name</td><td style="padding:8px;">${esc(name) || '—'}</td></tr>
+            <tr><td style="padding:8px;font-weight:bold;">Email</td><td style="padding:8px;">${esc(email) || '—'}</td></tr>
+            <tr><td style="padding:8px;font-weight:bold;">Phone</td><td style="padding:8px;">${esc(phone) || '—'}</td></tr>
+            <tr><td style="padding:8px;font-weight:bold;">Language</td><td style="padding:8px;">${esc(lang) || '—'}</td></tr>
+            <tr><td style="padding:8px;font-weight:bold;">Issue</td><td style="padding:8px;">${esc(issue) || '—'}</td></tr>
+            <tr><td style="padding:8px;font-weight:bold;">Consent</td><td style="padding:8px;">✅ Given at ${esc(consentedAt) || new Date().toISOString()}</td></tr>
           </table>
         `
       })
@@ -251,7 +297,7 @@ export default async function handler(req, res) {
 
     // 2. Send welcome email to visitor (if they provided an email)
     if (email) {
-      const welcome = buildWelcomeEmail(name, lang || 'en');
+      const welcome = buildWelcomeEmail(name, lang);
       await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
@@ -261,6 +307,8 @@ export default async function handler(req, res) {
         body: JSON.stringify({
           from: 'Good News <noreply@qr-gospel.com>',
           to: email,
+          // Replies (incl. "Unsubscribe") reach the monitored inbox, not the unmonitored noreply address
+          reply_to: toEmail,
           subject: welcome.subject,
           html: welcome.html
         })
@@ -269,7 +317,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ ok: true });
   } catch (err) {
-    console.error('Contact error:', err.message);
-    return res.status(500).json({ error: err.message });
+    console.error('Contact error:', err);
+    return res.status(500).json({ error: 'Failed to send message' });
   }
 }
