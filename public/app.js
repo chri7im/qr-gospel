@@ -13,6 +13,15 @@ function track(name, data) {
   try { window.va('event', { name: name, data: data }); } catch (e) {}
 }
 
+// Test hook: ?geo=DE previews the site as a visitor from that country sees it
+// (printed-Bible offer, geo language fallback). Read before the URL normalises.
+const GEO_OVERRIDE = (() => {
+  try {
+    const v = new URLSearchParams(location.search).get('geo');
+    return v ? v.toUpperCase().slice(0, 2) : '';
+  } catch (e) { return ''; }
+})();
+
 // Each step gets a virtual path so the funnel (languages, issues, conversion)
 // shows up in the analytics "Pages" breakdown. Deep links don't exist — a
 // reload on a step URL normalises back to the root before the first pageview.
@@ -478,6 +487,7 @@ function detectLangIndex() {
 // printed-Bible offer, but fetched at most once)
 let countryPromise = null;
 function getCountry() {
+  if (GEO_OVERRIDE) return Promise.resolve(GEO_OVERRIDE);
   if (!countryPromise) {
     countryPromise = fetch('/api/geo')
       .then(res => (res.ok ? res.json() : { country: '' }))
