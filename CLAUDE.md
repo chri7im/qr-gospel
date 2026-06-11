@@ -83,14 +83,19 @@ When a visitor's phone language isn't one of the 14 built-in:
 ## API security
 - **No client-side prompts** — frontend sends only `{ lang, issue }`, prompt is built server-side
 - **System prompt** constrains output to gospel content only (no recipes, code, jokes, etc.)
-- **Rate limiting** — gospel: 10/min/IP; translate: 6/10min/IP; contact: 5/10min/IP (in-memory, per instance)
-- **Input validation** — issue capped at 200 chars, language codes validated against ISO 639-1
-- Built-in languages are rejected by translate API (no wasted calls)
+- **Trustworthy client IP** — `clientIp()` in `api/_security.js` keys rate limits on Vercel's `x-real-ip` (non-spoofable), never the client-controllable leftmost `x-forwarded-for`. Do NOT revert to reading XFF's first hop — that lets one machine rotate a header and bypass every limit.
+- **Two-layer rate limiting** (`api/_security.js`, per warm instance):
+  - per-IP: gospel 10/min, translate 6/10min, contact 5/10min
+  - per-instance global circuit breaker (caps total work across all IPs, so a botnet can't multiply cost): gospel 60/min, translate 8/10min, contact 40/10min
+  - These are in-memory/per-instance. For a hard global guarantee use a shared store (Vercel KV); the global breaker bounds per-instance worst case in the meantime.
+- **Dynamic-translation allowlist** — `SUPPORTED_DYNAMIC` in `api/translate.js` is a curated set of real-world languages. We do NOT auto-translate all ~180 ISO codes: each new language is an OpenAI call + a GitHub commit + a production deploy, so the obscure long tail is an abuse vector (commit spam / deploy storms). **To enable a new language, add its ISO code to `SUPPORTED_DYNAMIC`.** Unsupported codes get a clean 400 and the visitor falls back to the English UI.
+- **Input validation** — issue capped at 200 chars; language codes must match `^[a-z]{2,3}$` and pass ISO + allowlist checks
 - **No CORS headers** — APIs are same-origin only; other origins can't read responses from a browser
-- **Consent enforced server-side** — contact API rejects submissions without a valid `consentedAt` timestamp (GDPR)
+- **Consent** — contact API requires a consent signal; the **server's** receipt time is recorded as the authoritative `consentedAt` (the client clock is untrusted; a sane client value is kept, otherwise replaced with server time)
 - **Honeypot** — hidden `hp_field` input; filled = silent drop, no email sent
-- **Welcome-email dedupe** — max one welcome email per address per 24h (anti email-bombing)
-- Upstream fetches (OpenAI, GitHub, Resend) all have abort timeouts
+- **Email anti-abuse** — welcome email max once per address per 24h; owner notification deduped on identical payload within 5 min
+- Upstream fetches (OpenAI, GitHub, Resend) have abort timeouts (≤25s) that keep functions well under their `maxDuration`
+- **Out of code's reach — set these in the dashboards:** an OpenAI usage/spend limit, Vercel Spend Management, and (if abuse appears) Vercel WAF / Attack Challenge Mode. Per-instance limits can't cap a large botnet on their own.
 
 ## i18n string sync (IMPORTANT)
 Adding a UI string = update **three places together** or dynamic languages break:

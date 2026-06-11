@@ -1,3 +1,8 @@
+import { clientIp, makeRateLimiter, makeGlobalLimiter } from './_security.js';
+
+// Cap runtime: this function calls OpenAI and commits to GitHub
+export const config = { maxDuration: 30 };
+
 const SYSTEM = `You are a professional translator. You will receive a JSON object containing UI strings for a gospel presentation website. Translate ALL values into the requested language. Return ONLY valid JSON — no markdown, no explanation, no wrapping.
 
 Rules:
@@ -56,30 +61,33 @@ const VALID_ISO = new Set([
 // Languages we already have built-in (no need to translate)
 const BUILTIN = new Set(['ar','en','fa','fr','de','hi','it','ja','ko','zh','pt','ru','es','sw']);
 
+// Languages we will auto-translate on demand. Deliberately a curated allowlist of
+// languages real phones are actually set to — NOT all ~180 ISO codes. Each new
+// language is an OpenAI call + a GitHub commit + a production deploy, so allowing
+// the obscure long tail (Church Slavonic, Cree, Ndonga…) just hands an attacker a
+// way to spam commits and trigger deploy storms. A visitor whose language isn't
+// here cleanly falls back to the English UI (the pre-existing behaviour for any
+// untranslated language).
+const SUPPORTED_DYNAMIC = new Set([
+  'nl','pl','tr','uk','ro','el','cs','hu','sv','da','fi','no','nb','nn','he','th','vi','id',
+  'ms','tl','bn','ur','pa','ta','te','mr','gu','kn','ml','si','ne','my','km','lo','ps','ku',
+  'bg','hr','sr','bs','sk','sl','lt','lv','et','sq','mk','is','ga','cy','eu','gl','ca','af',
+  'am','ha','yo','ig','zu','xh','st','sn','so','rw','lg','ka','hy','az','kk','uz','ky','tg',
+  'tk','tt','ba','mn','bo','dv','or','as'
+]);
+
 const REPO = 'chri7im/qr-gospel';
 const BRANCH = 'master';
 
 // In-flight translations — prevents stampede (multiple concurrent requests for same lang)
 const inFlight = new Map();
 
-// Per-IP rate limiter (max 6 translations per 10 min). Translation is expensive — an OpenAI
-// call plus a GitHub commit — so guard against abuse across the ~180 valid ISO codes.
-const rateMap = new Map();
-function rateLimit(ip) {
-  const now = Date.now();
-  const windowMs = 10 * 60 * 1000;
-  const max = 6;
-  const recent = (rateMap.get(ip) || []).filter(t => now - t < windowMs);
-  if (recent.length >= max) return false;
-  recent.push(now);
-  rateMap.set(ip, recent);
-  if (rateMap.size > 10000) {
-    for (const [k, v] of rateMap) {
-      if (v.every(t => now - t > windowMs)) rateMap.delete(k);
-    }
-  }
-  return true;
-}
+// Per-IP limit (6 per 10 min) plus a per-instance global breaker (8 per 10 min
+// across all IPs). Each translation is an OpenAI call + a GitHub commit + a
+// production deploy, so the global cap is the backstop against a distributed
+// attack seeding junk languages.
+const allowIp = makeRateLimiter({ windowMs: 10 * 60 * 1000, max: 6 });
+const allowGlobal = makeGlobalLimiter({ windowMs: 10 * 60 * 1000, max: 8 });
 
 async function commitToGitHub(path, content, message) {
   const token = process.env.GITHUB_TOKEN;
@@ -116,7 +124,7 @@ async function commitToGitHub(path, content, message) {
 async function translateLang(lang) {
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
-    signal: AbortSignal.timeout(45000),
+    signal: AbortSignal.timeout(25000),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
@@ -152,12 +160,6 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const fwd = String(req.headers['x-forwarded-for'] || '');
-  const ip = fwd.split(',')[0].trim() || req.headers['x-real-ip'] || 'unknown';
-  if (!rateLimit(ip)) {
-    return res.status(429).json({ error: 'Too many requests. Please wait a moment.' });
-  }
-
   const { lang } = req.body || {};
 
   // Validate: must be a real ISO 639-1 code and not already built-in
@@ -169,6 +171,16 @@ export default async function handler(req, res) {
   }
   if (BUILTIN.has(lang)) {
     return res.status(400).json({ error: 'Language already built-in' });
+  }
+  // Only auto-translate curated, real-world languages — see SUPPORTED_DYNAMIC
+  if (!SUPPORTED_DYNAMIC.has(lang)) {
+    return res.status(400).json({ error: 'Language not supported' });
+  }
+
+  // Rate-limit AFTER validation so cheap rejects (bad/obscure codes) don't consume
+  // the budget that protects the expensive OpenAI + GitHub path
+  if (!allowIp(clientIp(req)) || !allowGlobal()) {
+    return res.status(429).json({ error: 'Too many requests. Please wait a moment.' });
   }
 
   // 1. Check if already committed to GitHub (static cache)

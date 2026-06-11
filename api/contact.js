@@ -1,3 +1,8 @@
+import { clientIp, makeRateLimiter, makeGlobalLimiter } from './_security.js';
+
+// Cap runtime: this function sends up to two emails via Resend
+export const config = { maxDuration: 20 };
+
 // Visitor welcome email content per language — warm, personal, matching site tone
 const WELCOME = {
   ar: {
@@ -166,25 +171,10 @@ function esc(s) {
     .replace(/'/g, '&#39;');
 }
 
-// Per-IP rate limiter (max 5 submissions per 10 min per IP) to prevent spam / email-bombing.
-// In-memory and per-instance — adequate for low traffic; use a shared store (e.g. Vercel KV)
-// if this ever runs across many concurrent instances.
-const rateMap = new Map();
-function rateLimit(ip) {
-  const now = Date.now();
-  const windowMs = 10 * 60 * 1000;
-  const max = 5;
-  const recent = (rateMap.get(ip) || []).filter(t => now - t < windowMs);
-  if (recent.length >= max) return false;
-  recent.push(now);
-  rateMap.set(ip, recent);
-  if (rateMap.size > 10000) {
-    for (const [k, v] of rateMap) {
-      if (v.every(t => now - t > windowMs)) rateMap.delete(k);
-    }
-  }
-  return true;
-}
+// Per-IP limit (5 per 10 min) plus a per-instance global breaker (40 per 10 min
+// across all IPs) so a botnet can't flood the owner inbox or burn Resend quota.
+const allowIp = makeRateLimiter({ windowMs: 10 * 60 * 1000, max: 5 });
+const allowGlobal = makeGlobalLimiter({ windowMs: 10 * 60 * 1000, max: 40 });
 
 // One welcome email per address per 24h — keeps the form from being used to
 // bombard a victim's inbox from rotating IPs.
@@ -197,6 +187,23 @@ function welcomeAllowed(email) {
   if (sentWelcome.size > 10000) {
     for (const [k, t] of sentWelcome) {
       if (now - t > 24 * 60 * 60 * 1000) sentWelcome.delete(k);
+    }
+  }
+  return true;
+}
+
+// Drop identical owner notifications repeated within a short window (same person
+// double-tapping, or a bot replaying one payload) so the inbox isn't spammed.
+const recentOwner = new Map();
+function ownerNotifyAllowed(key) {
+  const now = Date.now();
+  const windowMs = 5 * 60 * 1000;
+  const last = recentOwner.get(key);
+  if (last && now - last < windowMs) return false;
+  recentOwner.set(key, now);
+  if (recentOwner.size > 10000) {
+    for (const [k, t] of recentOwner) {
+      if (now - t > windowMs) recentOwner.delete(k);
     }
   }
   return true;
@@ -254,9 +261,7 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const fwd = String(req.headers['x-forwarded-for'] || '');
-  const ip = fwd.split(',')[0].trim() || req.headers['x-real-ip'] || 'unknown';
-  if (!rateLimit(ip)) {
+  if (!allowIp(clientIp(req)) || !allowGlobal()) {
     return res.status(429).json({ error: 'Too many requests. Please wait a moment.' });
   }
 
@@ -269,7 +274,6 @@ export default async function handler(req, res) {
   const phone = str(body.phone, 40);
   const lang = str(body.lang, 10) || 'en';
   const issue = str(body.issue, 200);
-  const consentedAt = str(body.consentedAt, 40);
 
   // Honeypot: a hidden field humans never see. Bots that fill it get a quiet
   // "success" and no email is sent.
@@ -285,11 +289,18 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Invalid email' });
   }
 
-  // GDPR: consent must be given and demonstrable — reject submissions that
-  // bypass the consent checkbox (the form always sends a timestamp).
-  if (!consentedAt || isNaN(Date.parse(consentedAt))) {
+  // GDPR: consent must be signalled by the form (which always sends a timestamp).
+  // The client clock is untrusted — record the SERVER's receipt time as the
+  // authoritative, demonstrable consent record, accepting the client value only
+  // when it is sane (near now, not in the future).
+  const clientConsent = Date.parse(str(body.consentedAt, 40));
+  if (isNaN(clientConsent)) {
     return res.status(400).json({ error: 'Consent required' });
   }
+  const now = Date.now();
+  const consentedAt = (clientConsent <= now + 5 * 60 * 1000 && clientConsent >= now - 24 * 60 * 60 * 1000)
+    ? new Date(clientConsent).toISOString()
+    : new Date(now).toISOString();
 
   const apiKey = process.env.RESEND_API_KEY;
   const toEmail = process.env.CONTACT_EMAIL;
@@ -297,6 +308,12 @@ export default async function handler(req, res) {
   if (!apiKey || !toEmail) {
     // Resend not configured — acknowledge without logging personal data.
     console.log('Contact submission received (Resend not configured)');
+    return res.status(200).json({ ok: true });
+  }
+
+  // Drop trivial duplicate submissions (double-tap, replayed payload) within a
+  // short window so the owner inbox isn't spammed with identical messages.
+  if (!ownerNotifyAllowed(`${email}|${name}|${phone}|${issue}`)) {
     return res.status(200).json({ ok: true });
   }
 
@@ -308,7 +325,7 @@ export default async function handler(req, res) {
       `Language: ${lang}\nIssue: ${issue || '—'}\nConsent: given at ${consentedAt}`;
     const ownerRes = await fetch('https://api.resend.com/emails', {
       method: 'POST',
-      signal: AbortSignal.timeout(15000),
+      signal: AbortSignal.timeout(12000),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${apiKey}`
@@ -334,6 +351,8 @@ export default async function handler(req, res) {
       })
     });
     if (!ownerRes.ok) {
+      // Free the dedupe slot so a genuine retry isn't suppressed
+      recentOwner.delete(`${email}|${name}|${phone}|${issue}`);
       console.error('Owner notification failed:', ownerRes.status, await ownerRes.text().catch(() => ''));
       return res.status(502).json({ error: 'Failed to send message' });
     }
@@ -344,7 +363,7 @@ export default async function handler(req, res) {
       const welcome = buildWelcomeEmail(name, lang);
       const welcomeRes = await fetch('https://api.resend.com/emails', {
         method: 'POST',
-        signal: AbortSignal.timeout(15000),
+        signal: AbortSignal.timeout(12000),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${apiKey}`

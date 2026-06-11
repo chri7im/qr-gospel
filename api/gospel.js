@@ -1,3 +1,8 @@
+import { clientIp, makeRateLimiter, makeGlobalLimiter } from './_security.js';
+
+// Cap function runtime so a slow upstream can't tie up an instance or run up cost
+export const config = { maxDuration: 30 };
+
 // Allowed language codes and their display names
 const VALID_LANGS = {
   ar: 'Arabic', en: 'English', fa: 'Persian (Farsi)', fr: 'French',
@@ -25,25 +30,10 @@ STRICT RULES:
 - Write 5-6 paragraphs entirely in the requested language.
 - Address the reader in a warm register, matching this site's voice: use the informal singular "you" (du, tu, ты, تو, 你, etc.) in languages that distinguish formality — EXCEPT Hindi, which must use the respectful आप, and Japanese/Korean, which must use the standard polite forms (です/ます, 해요/합니다). Scripture quotes keep the wording of a common Bible translation in that language.`;
 
-// Simple per-IP rate limiter (max 10 requests per minute per IP)
-const rateMap = new Map();
-function rateLimit(ip) {
-  const now = Date.now();
-  const window = 60000;
-  const max = 10;
-  const entries = rateMap.get(ip) || [];
-  const recent = entries.filter(t => now - t < window);
-  if (recent.length >= max) return false;
-  recent.push(now);
-  rateMap.set(ip, recent);
-  // Clean old entries periodically
-  if (rateMap.size > 10000) {
-    for (const [k, v] of rateMap) {
-      if (v.every(t => now - t > window)) rateMap.delete(k);
-    }
-  }
-  return true;
-}
+// Per-IP limit (10/min) plus a per-instance global circuit breaker (60/min across
+// all IPs) so a botnet or IP-rotating attacker can't run up OpenAI cost without bound.
+const allowIp = makeRateLimiter({ windowMs: 60000, max: 10 });
+const allowGlobal = makeGlobalLimiter({ windowMs: 60000, max: 60 });
 
 export default async function handler(req, res) {
   // The API is only called same-origin — no CORS headers means other origins
@@ -51,9 +41,7 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const fwd = String(req.headers['x-forwarded-for'] || '');
-  const ip = fwd.split(',')[0].trim() || req.headers['x-real-ip'] || 'unknown';
-  if (!rateLimit(ip)) {
+  if (!allowIp(clientIp(req)) || !allowGlobal()) {
     return res.status(429).json({ error: 'Too many requests. Please wait a moment.' });
   }
 
@@ -90,7 +78,7 @@ export default async function handler(req, res) {
   try {
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
-      signal: AbortSignal.timeout(45000),
+      signal: AbortSignal.timeout(25000),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
