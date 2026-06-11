@@ -98,6 +98,16 @@ Adding a UI string = update **three places together** or dynamic languages break
 2. `TEMPLATE` in api/translate.js (so new dynamic languages get it translated)
 3. `buildLangEntry()` in public/app.js (with an English fallback for older cached ui.json)
 
+## Analytics (Vercel Web Analytics — anonymous, cookie-free)
+- Dashboard: Vercel project → Analytics tab. No consent banner needed; already disclosed in the privacy policy ("anonymous and cookie-free visit statistics").
+- **Visitors/pageviews**: tracked since the script was added.
+- **Funnel, languages, issues**: every step pushes a virtual path via the History API; the analytics script counts these as pageviews → visible in the "Pages" panel:
+  - `/s/{lang}/about` → `/s/{lang}/issues` → `/s/{lang}/write` (custom input) → `/s/{lang}/gospel/{issueKey|custom}` → `/s/{lang}/contact` → `/s/{lang}/thanks` or `/s/{lang}/skipped`
+  - Filter by `/s/de/` for one language, by `gospel/` for issue distribution, by step name for the funnel.
+- **Custom events** (`language_selected`, `issue_selected`, `learn_more`, `contact_submitted`, `contact_skipped`, `shared`) are also fired via `va('event', …)` — they appear only on Vercel plans with custom-events support (Pro+); on Hobby they are silently dropped. Funnel events fire once per session per step (revisits don't inflate).
+- **PRIVACY RULE**: never track free text, names, emails or phone numbers. Custom issues are tracked as `custom`, never the typed text.
+- Side effect: the browser back button / swipe gesture navigates the flow (popstate handler) instead of leaving the site. Step URLs normalise back to `/` on reload; `/s/` is disallowed in robots.txt.
+
 ## Contact form emails
 - **Owner notification**: HTML table (plus plain-text part) with name, email, phone, language, issue, consent timestamp. If this send fails the API returns 502 and logs — it's the only persistence of the submission.
 - **Visitor welcome email**: Warm, personal, localized in all 14 languages. Stored in `api/contact.js` (not AI-generated). Navy blue header, serif body, RTL support for Arabic/Farsi, unsubscribe line, privacy link, plain-text alternative.

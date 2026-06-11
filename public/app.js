@@ -1,5 +1,26 @@
 'use strict';
 // ═══════════════════════════════════════════════════════
+// ANALYTICS (Vercel Web Analytics — anonymous, cookie-free)
+// ═══════════════════════════════════════════════════════
+// Queue stub so events fired before the insights script loads are kept.
+// This file runs first (both scripts are deferred, in document order).
+window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+
+// Custom events (visible on plans with custom-events support; harmless otherwise).
+// PRIVACY: only language codes, preset issue keys and step names — free-text
+// issues are reported as "custom", personal data is never tracked.
+function track(name, data) {
+  try { window.va('event', { name: name, data: data }); } catch (e) {}
+}
+
+// Each step gets a virtual path so the funnel (languages, issues, conversion)
+// shows up in the analytics "Pages" breakdown. Deep links don't exist — a
+// reload on a step URL normalises back to the root before the first pageview.
+try {
+  history.replaceState({ page: 'page1' }, '', '/');
+} catch (e) {}
+
+// ═══════════════════════════════════════════════════════
 // LANGUAGE DATA
 // ═══════════════════════════════════════════════════════
 const LANGS = [
@@ -726,7 +747,24 @@ function buildLangEntry(code, t) {
 // ═══════════════════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════════════════
-function goTo(pageId) {
+// Virtual analytics path for a page, e.g. /s/de/gospel/anxiety
+function stepPath(pageId) {
+  const lang = L.code;
+  switch (pageId) {
+    case 'page2': return `/s/${lang}/about`;
+    case 'page3': return `/s/${lang}/issues`;
+    case 'page4': return `/s/${lang}/write`;
+    case 'page5': return `/s/${lang}/gospel/${(!fromOther && issueKey) ? issueKey : 'custom'}`;
+    case 'page6': return `/s/${lang}/contact`;
+    default: return '/';
+  }
+}
+
+// First forward arrival per step fires one funnel event (revisits via the
+// back button or in-app back navigation don't inflate the numbers)
+const visitedSteps = new Set();
+
+function goTo(pageId, fromHistory) {
   if (pageId === cur) return;
   const prev = document.getElementById(cur);
   const next = document.getElementById(pageId);
@@ -740,6 +778,18 @@ function goTo(pageId) {
   next.classList.remove('exit');
   next.classList.add('active');
   cur = pageId;
+
+  // Record the step: the analytics script counts history navigations as
+  // pageviews, and the browser back button now walks the flow instead of
+  // leaving the site
+  if (!fromHistory) {
+    try { history.pushState({ page: pageId }, '', stepPath(pageId)); } catch (e) {}
+    if (!visitedSteps.has(pageId)) {
+      visitedSteps.add(pageId);
+      if (pageId === 'page2') track('language_selected', { lang: L.code });
+      if (pageId === 'page6') track('learn_more', { lang: L.code });
+    }
+  }
 
   // Apply RTL/LTR
   document.documentElement.setAttribute('dir', L.dir);
@@ -759,6 +809,12 @@ function goTo(pageId) {
   const target = next.querySelector('.pg-focus');
   if (target) requestAnimationFrame(() => target.focus({ preventScroll: true }));
 }
+
+// Browser back/forward (incl. swipe gestures) moves through the visited steps
+window.addEventListener('popstate', (e) => {
+  const target = (e.state && e.state.page) || 'page1';
+  if (target !== cur) goTo(target, true);
+});
 
 // ═══════════════════════════════════════════════════════
 // PAGE FILLERS
@@ -890,6 +946,7 @@ function pickIssue(iss, idx) {
   issue = iss;
   issueKey = ISSUE_KEYS[idx] || '';
   fromOther = false;
+  track('issue_selected', { lang: L.code, issue: issueKey || 'custom' });
   fillP5Header(true);
   goTo('page5');
   fetchGospel(++gospelSeq);
@@ -900,6 +957,8 @@ function submitOther() {
   if (!val) return;
   issue = val;
   fromOther = true;
+  // PRIVACY: the typed text itself is never tracked
+  track('issue_selected', { lang: L.code, issue: 'custom' });
   fillP5Header(true);
   goTo('page5');
   fetchGospel(++gospelSeq);
@@ -1105,6 +1164,8 @@ function submitContact() {
   }).catch(() => {});
 
   contactSent = true;
+  track('contact_submitted', { lang: L.code, issue: (!fromOther && issueKey) ? issueKey : 'custom' });
+  try { history.pushState({ page: 'page6' }, '', `/s/${L.code}/thanks`); } catch (e) {}
   showTY(false);
 }
 
@@ -1126,6 +1187,7 @@ function showTY(skipped) {
 }
 
 function shareLink() {
+  track('shared', { lang: L.code });
   navigator.share({
     title: 'Good News',
     text: L.body,
@@ -1144,7 +1206,11 @@ document.addEventListener("click", (e) => {
   const a = act.getAttribute("data-action");
   if (a === "submitOther") submitOther();
   else if (a === "shareLink") shareLink();
-  else if (a === "skip") showTY(true);
+  else if (a === "skip") {
+    track('contact_skipped', { lang: L.code });
+    try { history.pushState({ page: 'page6' }, '', `/s/${L.code}/skipped`); } catch (e) {}
+    showTY(true);
+  }
 });
 
 // Real form semantics: native submit (Enter in a field, the submit button, the
