@@ -47,7 +47,8 @@ const LANGS = [
     emailErr:'يرجى التحقق من بريدك الإلكتروني.',
     share:'شارك مع صديق', aBack:'رجوع', aNext:'متابعة',
     bibleBtn:'اقرأ الكتاب المقدس مجاناً',
-    printedBtn:'اطلب نسخة مطبوعة مجانية من الكتاب المقدس'
+    printedBtn:'اطلب نسخة مطبوعة مجانية من الكتاب المقدس',
+    supportLink:'ادعم هذا المشروع'
   },
   {
     code:'en', name:'English', en:'English', dir:'ltr',
@@ -72,7 +73,8 @@ const LANGS = [
     emailErr:'Please check your email address.',
     share:'Share with a friend', aBack:'Go back', aNext:'Continue',
     bibleBtn:'Read the Bible for free',
-    printedBtn:'Order a free printed Bible'
+    printedBtn:'Order a free printed Bible',
+    supportLink:'Support this project'
   },
   {
     code:'fa', name:'فارسی', en:'Farsi', dir:'rtl',
@@ -97,7 +99,8 @@ const LANGS = [
     emailErr:'لطفاً ایمیلت را بررسی کن.',
     share:'با یک دوست به اشتراک بگذار', aBack:'بازگشت', aNext:'ادامه',
     bibleBtn:'کتاب مقدس را رایگان بخوان',
-    printedBtn:'یک نسخه چاپی رایگان کتاب مقدس سفارش بده'
+    printedBtn:'یک نسخه چاپی رایگان کتاب مقدس سفارش بده',
+    supportLink:'از این پروژه حمایت کن'
   },
   {
     code:'fr', name:'Français', en:'French', dir:'ltr',
@@ -122,7 +125,8 @@ const LANGS = [
     emailErr:'Vérifie ton adresse e-mail.',
     share:'Partage avec un ami', aBack:'Retour', aNext:'Continuer',
     bibleBtn:'Lis la Bible gratuitement',
-    printedBtn:'Commande une Bible imprimée gratuite'
+    printedBtn:'Commande une Bible imprimée gratuite',
+    supportLink:'Soutiens ce projet'
   },
   {
     code:'de', name:'Deutsch', en:'German', dir:'ltr',
@@ -147,7 +151,8 @@ const LANGS = [
     emailErr:'Bitte überprüfe deine E-Mail-Adresse.',
     share:'Teile es mit einem Freund', aBack:'Zurück', aNext:'Weiter',
     bibleBtn:'Lies die Bibel kostenlos',
-    printedBtn:'Bestelle eine kostenlose gedruckte Bibel'
+    printedBtn:'Bestelle eine kostenlose gedruckte Bibel',
+    supportLink:'Unterstütze dieses Projekt'
   },
   {
     code:'hi', name:'हिन्दी', en:'Hindi', dir:'ltr',
@@ -172,7 +177,8 @@ const LANGS = [
     emailErr:'कृपया अपना ईमेल जांचें।',
     share:'एक दोस्त के साथ साझा करें', aBack:'वापस', aNext:'जारी रखें',
     bibleBtn:'बाइबल मुफ़्त में पढ़ें',
-    printedBtn:'मुफ़्त छपी हुई बाइबल मंगवाएं'
+    printedBtn:'मुफ़्त छपी हुई बाइबल मंगवाएं',
+    supportLink:'इस परियोजना का समर्थन करें'
   },
   {
     code:'it', name:'Italiano', en:'Italian', dir:'ltr',
@@ -197,7 +203,8 @@ const LANGS = [
     emailErr:'Controlla il tuo indirizzo email.',
     share:'Condividi con un amico', aBack:'Indietro', aNext:'Continua',
     bibleBtn:'Leggi la Bibbia gratuitamente',
-    printedBtn:'Ordina una Bibbia stampata gratuita'
+    printedBtn:'Ordina una Bibbia stampata gratuita',
+    supportLink:'Sostieni questo progetto'
   },
   {
     code:'ja', name:'日本語', en:'Japanese', dir:'ltr',
@@ -222,7 +229,8 @@ const LANGS = [
     emailErr:'メールアドレスをご確認ください。',
     share:'友達にシェアする', aBack:'戻る', aNext:'続ける',
     bibleBtn:'聖書を無料で読む',
-    printedBtn:'無料の印刷版聖書を注文する'
+    printedBtn:'無料の印刷版聖書を注文する',
+    supportLink:'このプロジェクトを応援する'
   },
   {
     code:'ko', name:'한국어', en:'Korean', dir:'ltr',
@@ -247,7 +255,8 @@ const LANGS = [
     emailErr:'이메일 주소를 확인해 주세요.',
     share:'친구에게 공유하기', aBack:'뒤로', aNext:'계속',
     bibleBtn:'성경을 무료로 읽기',
-    printedBtn:'무료 인쇄 성경 주문하기'
+    printedBtn:'무료 인쇄 성경 주문하기',
+    supportLink:'이 프로젝트 후원하기'
   },
   {
     code:'zh', name:'中文', en:'Mandarin', dir:'ltr',
@@ -272,7 +281,8 @@ const LANGS = [
     emailErr:'请检查你的电子邮件地址。',
     share:'分享给朋友', aBack:'返回', aNext:'继续',
     bibleBtn:'免费阅读圣经',
-    printedBtn:'免费索取纸质圣经'
+    printedBtn:'免费索取纸质圣经',
+    supportLink:'支持这个项目'
   },
   {
     code:'pt', name:'Português', en:'Portuguese', dir:'ltr',
@@ -297,7 +307,8 @@ const LANGS = [
     emailErr:'Verifica o teu e-mail.',
     share:'Partilha com um amigo', aBack:'Voltar', aNext:'Continuar',
     bibleBtn:'Lê a Bíblia gratuitamente',
-    printedBtn:'Encomenda uma Bíblia impressa gratuita'
+    printedBtn:'Encomenda uma Bíblia impressa gratuita',
+    supportLink:'Apoia este projeto'
   },
   {
     code:'ru', name:'Русский', en:'Russian', dir:'ltr',
@@ -322,7 +333,8 @@ const LANGS = [
     emailErr:'Проверь свой адрес эл. почты.',
     share:'Поделись с другом', aBack:'Назад', aNext:'Продолжить',
     bibleBtn:'Читай Библию бесплатно',
-    printedBtn:'Закажи бесплатную печатную Библию'
+    printedBtn:'Закажи бесплатную печатную Библию',
+    supportLink:'Поддержать проект'
   },
   {
     code:'es', name:'Español', en:'Spanish', dir:'ltr',
@@ -347,7 +359,8 @@ const LANGS = [
     emailErr:'Revisa tu correo electrónico.',
     share:'Comparte con un amigo', aBack:'Volver', aNext:'Continuar',
     bibleBtn:'Lee la Biblia gratis',
-    printedBtn:'Pide una Biblia impresa gratis'
+    printedBtn:'Pide una Biblia impresa gratis',
+    supportLink:'Apoya este proyecto'
   },
   {
     code:'sw', name:'Kiswahili', en:'Swahili', dir:'ltr',
@@ -372,7 +385,8 @@ const LANGS = [
     emailErr:'Tafadhali angalia barua pepe yako.',
     share:'Shiriki na rafiki', aBack:'Rudi nyuma', aNext:'Endelea',
     bibleBtn:'Soma Biblia bila malipo',
-    printedBtn:'Agiza Biblia iliyochapishwa bila malipo'
+    printedBtn:'Agiza Biblia iliyochapishwa bila malipo',
+    supportLink:'Saidia mradi huu'
   }
 ];
 
@@ -578,6 +592,7 @@ function buildLangEntry(code, t) {
     aNext: t.aNext || LANG_EN.aNext,
     bibleBtn: t.bibleBtn || LANG_EN.bibleBtn,
     printedBtn: t.printedBtn || LANG_EN.printedBtn,
+    supportLink: t.supportLink || LANG_EN.supportLink,
     pn: t.pn || 'Paul', lng: enName
   };
 }
@@ -1281,6 +1296,12 @@ function showTY(skipped) {
     document.getElementById('share-btn-text').textContent = L.share || LANG_EN.share;
   }
 
+  // Quietest action: optional support link → our localized /support page
+  const supportLink = document.getElementById('support-link');
+  supportLink.textContent = L.supportLink || LANG_EN.supportLink;
+  supportLink.href = '/support?lang=' + encodeURIComponent(L.code);
+  supportLink.style.display = 'inline-block';
+
   const title = document.getElementById('ty-title');
   requestAnimationFrame(() => title.focus({ preventScroll: true }));
 }
@@ -1332,4 +1353,7 @@ document.getElementById('bible-btn').addEventListener('click', () => {
 });
 document.getElementById('printed-btn').addEventListener('click', () => {
   track('bible_link_clicked', { lang: L.code, kind: 'printed' });
+});
+document.getElementById('support-link').addEventListener('click', () => {
+  track('support_clicked', { lang: L.code });
 });

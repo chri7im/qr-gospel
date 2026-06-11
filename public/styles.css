@@ -488,6 +488,13 @@ body {
   text-decoration: underline; text-underline-offset: 3px;
 }
 
+/* Quietest action: optional support link (leads to our /support page) */
+.support-link {
+  display: inline-block; margin-top: 20px;
+  font-size: 13px; color: #8494a7;
+  text-decoration: underline; text-underline-offset: 3px;
+}
+
 .share-btn {
   display: inline-flex; align-items: center; justify-content: center;
   margin-top: 18px; padding: 14px 24px;

@@ -38,6 +38,7 @@ const TEMPLATE = {
   aBack: 'Go back', aNext: 'Continue',
   bibleBtn: 'Read the Bible for free',
   printedBtn: 'Order a free printed Bible',
+  supportLink: 'Support this project',
   tyT: 'Thank you!', tyS: "We'll be in touch soon.", tySkip: 'May you find peace.',
   pn: 'Paul', dir: 'ltr'
 };

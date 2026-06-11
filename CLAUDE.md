@@ -119,6 +119,14 @@ Adding a UI string = update **three places together** or dynamic languages break
 - Extending: add one line to `PRINTED_BIBLE_OFFERS`. Keep the list personally vetted; check the URLs occasionally (deep links rot).
 - Both links open in a new tab (`rel="noopener"`), fire `bible_link_clicked` analytics events (`kind: online|printed`), and use the `bibleBtn`/`printedBtn` i18n keys (synced across LANGS/TEMPLATE/buildLangEntry as usual).
 
+## Support page (/support — optional donations via Ko-fi)
+- Quiet, optional ask shown only AFTER value is delivered: a small localized "Support this project" link on the thank-you screen (both submitted and skipped), the lowest-priority action below the Bible + share buttons. Never on the gospel page, never a gate.
+- Links to **`/support?lang=xx`** — our own warm, localized page (`support.html` + `public/support.js`, mirrors the privacy page, reuses privacy.css). It explains the running costs and links out to **Ko-fi**.
+- **►► To activate: paste the Ko-fi page URL into `SUPPORT_URL` in `public/support.js` (one line).** Until set, the page shows its message but no Give button (nothing breaks). That constant is the only donation config.
+- Framing is deliberately **"support / help keep it free," NOT tax-deductible "donation"** — the project runs as a lean individual setup (Barcelona), not a registered charity. If it ever becomes a registered *asociación*, the wording can change and deductible receipts become possible.
+- `support_clicked` analytics event fires on the thank-you link (per language); the /support page is also a normal Vercel Analytics pageview. The Ko-fi page link uses `rel="noopener"`, new tab. No backend, no secrets, CSP untouched (plain outbound navigation).
+- The thank-you-screen label is the `supportLink` i18n key (synced LANGS + TEMPLATE + buildLangEntry). The /support page copy lives in `support.js`'s SUPPORT object (14 languages; dynamic languages fall back to English, like the privacy page).
+
 ## Contact form emails
 - **Owner notification**: HTML table (plus plain-text part) with name, email, phone, language, issue, consent timestamp. If this send fails the API returns 502 and logs — it's the only persistence of the submission.
 - **Visitor welcome email**: Warm, personal, localized in all 14 languages. Stored in `api/contact.js` (not AI-generated). Navy blue header, serif body, RTL support for Arabic/Farsi, unsubscribe line, privacy link, plain-text alternative.
