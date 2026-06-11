@@ -31,6 +31,8 @@ const TEMPLATE = {
   emailErr: 'Please check your email address.',
   share: 'Share with a friend',
   aBack: 'Go back', aNext: 'Continue',
+  bibleBtn: 'Read the Bible for free',
+  printedBtn: 'Order a free printed Bible',
   tyT: 'Thank you!', tyS: "We'll be in touch soon.", tySkip: 'May you find peace.',
   pn: 'Paul', dir: 'ltr'
 };

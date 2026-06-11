@@ -45,7 +45,9 @@ const LANGS = [
     privacyLink:'سياسة الخصوصية',
     formErr:'يرجى إدخال اسمك أو بريدك الإلكتروني.',
     emailErr:'يرجى التحقق من بريدك الإلكتروني.',
-    share:'شارك مع صديق', aBack:'رجوع', aNext:'متابعة'
+    share:'شارك مع صديق', aBack:'رجوع', aNext:'متابعة',
+    bibleBtn:'اقرأ الكتاب المقدس مجاناً',
+    printedBtn:'اطلب نسخة مطبوعة مجانية من الكتاب المقدس'
   },
   {
     code:'en', name:'English', en:'English', dir:'ltr',
@@ -68,7 +70,9 @@ const LANGS = [
     privacyLink:'Privacy Policy',
     formErr:'Please enter your name or email.',
     emailErr:'Please check your email address.',
-    share:'Share with a friend', aBack:'Go back', aNext:'Continue'
+    share:'Share with a friend', aBack:'Go back', aNext:'Continue',
+    bibleBtn:'Read the Bible for free',
+    printedBtn:'Order a free printed Bible'
   },
   {
     code:'fa', name:'فارسی', en:'Farsi', dir:'rtl',
@@ -91,7 +95,9 @@ const LANGS = [
     privacyLink:'سیاست حریم خصوصی',
     formErr:'لطفاً نام یا ایمیلت را وارد کن.',
     emailErr:'لطفاً ایمیلت را بررسی کن.',
-    share:'با یک دوست به اشتراک بگذار', aBack:'بازگشت', aNext:'ادامه'
+    share:'با یک دوست به اشتراک بگذار', aBack:'بازگشت', aNext:'ادامه',
+    bibleBtn:'کتاب مقدس را رایگان بخوان',
+    printedBtn:'یک نسخه چاپی رایگان کتاب مقدس سفارش بده'
   },
   {
     code:'fr', name:'Français', en:'French', dir:'ltr',
@@ -114,7 +120,9 @@ const LANGS = [
     privacyLink:'Politique de confidentialité',
     formErr:'Merci d’entrer ton nom ou ton e-mail.',
     emailErr:'Vérifie ton adresse e-mail.',
-    share:'Partage avec un ami', aBack:'Retour', aNext:'Continuer'
+    share:'Partage avec un ami', aBack:'Retour', aNext:'Continuer',
+    bibleBtn:'Lis la Bible gratuitement',
+    printedBtn:'Commande une Bible imprimée gratuite'
   },
   {
     code:'de', name:'Deutsch', en:'German', dir:'ltr',
@@ -137,7 +145,9 @@ const LANGS = [
     privacyLink:'Datenschutzerklärung',
     formErr:'Bitte gib deinen Namen oder deine E-Mail ein.',
     emailErr:'Bitte überprüfe deine E-Mail-Adresse.',
-    share:'Teile es mit einem Freund', aBack:'Zurück', aNext:'Weiter'
+    share:'Teile es mit einem Freund', aBack:'Zurück', aNext:'Weiter',
+    bibleBtn:'Lies die Bibel kostenlos',
+    printedBtn:'Bestelle eine kostenlose gedruckte Bibel'
   },
   {
     code:'hi', name:'हिन्दी', en:'Hindi', dir:'ltr',
@@ -160,7 +170,9 @@ const LANGS = [
     privacyLink:'गोपनीयता नीति',
     formErr:'कृपया अपना नाम या ईमेल दर्ज करें।',
     emailErr:'कृपया अपना ईमेल जांचें।',
-    share:'एक दोस्त के साथ साझा करें', aBack:'वापस', aNext:'जारी रखें'
+    share:'एक दोस्त के साथ साझा करें', aBack:'वापस', aNext:'जारी रखें',
+    bibleBtn:'बाइबल मुफ़्त में पढ़ें',
+    printedBtn:'मुफ़्त छपी हुई बाइबल मंगवाएं'
   },
   {
     code:'it', name:'Italiano', en:'Italian', dir:'ltr',
@@ -183,7 +195,9 @@ const LANGS = [
     privacyLink:'Informativa sulla privacy',
     formErr:'Inserisci il tuo nome o la tua email.',
     emailErr:'Controlla il tuo indirizzo email.',
-    share:'Condividi con un amico', aBack:'Indietro', aNext:'Continua'
+    share:'Condividi con un amico', aBack:'Indietro', aNext:'Continua',
+    bibleBtn:'Leggi la Bibbia gratuitamente',
+    printedBtn:'Ordina una Bibbia stampata gratuita'
   },
   {
     code:'ja', name:'日本語', en:'Japanese', dir:'ltr',
@@ -206,7 +220,9 @@ const LANGS = [
     privacyLink:'プライバシーポリシー',
     formErr:'お名前またはメールアドレスを入力してください。',
     emailErr:'メールアドレスをご確認ください。',
-    share:'友達にシェアする', aBack:'戻る', aNext:'続ける'
+    share:'友達にシェアする', aBack:'戻る', aNext:'続ける',
+    bibleBtn:'聖書を無料で読む',
+    printedBtn:'無料の印刷版聖書を注文する'
   },
   {
     code:'ko', name:'한국어', en:'Korean', dir:'ltr',
@@ -229,7 +245,9 @@ const LANGS = [
     privacyLink:'개인정보 처리방침',
     formErr:'이름 또는 이메일을 입력해 주세요.',
     emailErr:'이메일 주소를 확인해 주세요.',
-    share:'친구에게 공유하기', aBack:'뒤로', aNext:'계속'
+    share:'친구에게 공유하기', aBack:'뒤로', aNext:'계속',
+    bibleBtn:'성경을 무료로 읽기',
+    printedBtn:'무료 인쇄 성경 주문하기'
   },
   {
     code:'zh', name:'中文', en:'Mandarin', dir:'ltr',
@@ -252,7 +270,9 @@ const LANGS = [
     privacyLink:'隐私政策',
     formErr:'请输入你的姓名或电子邮件。',
     emailErr:'请检查你的电子邮件地址。',
-    share:'分享给朋友', aBack:'返回', aNext:'继续'
+    share:'分享给朋友', aBack:'返回', aNext:'继续',
+    bibleBtn:'免费阅读圣经',
+    printedBtn:'免费索取纸质圣经'
   },
   {
     code:'pt', name:'Português', en:'Portuguese', dir:'ltr',
@@ -275,7 +295,9 @@ const LANGS = [
     privacyLink:'Política de Privacidade',
     formErr:'Por favor, indica o teu nome ou e-mail.',
     emailErr:'Verifica o teu e-mail.',
-    share:'Partilha com um amigo', aBack:'Voltar', aNext:'Continuar'
+    share:'Partilha com um amigo', aBack:'Voltar', aNext:'Continuar',
+    bibleBtn:'Lê a Bíblia gratuitamente',
+    printedBtn:'Encomenda uma Bíblia impressa gratuita'
   },
   {
     code:'ru', name:'Русский', en:'Russian', dir:'ltr',
@@ -298,7 +320,9 @@ const LANGS = [
     privacyLink:'Политика конфиденциальности',
     formErr:'Пожалуйста, укажи имя или эл. почту.',
     emailErr:'Проверь свой адрес эл. почты.',
-    share:'Поделись с другом', aBack:'Назад', aNext:'Продолжить'
+    share:'Поделись с другом', aBack:'Назад', aNext:'Продолжить',
+    bibleBtn:'Читай Библию бесплатно',
+    printedBtn:'Закажи бесплатную печатную Библию'
   },
   {
     code:'es', name:'Español', en:'Spanish', dir:'ltr',
@@ -321,7 +345,9 @@ const LANGS = [
     privacyLink:'Política de privacidad',
     formErr:'Por favor, introduce tu nombre o correo.',
     emailErr:'Revisa tu correo electrónico.',
-    share:'Comparte con un amigo', aBack:'Volver', aNext:'Continuar'
+    share:'Comparte con un amigo', aBack:'Volver', aNext:'Continuar',
+    bibleBtn:'Lee la Biblia gratis',
+    printedBtn:'Pide una Biblia impresa gratis'
   },
   {
     code:'sw', name:'Kiswahili', en:'Swahili', dir:'ltr',
@@ -344,7 +370,9 @@ const LANGS = [
     privacyLink:'Sera ya Faragha',
     formErr:'Tafadhali weka jina au barua pepe yako.',
     emailErr:'Tafadhali angalia barua pepe yako.',
-    share:'Shiriki na rafiki', aBack:'Rudi nyuma', aNext:'Endelea'
+    share:'Shiriki na rafiki', aBack:'Rudi nyuma', aNext:'Endelea',
+    bibleBtn:'Soma Biblia bila malipo',
+    printedBtn:'Agiza Biblia iliyochapishwa bila malipo'
   }
 ];
 
@@ -446,14 +474,35 @@ function detectLangIndex() {
   return { idx: -1, code: code, miss: !!code };
 }
 
-async function detectCountryLangCode() {
-  try {
-    const res = await fetch('/api/geo');
-    if (!res.ok) return '';
-    const data = await res.json();
-    return COUNTRY_LANG[data.country] || '';
-  } catch (e) { return ''; }
+// Visitor country (memoized — used for both the language fallback and the
+// printed-Bible offer, but fetched at most once)
+let countryPromise = null;
+function getCountry() {
+  if (!countryPromise) {
+    countryPromise = fetch('/api/geo')
+      .then(res => (res.ok ? res.json() : { country: '' }))
+      .then(data => data.country || '')
+      .catch(() => '');
+  }
+  return countryPromise;
 }
+
+async function detectCountryLangCode() {
+  const country = await getCountry();
+  return COUNTRY_LANG[country] || '';
+}
+
+// ═══════════════════════════════════════════════════════
+// BIBLE OFFERS (thank-you screen)
+// ═══════════════════════════════════════════════════════
+// Lead link: read the Bible free online — works for every country and language.
+const BIBLE_ONLINE_URL = 'https://www.bible.com/';
+// Extra: vetted ministries that ship free printed Bibles, by visitor country.
+// Keep this list small and personally vetted; everyone else just sees the
+// online link. Extend with one line per new country partner.
+const PRINTED_BIBLE_OFFERS = {
+  DE: 'https://www.c-plakat.de/bibeln-buecher-p13.html'
+};
 
 // Load or fetch translations for an unsupported language
 async function loadDynamicLang(code) {
@@ -527,6 +576,8 @@ function buildLangEntry(code, t) {
     share: t.share || LANG_EN.share,
     aBack: t.aBack || LANG_EN.aBack,
     aNext: t.aNext || LANG_EN.aNext,
+    bibleBtn: t.bibleBtn || LANG_EN.bibleBtn,
+    printedBtn: t.printedBtn || LANG_EN.printedBtn,
     pn: t.pn || 'Paul', lng: enName
   };
 }
@@ -1171,9 +1222,26 @@ function submitContact() {
 
 function showTY(skipped) {
   document.getElementById('p6-form').style.display = 'none';
-  document.getElementById('ty-wrap').style.display = 'block';
+  document.getElementById('ty-wrap').style.display = 'flex';
   set('ty-title', L.tyT);
   set('ty-sub', skipped ? L.tySkip : L.tyS, L.dir);
+
+  // Lead action: read the Bible online (always available, every language)
+  const bibleBtn = document.getElementById('bible-btn');
+  bibleBtn.href = BIBLE_ONLINE_URL;
+  bibleBtn.style.display = 'inline-flex';
+  document.getElementById('bible-btn-text').textContent = L.bibleBtn || LANG_EN.bibleBtn;
+
+  // Extra: free printed Bible when a vetted partner exists for the visitor's country
+  const printedBtn = document.getElementById('printed-btn');
+  printedBtn.style.display = 'none';
+  getCountry().then(country => {
+    if (Object.prototype.hasOwnProperty.call(PRINTED_BIBLE_OFFERS, country)) {
+      printedBtn.href = PRINTED_BIBLE_OFFERS[country];
+      printedBtn.textContent = L.printedBtn || LANG_EN.printedBtn;
+      printedBtn.style.display = 'inline-block';
+    }
+  });
 
   // Show share button if Web Share API is available
   if (navigator.share) {
@@ -1218,4 +1286,13 @@ document.addEventListener("click", (e) => {
 document.getElementById('p6-form').addEventListener('submit', (e) => {
   e.preventDefault();
   submitContact();
+});
+
+// Outbound Bible links: count interest per language (fires before navigation;
+// the links open in a new tab)
+document.getElementById('bible-btn').addEventListener('click', () => {
+  track('bible_link_clicked', { lang: L.code, kind: 'online' });
+});
+document.getElementById('printed-btn').addEventListener('click', () => {
+  track('bible_link_clicked', { lang: L.code, kind: 'printed' });
 });

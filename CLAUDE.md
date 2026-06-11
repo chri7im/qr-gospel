@@ -108,6 +108,12 @@ Adding a UI string = update **three places together** or dynamic languages break
 - **PRIVACY RULE**: never track free text, names, emails or phone numbers. Custom issues are tracked as `custom`, never the typed text.
 - Side effect: the browser back button / swipe gesture navigates the flow (popstate handler) instead of leaving the site. Step URLs normalise back to `/` on reload; `/s/` is disallowed in robots.txt.
 
+## Bible offers (thank-you screen, both submitted and skipped paths)
+- **Lead button**: "Read the Bible for free" → https://www.bible.com/ (YouVersion — free, ~2,000 languages, localizes itself). Always shown.
+- **Extra link**: "Order a free printed Bible" — shown only when `PRINTED_BIBLE_OFFERS[country]` (public/app.js) has a vetted partner for the visitor's country (detected via `/api/geo`, memoized). Currently: `DE` → Christlicher Plakatdienst e.V. (c-plakat.de — ministry, free + free shipping, materials in ~10 languages).
+- Extending: add one line to `PRINTED_BIBLE_OFFERS`. Keep the list personally vetted; check the URLs occasionally (deep links rot).
+- Both links open in a new tab (`rel="noopener"`), fire `bible_link_clicked` analytics events (`kind: online|printed`), and use the `bibleBtn`/`printedBtn` i18n keys (synced across LANGS/TEMPLATE/buildLangEntry as usual).
+
 ## Contact form emails
 - **Owner notification**: HTML table (plus plain-text part) with name, email, phone, language, issue, consent timestamp. If this send fails the API returns 502 and logs — it's the only persistence of the submission.
 - **Visitor welcome email**: Warm, personal, localized in all 14 languages. Stored in `api/contact.js` (not AI-generated). Navy blue header, serif body, RTL support for Arabic/Farsi, unsubscribe line, privacy link, plain-text alternative.
