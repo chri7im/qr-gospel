@@ -2,7 +2,7 @@
 const VALID_LANGS = {
   ar: 'Arabic', en: 'English', fa: 'Persian (Farsi)', fr: 'French',
   de: 'German', hi: 'Hindi', it: 'Italian', ja: 'Japanese',
-  ko: 'Korean', zh: 'Mandarin Chinese', pt: 'Brazilian Portuguese',
+  ko: 'Korean', zh: 'Mandarin Chinese', pt: 'European Portuguese',
   ru: 'Russian', es: 'Spanish', sw: 'Swahili'
 };
 

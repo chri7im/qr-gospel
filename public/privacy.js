@@ -223,22 +223,22 @@ const PRIVACY = {
     dir: 'ltr', title: 'Política de Privacidade', back: 'Voltar', updated: 'Última atualização: junho de 2026',
     html: `
       <h1>Política de Privacidade</h1>
-      <p>Somos a equipe QR Gospel — um pequeno grupo de pessoas que quer compartilhar boas notícias com o mundo. Sua privacidade é importante para nós, e aqui explicamos como tratamos seus dados.</p>
-      <h2>O que coletamos</h2>
-      <p>Coletamos apenas o que você compartilha voluntariamente pelo formulário de contato:</p>
-      <ul><li>Seu nome</li><li>Seu e-mail</li><li>Seu telefone (opcional — apenas se preferir que liguemos)</li><li>O idioma que você escolheu e o tema que pesa em você — para podermos responder com cuidado</li></ul>
-      <h2>Por que coletamos</h2>
-      <p>Por um único motivo: para entrar em contato se você quiser saber mais sobre a fé. Nunca venderemos seus dados nem os compartilharemos com terceiros.</p>
+      <p>Somos a equipa QR Gospel — um pequeno grupo de pessoas que quer partilhar boas notícias com o mundo. A tua privacidade é importante para nós, e aqui explicamos como tratamos os teus dados.</p>
+      <h2>O que recolhemos</h2>
+      <p>Recolhemos apenas o que partilhas voluntariamente através do formulário de contacto:</p>
+      <ul><li>O teu nome</li><li>O teu e-mail</li><li>O teu telefone (opcional — apenas se preferires que te liguemos)</li><li>A língua que escolheste e o tema que te pesa — para podermos responder com cuidado</li></ul>
+      <h2>Porque recolhemos</h2>
+      <p>Por um único motivo: para entrarmos em contacto contigo se quiseres saber mais sobre a fé. Nunca venderemos os teus dados nem os partilharemos com terceiros.</p>
       <h2>Base legal</h2>
-      <p>Processamos seus dados com base no seu consentimento (RGPD Artigo 6(1)(a)). Você pode retirar esse consentimento a qualquer momento.</p>
-      <h2>Por quanto tempo guardamos</h2>
-      <p>Guardamos seus dados até que você peça para removê-los. Simples assim.</p>
-      <h2>Seus direitos</h2>
-      <p>Você pode solicitar a visualização, correção ou exclusão dos seus dados a qualquer momento. Basta responder a qualquer mensagem nossa ou entrar em contato pelo site.</p>
-      <h2>Serviços que usamos</h2>
-      <p>Para manter este site funcionando, usamos poucos serviços técnicos de confiança: o site é hospedado pela Vercel e nossos e-mails são enviados pela Resend. Eles processam os dados apenas em nosso nome e nunca para fins próprios. Nossas estatísticas de visitas são anônimas e sem cookies.</p>
+      <p>Tratamos os teus dados com base no teu consentimento (RGPD Artigo 6(1)(a)). Podes retirar esse consentimento a qualquer momento.</p>
+      <h2>Durante quanto tempo os guardamos</h2>
+      <p>Guardamos os teus dados até nos pedires para os remover. Simples assim.</p>
+      <h2>Os teus direitos</h2>
+      <p>Podes pedir para ver, corrigir ou apagar os teus dados a qualquer momento. Basta responderes a qualquer mensagem nossa ou contactares-nos através do site.</p>
+      <h2>Serviços que utilizamos</h2>
+      <p>Para manter este site a funcionar, usamos poucos serviços técnicos de confiança: o site está alojado na Vercel e os nossos e-mails são enviados pela Resend. Estes processam os dados apenas em nosso nome e nunca para fins próprios. As nossas estatísticas de visitas são anónimas e sem cookies.</p>
       <h2>Quem somos</h2>
-      <p>Este site é operado a partir de Barcelona, Espanha. Se tiver alguma dúvida, não hesite em nos contatar.</p>
+      <p>Este site é gerido a partir de Barcelona, Espanha. Se tiveres alguma dúvida, não hesites em contactar-nos.</p>
     `
   },
   ru: {

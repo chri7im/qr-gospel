@@ -110,7 +110,7 @@ Adding a UI string = update **three places together** or dynamic languages break
 - `Enter` — submit custom issue (page 4) or contact form (page 6)
 
 ## Languages supported (14 built-in, in display order)
-Arabic, English, Farsi, French, German, Hindi, Italian, Japanese, Korean, Mandarin, Portuguese, Russian, Spanish, Swahili
+Arabic, English, Farsi, French, German, Hindi, Italian, Japanese, Korean, Mandarin, Portuguese (European), Russian, Spanish, Swahili
 
 ## Issues supported (14, in display order)
 Addiction, Anxiety, Depression, Fear, Guilt, Loneliness, Panic attacks, Lack of Purpose, Shame, Anger, Grief, Envy, Bitterness, Emptiness
@@ -119,7 +119,7 @@ Addiction, Anxiety, Depression, Fear, Guilt, Loneliness, Panic attacks, Lack of 
 - **Mobile first** — max-width ~420px, everything optimised for thumb reach
 - **RTL support** — Arabic and Farsi get `dir="rtl"` on the html element
 - **No frameworks** — vanilla JS only, no build step
-- **Informal tone** — all languages use informal "you" (du, tu, ты, etc.); Portuguese is Brazilian (você)
+- **Informal tone** — all languages use informal "you" (du, tu, ты, etc.); Portuguese is European (tu register, ADN, contacto, equipa)
 - **Titles** — all 24px Lora serif in `#1e3a5f` (matching button color)
 - **Contact page** — consent-focused intro ("share only if comfortable")
 - **Strict CSP** — no inline `style=""`/`onclick=""` allowed anywhere; use classes + addEventListener

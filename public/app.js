@@ -235,26 +235,26 @@ const LANGS = [
   },
   {
     code:'pt', name:'Português', en:'Portuguese', dir:'ltr',
-    hdr:'Escolha seu idioma',
+    hdr:'Escolhe a tua língua',
     ey:'Sobre nós', ti:'Sobre nós',
-    body:'Nossa única missão neste mundo é espalhar a melhor notícia que você já ouviu! Amor, esperança, propósito — tudo para você!',
-    cta:'Pegue agora de graça →',
+    body:'A nossa única missão neste mundo é espalhar a melhor notícia que alguma vez ouviste! Amor, esperança, propósito — tudo para ti!',
+    cta:'Recebe agora gratuitamente →',
     qEy:'Questionário', qTi:'O que mais te incomoda na vida?',
     iss:['Vício','Ansiedade','Depressão','Medo','Culpa','Solidão','Ataques de pânico','Falta de propósito','Vergonha','Raiva','Luto','Inveja','Amargura','Vazio'],
     otl:'Outra coisa...',
-    t4:'O que pesa no seu coração?', s4:'Descreva com suas próprias palavras.', ph4:'Escreva aqui...', b4:'Continuar →',
-    tag:'Uma mensagem para você', ldg:'Preparando sua mensagem…', lmr:'Me conta mais! →',
-    t6:'Gostaria de saber mais?', s6:'Compartilhe seus dados apenas se estiver confortável. Entraremos em contato com cuidado.',
+    t4:'O que pesa no teu coração?', s4:'Descreve com as tuas próprias palavras.', ph4:'Escreve aqui...', b4:'Continuar →',
+    tag:'Uma mensagem para ti', ldg:'A preparar a tua mensagem…', lmr:'Conta-me mais! →',
+    t6:'Gostarias de saber mais?', s6:'Partilha os teus dados apenas se te sentires confortável. Entraremos em contacto contigo com todo o cuidado.',
     ln:'Nome', le:'E-mail', lp:'Telefone (opcional)',
     sb:'Enviar', sk:'Não, obrigado',
-    tyT:'Obrigado!', tyS:'Entraremos em contato em breve.', tySkip:'Que você encontre paz.',
-    pn:'Paulo', lng:'Brazilian Portuguese',
-    consentLabel:'Concordo em ser contatado(a) pela QR Gospel sobre temas de fé. Posso cancelar a inscrição a qualquer momento.',
-    consentError:'Por favor, marque a caixa acima antes de enviar.',
+    tyT:'Obrigado!', tyS:'Entraremos em contacto em breve.', tySkip:'Que encontres paz.',
+    pn:'Paulo', lng:'European Portuguese',
+    consentLabel:'Concordo em ser contactado(a) pela QR Gospel sobre temas de fé. Posso cancelar a subscrição a qualquer momento.',
+    consentError:'Por favor, assinala a caixa acima antes de enviar.',
     privacyLink:'Política de Privacidade',
-    formErr:'Por favor, informe seu nome ou e-mail.',
-    emailErr:'Verifique seu e-mail.',
-    share:'Compartilhe com um amigo', aBack:'Voltar', aNext:'Continuar'
+    formErr:'Por favor, indica o teu nome ou e-mail.',
+    emailErr:'Verifica o teu e-mail.',
+    share:'Partilha com um amigo', aBack:'Voltar', aNext:'Continuar'
   },
   {
     code:'ru', name:'Русский', en:'Russian', dir:'ltr',
@@ -344,7 +344,7 @@ const OPENING = {
   it: ["C'\u00E8 una storia cos\u00EC antica che fa parte del nostro DNA.", 'Questa storia spiega la vera causa della tua ', '.'],
   ja: ['私たちのDNAに刻まれているほど古い物語があります。', 'その物語は、あなたの', 'の本当の原因を説明しています。'],
   ko: ['우리의 DNA에 새겨져 있을 만큼 오래된 이야기가 있습니다.', '그 이야기는 당신의 ', '의 진정한 원인을 설명합니다.'],
-  pt: ['Existe uma história tão antiga que faz parte do nosso DNA.', 'Essa história explica a verdadeira causa do seu ', '.'],
+  pt: ['Existe uma história tão antiga que faz parte do nosso ADN.', 'Essa história explica a verdadeira causa disto: ', '.'],
   ru: ['Есть история настолько древняя, что она записана в нашей ДНК.', 'Эта история объясняет истинную причину твоей ', '.'],
   sw: ['Kuna hadithi ya kale sana hivi kwamba ni sehemu ya DNA yetu.', 'Hadithi hiyo inaeleza chanzo cha kweli cha ', '.'],
   zh: ['有一个古老到刻在我们DNA中的故事。', '这个故事解释了你', '的真正根源。'],
@@ -966,7 +966,8 @@ function renderGospel(text, displayIssue) {
   let stripped = text.trim();
   let opening = '';
   const head = stripped.slice(0, 300);
-  if (head.indexOf('DNA') !== -1 || head.indexOf('ДНК') !== -1) {
+  // "DNA" covers most languages; "ADN" Portuguese/French/Spanish; "ДНК" Russian; "النووي" Arabic
+  if (head.indexOf('DNA') !== -1 || head.indexOf('ADN') !== -1 || head.indexOf('ДНК') !== -1 || head.indexOf('النووي') !== -1) {
     // The opening is the first two sentences (DNA sentence + root-cause sentence)
     let dots = 0;
     for (let i = 0; i < stripped.length && i < 500; i++) {

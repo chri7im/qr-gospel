@@ -111,15 +111,15 @@ Ti contatteremo presto. Nel frattempo, ricorda: sei amato/a più di quanto tu po
     unsubscribe: '如果你不再希望收到我们的消息，只需回复此邮件并写上"取消订阅"，我们会立即删除你的信息。'
   },
   pt: {
-    subject: 'Obrigado — uma mensagem da equipe Good News',
+    subject: 'Obrigado — uma mensagem da equipa Good News',
     greeting: name => `Querido(a) ${name || 'amigo(a)'},`,
-    body: `Ficamos muito felizes que você deu este passo. O que você leu hoje não são apenas palavras — é uma história verdadeira sobre um amor tão profundo e tão pessoal que foi escrito especialmente para você.
+    body: `Ficámos muito felizes por teres dado este passo. O que leste hoje não são apenas palavras — é uma história verdadeira sobre um amor tão profundo e tão pessoal que foi escrito especialmente para ti.
 
-Queremos que você saiba que não está sozinho(a). Existem pessoas que se importam com você e que gostariam de caminhar junto com você nessa jornada.
+Queremos que saibas que não estás sozinho(a). Há pessoas que se preocupam contigo e que gostariam de caminhar contigo neste percurso.
 
-Entraremos em contato em breve. Até lá, lembre-se: você é amado(a) mais do que jamais poderia imaginar.`,
-    closing: 'Com carinho,\nA equipe Good News',
-    unsubscribe: 'Se não deseja mais receber mensagens nossas, basta responder a este e-mail com a palavra "Cancelar" e removeremos seus dados imediatamente.'
+Entraremos em contacto em breve. Até lá, lembra-te: és amado(a) mais do que alguma vez poderias imaginar.`,
+    closing: 'Com carinho,\nA equipa Good News',
+    unsubscribe: 'Se já não quiseres receber mensagens nossas, basta responderes a este e-mail com a palavra "Cancelar" e removeremos imediatamente os teus dados.'
   },
   ru: {
     subject: 'Спасибо — сообщение от команды Good News',
