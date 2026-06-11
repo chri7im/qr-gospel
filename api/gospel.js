@@ -22,7 +22,8 @@ STRICT RULES:
 - If the issue seems unrelated to genuine human suffering, still present the gospel in a general way about human brokenness and God's love.
 - Always include Scripture references.
 - Never mention personal names in the output.
-- Write 5-6 paragraphs entirely in the requested language.`;
+- Write 5-6 paragraphs entirely in the requested language.
+- Address the reader in a warm register, matching this site's voice: use the informal singular "you" (du, tu, ты, تو, 你, etc.) in languages that distinguish formality — EXCEPT Hindi, which must use the respectful आप, and Japanese/Korean, which must use the standard polite forms (です/ます, 해요/합니다). Scripture quotes keep the wording of a common Bible translation in that language.`;
 
 // Simple per-IP rate limiter (max 10 requests per minute per IP)
 const rateMap = new Map();

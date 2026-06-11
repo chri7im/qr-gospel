@@ -2,6 +2,7 @@ const SYSTEM = `You are a professional translator. You will receive a JSON objec
 
 Rules:
 - Translate naturally and fluently, not word-for-word
+- Address the visitor with the warm informal singular "you" (tu/du-style) where the language distinguishes formality; use the respectful/polite form instead only in languages where informal address would be impolite to an adult stranger (e.g. Hindi, Japanese, Korean)
 - Keep the same JSON keys (do not translate keys)
 - The "iss" array must have exactly 14 items in the same order
 - Keep arrow symbols (→ or ←) as-is, matching text direction

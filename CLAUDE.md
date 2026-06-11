@@ -119,7 +119,8 @@ Addiction, Anxiety, Depression, Fear, Guilt, Loneliness, Panic attacks, Lack of 
 - **Mobile first** — max-width ~420px, everything optimised for thumb reach
 - **RTL support** — Arabic and Farsi get `dir="rtl"` on the html element
 - **No frameworks** — vanilla JS only, no build step
-- **Informal tone** — all languages use informal "you" (du, tu, ты, etc.); Portuguese is European (tu register, ADN, contacto, equipa)
+- **Informal tone** — languages with a T-V distinction use the informal singular "you" (du, tu, ты, تو, 你); Portuguese is European (tu register, ADN, contacto, equipa)
+- **Register exceptions** — Hindi deliberately uses the respectful आप (informal तुम reads condescending to adult strangers); Japanese/Korean use the standard polite forms (です/ます, 해요/합니다). Scripture quotes keep their Bible-translation register (plural vous/вы/شما/أنتم, Hindi तू for God) even where narration is informal — that's correct, not an inconsistency.
 - **Titles** — all 24px Lora serif in `#1e3a5f` (matching button color)
 - **Contact page** — consent-focused intro ("share only if comfortable")
 - **Strict CSP** — no inline `style=""`/`onclick=""` allowed anywhere; use classes + addEventListener
