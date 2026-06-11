@@ -655,7 +655,7 @@ function buildLangEntry(code, t) {
       else if (cur === 'page3') goTo('page2');
       else if (cur === 'page4') goTo('page3');
       else if (cur === 'page5') goTo('page3');
-      else if (cur === 'page6') goTo('page5');
+      else if (cur === 'page6') goBackFromContact();
       return;
     }
 
@@ -1220,6 +1220,22 @@ function submitContact() {
   showTY(false);
 }
 
+// Back from the contact page is view-aware: from the "skipped" thank-you it
+// means "undo the skip" — restore the form so the visitor can still leave
+// their details. From the form itself, and after a real submission (the form
+// is locked then), it returns to the gospel.
+function goBackFromContact() {
+  const tyShown = document.getElementById('ty-wrap').style.display === 'flex';
+  if (tyShown && !contactSent) {
+    fillP6();
+    try { history.pushState({ page: 'page6' }, '', stepPath('page6')); } catch (e) {}
+    const title = document.getElementById('p6-title');
+    requestAnimationFrame(() => title.focus({ preventScroll: true }));
+    return;
+  }
+  goTo('page5');
+}
+
 function showTY(skipped) {
   document.getElementById('p6-form').style.display = 'none';
   document.getElementById('ty-wrap').style.display = 'flex';
@@ -1268,7 +1284,13 @@ function shareLink() {
 // ─────────────────────────────────────────────────────────
 document.addEventListener("click", (e) => {
   const nav = e.target.closest("[data-goto]");
-  if (nav) { goTo(nav.getAttribute("data-goto")); return; }
+  if (nav) {
+    const dest = nav.getAttribute("data-goto");
+    // The contact page's back button is view-aware (undo a skip first)
+    if (dest === "page5" && cur === "page6") { goBackFromContact(); return; }
+    goTo(dest);
+    return;
+  }
   const act = e.target.closest("[data-action]");
   if (!act) return;
   const a = act.getAttribute("data-action");
