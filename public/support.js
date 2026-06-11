@@ -5,7 +5,7 @@
 // ►► ONE THING TO SET: paste your Ko-fi page URL below (e.g. 'https://ko-fi.com/qrgospel').
 //    Until it's set, the page still shows its message but no "Give" button appears —
 //    nothing breaks. This is the ONLY place the donation link lives.
-const SUPPORT_URL = '';
+const SUPPORT_URL = 'https://ko-fi.com/chri7im';
 
 // Warm, on-brand copy per language. Framed as optional support to keep the site
 // free — deliberately NOT tax-deductible "donation" language (lean individual setup).
