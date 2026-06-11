@@ -654,7 +654,7 @@ function buildLangEntry(code, t) {
       if (cur === 'page2') goTo('page1');
       else if (cur === 'page3') goTo('page2');
       else if (cur === 'page4') goTo('page3');
-      else if (cur === 'page5') goTo('page3');
+      else if (cur === 'page5') goTo(fromOther ? 'page4' : 'page3');
       else if (cur === 'page6') goBackFromContact();
       return;
     }
@@ -732,7 +732,10 @@ function buildLangEntry(code, t) {
 
     // ── Page 6: contact ──
     if (cur === 'page6') {
-      if (key === 'Enter' && !interactive) {
+      // Enter submits only while the form view is on screen — on the
+      // thank-you view it must not touch the hidden form
+      if (key === 'Enter' && !interactive &&
+          document.getElementById('p6-form').style.display !== 'none') {
         e.preventDefault();
         submitContact();
       }
@@ -863,8 +866,16 @@ function goTo(pageId, fromHistory) {
 
 // Browser back/forward (incl. swipe gestures) moves through the visited steps
 window.addEventListener('popstate', (e) => {
-  const target = (e.state && e.state.page) || 'page1';
+  const st = e.state || {};
+  const target = st.page || 'page1';
   if (target !== cur) goTo(target, true);
+  // The contact page has sub-views (form / skipped thank-you) that live in
+  // separate history entries — browser back/forward must swap them just like
+  // the in-app back button does
+  if (target === 'page6' && !contactSent) {
+    if (st.view === 'skipped') showTY(true);
+    else fillP6();
+  }
 });
 
 // ═══════════════════════════════════════════════════════
@@ -927,13 +938,17 @@ function fillP4() {
   const ta = document.getElementById('p4-input');
   ta.placeholder = L.ph4;
   ta.setAttribute('dir', L.dir);
-  ta.value = '';
+  // Typed text is kept on purpose — coming back from the gospel to refine
+  // what you wrote must not wipe it
   set('p4-cta', L.b4);
 }
 
 function fillP5Header(reset) {
   set('p5-loading-txt', L.ldg);
   document.getElementById('learn-btn').textContent = L.lmr;
+  // Back from the gospel retraces the way in: to the free-text page for a
+  // typed concern, to the issue list for a preset one
+  document.getElementById('p5-back').setAttribute('data-goto', fromOther ? 'page4' : 'page3');
   if (reset) {
     document.getElementById('p5-loading').style.display = 'flex';
     document.getElementById('gospel-wrap').style.display = 'none';
@@ -1216,7 +1231,7 @@ function submitContact() {
 
   contactSent = true;
   track('contact_submitted', { lang: L.code, issue: (!fromOther && issueKey) ? issueKey : 'custom' });
-  try { history.pushState({ page: 'page6' }, '', `/s/${L.code}/thanks`); } catch (e) {}
+  try { history.pushState({ page: 'page6', view: 'thanks' }, '', `/s/${L.code}/thanks`); } catch (e) {}
   showTY(false);
 }
 
@@ -1298,7 +1313,7 @@ document.addEventListener("click", (e) => {
   else if (a === "shareLink") shareLink();
   else if (a === "skip") {
     track('contact_skipped', { lang: L.code });
-    try { history.pushState({ page: 'page6' }, '', `/s/${L.code}/skipped`); } catch (e) {}
+    try { history.pushState({ page: 'page6', view: 'skipped' }, '', `/s/${L.code}/skipped`); } catch (e) {}
     showTY(true);
   }
 });
