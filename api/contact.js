@@ -339,7 +339,8 @@ export default async function handler(req, res) {
     }
 
     // 2. Send welcome email to visitor (if they provided one, max once per day per address)
-    if (email && welcomeAllowed(email)) {
+    const welcomeKey = email.toLowerCase();
+    if (email && welcomeAllowed(welcomeKey)) {
       const welcome = buildWelcomeEmail(name, lang);
       const welcomeRes = await fetch('https://api.resend.com/emails', {
         method: 'POST',
@@ -359,7 +360,9 @@ export default async function handler(req, res) {
         })
       });
       if (!welcomeRes.ok) {
-        // The submission itself succeeded — log, but don't fail the request
+        // The submission itself succeeded — log, but don't fail the request.
+        // Release the dedupe slot so a retry can still get the welcome email.
+        sentWelcome.delete(welcomeKey);
         console.error('Welcome email failed:', welcomeRes.status, await welcomeRes.text().catch(() => ''));
       }
     }

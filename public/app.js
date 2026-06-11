@@ -383,6 +383,7 @@ let issue = '';            // selected or typed issue
 let issueKey = '';         // file key for static text lookup
 let fromOther = false;     // whether user typed a custom issue
 let cur = 'page1';         // current page id
+let contactSent = false;   // a submission went out — block duplicates this visit
 
 // ═══════════════════════════════════════════════════════
 // LANGUAGE DETECTION
@@ -590,11 +591,13 @@ function buildLangEntry(code, t) {
     if (cur === 'page1') {
       if (key === 'ArrowUp' || key === 'ArrowLeft') {
         e.preventDefault();
+        pickerTouched = true;
         const idx = Math.round(scroll.scrollTop / ITEM_H);
         const target = Math.max(0, idx - 1);
         scroll.scrollTo({ top: target * ITEM_H, behavior: 'smooth' });
       } else if (key === 'ArrowDown' || key === 'ArrowRight') {
         e.preventDefault();
+        pickerTouched = true;
         const idx = Math.round(scroll.scrollTop / ITEM_H);
         const target = Math.min(LANGS.length - 1, idx + 1);
         scroll.scrollTo({ top: target * ITEM_H, behavior: 'smooth' });
@@ -647,6 +650,9 @@ function buildLangEntry(code, t) {
         document.getElementById('p5-body').scrollBy({ top: key === 'ArrowDown' ? 160 : -160, behavior: 'smooth' });
       } else if (((key === 'Enter' || key === ' ') && !interactive) || key === 'ArrowRight') {
         e.preventDefault();
+        // A second quick Enter right after submitting an issue must not skip
+        // past the gospel while it is still loading
+        if (document.getElementById('p5-loading').style.display !== 'none') return;
         goTo('page6');
       }
       return;
@@ -668,17 +674,23 @@ function buildLangEntry(code, t) {
     highlight();
   }
 
-  // Insert a new dynamic language at position 0 and rebuild the list
+  // Append a new dynamic language at the end of the list. Appending keeps every
+  // existing index stable — no map reshuffling, no DOM rebuild under the
+  // user's finger.
   function injectLang(entry) {
-    LANGS.unshift(entry);
-    // Rebuild the code→index map
-    Object.keys(LANG_CODE_MAP).forEach(k => LANG_CODE_MAP[k]++);
-    LANG_CODE_MAP[entry.code] = 0;
-    // Rebuild DOM items
-    document.querySelectorAll('.lang-item').forEach(el => el.remove());
-    LANGS.forEach((lang, i) => addLangItem(lang, i));
+    LANGS.push(entry);
+    LANG_CODE_MAP[entry.code] = LANGS.length - 1;
+    addLangItem(entry, LANGS.length - 1);
     setPads();
   }
+
+  // Once the visitor starts driving the picker themselves, late async results
+  // (translation, geo) may still add languages but must not move the wheel.
+  let pickerTouched = false;
+  ['pointerdown', 'wheel', 'touchstart'].forEach(ev =>
+    scroll.addEventListener(ev, () => { pickerTouched = true; }, { passive: true })
+  );
+  const mayAutoScroll = () => cur === 'page1' && !pickerTouched;
 
   // Detect language: phone first, then geo, then dynamic translation
   requestAnimationFrame(async () => {
@@ -699,13 +711,13 @@ function buildLangEntry(code, t) {
     if (translated) {
       const entry = buildLangEntry(missCode, translated);
       injectLang(entry);
-      scrollToLang(0);
+      if (mayAutoScroll()) scrollToLang(LANGS.length - 1);
       return;
     }
 
     // If translation failed, try geo fallback for a supported lang
     const geoCode = await detectCountryLangCode();
-    if (geoCode && geoCode in LANG_CODE_MAP) {
+    if (geoCode && geoCode in LANG_CODE_MAP && mayAutoScroll()) {
       scrollToLang(LANG_CODE_MAP[geoCode]);
     }
   });
@@ -724,6 +736,8 @@ function goTo(pageId) {
   prev.classList.remove('active');
   setTimeout(() => prev.classList.remove('exit'), 280);
 
+  // Re-entering a page within its 280ms exit fade must not leave it invisible
+  next.classList.remove('exit');
   next.classList.add('active');
   cur = pageId;
 
@@ -859,9 +873,14 @@ function fillP6() {
   const footerLink = document.getElementById('p6-privacy-link');
   footerLink.textContent = privacyLinkText;
   footerLink.href = '/privacy?lang=' + encodeURIComponent(L.code);
-  // Reset
-  document.getElementById('p6-form').style.display = 'block';
-  document.getElementById('ty-wrap').style.display = 'none';
+  // Reset — but once a submission went out, returning to this page shows the
+  // thank-you again instead of the form (prevents accidental double-sends)
+  if (contactSent) {
+    showTY(false);
+  } else {
+    document.getElementById('p6-form').style.display = 'block';
+    document.getElementById('ty-wrap').style.display = 'none';
+  }
 }
 
 // ═══════════════════════════════════════════════════════
@@ -873,7 +892,7 @@ function pickIssue(iss, idx) {
   fromOther = false;
   fillP5Header(true);
   goTo('page5');
-  fetchGospel();
+  fetchGospel(++gospelSeq);
 }
 
 function submitOther() {
@@ -883,21 +902,40 @@ function submitOther() {
   fromOther = true;
   fillP5Header(true);
   goTo('page5');
-  fetchGospel();
+  fetchGospel(++gospelSeq);
 }
 
 // ═══════════════════════════════════════════════════════
 // GOSPEL FETCH
 // ═══════════════════════════════════════════════════════
-async function fetchGospel() {
-  // For preset issues, try static text first
-  if (!fromOther && issueKey) {
+// Static texts exist only for the 14 built-in languages (exactly the OPENING keys).
+// For anything else the SPA catch-all rewrite answers missing files with
+// index.html and HTTP 200 — so a 200 alone is no proof of a gospel text.
+function hasStaticTexts(code) {
+  return Object.prototype.hasOwnProperty.call(OPENING, code);
+}
+function looksLikeGospel(html) {
+  return html.trim().toLowerCase().startsWith('<p');
+}
+
+// Generation counter: a new pick invalidates any still-pending fetch, so a slow
+// earlier response can never overwrite the gospel the user actually asked for.
+let gospelSeq = 0;
+
+async function fetchGospel(seq) {
+  const fresh = () => seq === gospelSeq;
+
+  // For preset issues in built-in languages, try static text first
+  if (!fromOther && issueKey && hasStaticTexts(L.code)) {
     try {
       const res = await fetch(`/texts/${L.code}/${issueKey}.htm`);
       if (res.ok) {
         const html = await res.text();
-        renderGospelHTML(html);
-        return;
+        if (looksLikeGospel(html)) {
+          if (!fresh()) return;
+          renderGospelHTML(html);
+          return;
+        }
       }
     } catch (e) { /* fall through to API */ }
   }
@@ -917,18 +955,24 @@ async function fetchGospel() {
     const matchIdx = L.iss.findIndex(
       name => name.toLowerCase() === cleaned.toLowerCase()
     );
-    if (matchIdx !== -1 && ISSUE_KEYS[matchIdx]) {
+    if (matchIdx !== -1 && ISSUE_KEYS[matchIdx] && hasStaticTexts(L.code)) {
       try {
         const sRes = await fetch(`/texts/${L.code}/${ISSUE_KEYS[matchIdx]}.htm`);
         if (sRes.ok) {
-          renderGospelHTML(await sRes.text());
-          return;
+          const sHtml = await sRes.text();
+          if (looksLikeGospel(sHtml)) {
+            if (!fresh()) return;
+            renderGospelHTML(sHtml);
+            return;
+          }
         }
       } catch (e2) { /* fall through to API text */ }
     }
 
+    if (!fresh()) return;
     renderGospel(data.text, cleaned);
   } catch (e) {
+    if (!fresh()) return;
     renderGospel(fallback(), issue);
   }
 }
@@ -972,7 +1016,7 @@ function renderGospel(text, displayIssue) {
     let dots = 0;
     for (let i = 0; i < stripped.length && i < 500; i++) {
       const c = stripped[i];
-      if (c === '.' || c === '。' || c === '।') {
+      if (c === '.' || c === '。' || c === '।' || c === '۔') {
         dots++;
         if (dots === 2) {
           opening = stripped.slice(0, i + 1).trim();
@@ -1016,6 +1060,7 @@ function fallback() {
 // CONTACT FORM
 // ═══════════════════════════════════════════════════════
 function submitContact() {
+  if (contactSent) return;
   const name = document.getElementById('f-name').value.trim();
   const email = document.getElementById('f-email').value.trim();
   const phone = document.getElementById('f-phone').value.trim();
@@ -1059,6 +1104,7 @@ function submitContact() {
     body: JSON.stringify({ name, email, phone, lang: L.code, issue, consentedAt, hp_field: hp })
   }).catch(() => {});
 
+  contactSent = true;
   showTY(false);
 }
 

@@ -59,8 +59,8 @@ export default async function handler(req, res) {
 
   const { lang, issue } = req.body || {};
 
-  // Validate language — allow known codes or any 2-5 char code (for dynamic languages)
-  if (!lang || typeof lang !== 'string' || lang.length < 2 || lang.length > 5) {
+  // Validate language — built-in and dynamic codes are always 2-3 lowercase letters
+  if (!lang || typeof lang !== 'string' || !/^[a-z]{2,3}$/.test(lang)) {
     return res.status(400).json({ error: 'Invalid language code' });
   }
 
@@ -112,7 +112,13 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json();
-    const raw = data.choices[0].message.content.trim();
+    // Refusals / filtered responses can come back with no content — fail loudly
+    // instead of crashing on .trim()
+    const raw = (data.choices?.[0]?.message?.content || '').trim();
+    if (!raw) {
+      console.error('OpenAI gospel: empty completion', JSON.stringify(data).slice(0, 500));
+      return res.status(502).json({ error: 'Upstream service error' });
+    }
     // First line = cleaned issue noun, then blank line, then gospel text
     const nlIdx = raw.indexOf('\n');
     let cleanedIssue = cleanIssue;
