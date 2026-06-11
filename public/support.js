@@ -150,7 +150,7 @@ const s = SUPPORT[lang];
 document.documentElement.lang = lang;
 document.documentElement.dir = s.dir;
 document.title = s.title + ' — Good News';
-document.getElementById('back-text').textContent = s.back;
+document.getElementById('back-link').setAttribute('aria-label', s.back);
 document.getElementById('support-title').textContent = s.title;
 
 const content = document.getElementById('support-content');

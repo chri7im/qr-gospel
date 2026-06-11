@@ -319,7 +319,7 @@ const p = PRIVACY[lang];
 document.documentElement.lang = lang;
 document.documentElement.dir = p.dir;
 document.title = p.title + ' — QR Gospel';
-document.getElementById('back-text').textContent = p.back;
+document.getElementById('back-link').setAttribute('aria-label', p.back);
 document.getElementById('policy-content').innerHTML = p.html;
 document.getElementById('updated-text').textContent = p.updated;
 

@@ -6,7 +6,12 @@ body {
 }
 .wrap {
   max-width: 560px; margin: 0 auto;
-  padding: 48px 28px 64px;
+  /* include iOS safe-area insets so content clears the notch / home indicator */
+  padding:
+    calc(48px + env(safe-area-inset-top))
+    calc(28px + env(safe-area-inset-right))
+    calc(64px + env(safe-area-inset-bottom))
+    calc(28px + env(safe-area-inset-left));
 }
 h1 {
   font-family: 'Lora', serif; font-size: 24px; font-weight: 500;
@@ -22,11 +27,17 @@ p, li {
 }
 ul { padding-inline-start: 20px; margin-bottom: 12px; }
 a { color: #1e3a5f; }
-.back {
-  display: inline-block; margin-bottom: 28px;
-  font-size: 14px; color: #8494a7; text-decoration: none;
+/* Circular back button — matches the app's back control */
+.back-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: rgba(26,35,50,0.08);
+  margin-bottom: 24px;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
 }
-.back:hover { color: #1e3a5f; }
+.back-btn:active { background: rgba(26,35,50,0.18); }
 .updated { font-size: 13px; color: #8494a7; margin-top: 32px; }
 
 /* Support page */
