@@ -20,7 +20,7 @@ p, li {
   font-size: 15px; line-height: 1.75; color: #3d5068;
   margin-bottom: 12px;
 }
-ul { padding-left: 20px; margin-bottom: 12px; }
+ul { padding-inline-start: 20px; margin-bottom: 12px; }
 a { color: #1e3a5f; }
 .back {
   display: inline-block; margin-bottom: 28px;

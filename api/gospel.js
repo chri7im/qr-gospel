@@ -45,19 +45,18 @@ function rateLimit(ip) {
 }
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') return res.status(200).end();
+  // The API is only called same-origin — no CORS headers means other origins
+  // cannot read responses from the browser (cheap abuse deterrent).
+  if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const ip = req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || 'unknown';
+  const fwd = String(req.headers['x-forwarded-for'] || '');
+  const ip = fwd.split(',')[0].trim() || req.headers['x-real-ip'] || 'unknown';
   if (!rateLimit(ip)) {
     return res.status(429).json({ error: 'Too many requests. Please wait a moment.' });
   }
 
-  const { lang, issue } = req.body;
+  const { lang, issue } = req.body || {};
 
   // Validate language — allow known codes or any 2-5 char code (for dynamic languages)
   if (!lang || typeof lang !== 'string' || lang.length < 2 || lang.length > 5) {
@@ -90,6 +89,7 @@ export default async function handler(req, res) {
   try {
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
+      signal: AbortSignal.timeout(45000),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`

@@ -1,3 +1,4 @@
+'use strict';
 // ═══════════════════════════════════════════════════════
 // LANGUAGE DATA
 // ═══════════════════════════════════════════════════════
@@ -20,7 +21,10 @@ const LANGS = [
     pn:'سامي', lng:'Arabic',
     consentLabel:'أوافق على أن يتواصل معي فريق QR Gospel حول مواضيع الإيمان. يمكنني إلغاء الاشتراك في أي وقت.',
     consentError:'يرجى الموافقة قبل الإرسال.',
-    privacyLink:'سياسة الخصوصية'
+    privacyLink:'سياسة الخصوصية',
+    formErr:'يرجى إدخال اسمك أو بريدك الإلكتروني.',
+    emailErr:'يرجى التحقق من بريدك الإلكتروني.',
+    share:'شارك مع صديق', aBack:'رجوع', aNext:'متابعة'
   },
   {
     code:'en', name:'English', en:'English', dir:'ltr',
@@ -40,7 +44,10 @@ const LANGS = [
     pn:'Paul', lng:'English',
     consentLabel:'I agree to be contacted by QR Gospel about faith-related topics. I can unsubscribe at any time.',
     consentError:'Please check the box above before submitting.',
-    privacyLink:'Privacy Policy'
+    privacyLink:'Privacy Policy',
+    formErr:'Please enter your name or email.',
+    emailErr:'Please check your email address.',
+    share:'Share with a friend', aBack:'Go back', aNext:'Continue'
   },
   {
     code:'fa', name:'فارسی', en:'Farsi', dir:'rtl',
@@ -60,7 +67,10 @@ const LANGS = [
     pn:'علی', lng:'Persian (Farsi)',
     consentLabel:'موافقم که تیم QR Gospel درباره موضوعات ایمانی با من تماس بگیرد. هر زمان می‌توانم لغو اشتراک کنم.',
     consentError:'لطفاً قبل از ارسال موافقت کنید.',
-    privacyLink:'سیاست حریم خصوصی'
+    privacyLink:'سیاست حریم خصوصی',
+    formErr:'لطفاً نام یا ایمیلت را وارد کن.',
+    emailErr:'لطفاً ایمیلت را بررسی کن.',
+    share:'با یک دوست به اشتراک بگذار', aBack:'بازگشت', aNext:'ادامه'
   },
   {
     code:'fr', name:'Français', en:'French', dir:'ltr',
@@ -80,7 +90,10 @@ const LANGS = [
     pn:'Paul', lng:'French',
     consentLabel:'J\'accepte d\'être contacté(e) par QR Gospel sur des sujets liés à la foi. Je peux me désinscrire à tout moment.',
     consentError:'Merci de cocher la case ci-dessus avant d\'envoyer.',
-    privacyLink:'Politique de confidentialité'
+    privacyLink:'Politique de confidentialité',
+    formErr:'Merci d’entrer ton nom ou ton e-mail.',
+    emailErr:'Vérifie ton adresse e-mail.',
+    share:'Partage avec un ami', aBack:'Retour', aNext:'Continuer'
   },
   {
     code:'de', name:'Deutsch', en:'German', dir:'ltr',
@@ -100,7 +113,10 @@ const LANGS = [
     pn:'Paul', lng:'German',
     consentLabel:'Ich bin einverstanden, von QR Gospel zu Glaubensthemen kontaktiert zu werden. Ich kann mich jederzeit abmelden.',
     consentError:'Bitte stimme oben zu, bevor du absendest.',
-    privacyLink:'Datenschutzerklärung'
+    privacyLink:'Datenschutzerklärung',
+    formErr:'Bitte gib deinen Namen oder deine E-Mail ein.',
+    emailErr:'Bitte überprüfe deine E-Mail-Adresse.',
+    share:'Teile es mit einem Freund', aBack:'Zurück', aNext:'Weiter'
   },
   {
     code:'hi', name:'हिन्दी', en:'Hindi', dir:'ltr',
@@ -120,7 +136,10 @@ const LANGS = [
     pn:'पॉल', lng:'Hindi',
     consentLabel:'मैं सहमत हूँ कि QR Gospel आस्था से जुड़े विषयों पर मुझसे संपर्क करे। मैं कभी भी सदस्यता रद्द कर सकता/सकती हूँ।',
     consentError:'कृपया भेजने से पहले ऊपर सहमति दें।',
-    privacyLink:'गोपनीयता नीति'
+    privacyLink:'गोपनीयता नीति',
+    formErr:'कृपया अपना नाम या ईमेल दर्ज करें।',
+    emailErr:'कृपया अपना ईमेल जांचें।',
+    share:'एक दोस्त के साथ साझा करें', aBack:'वापस', aNext:'जारी रखें'
   },
   {
     code:'it', name:'Italiano', en:'Italian', dir:'ltr',
@@ -140,7 +159,10 @@ const LANGS = [
     pn:'Paolo', lng:'Italian',
     consentLabel:'Accetto di essere contattato/a da QR Gospel su argomenti di fede. Posso annullare l\'iscrizione in qualsiasi momento.',
     consentError:'Per favore, spunta la casella sopra prima di inviare.',
-    privacyLink:'Informativa sulla privacy'
+    privacyLink:'Informativa sulla privacy',
+    formErr:'Inserisci il tuo nome o la tua email.',
+    emailErr:'Controlla il tuo indirizzo email.',
+    share:'Condividi con un amico', aBack:'Indietro', aNext:'Continua'
   },
   {
     code:'ja', name:'日本語', en:'Japanese', dir:'ltr',
@@ -160,7 +182,10 @@ const LANGS = [
     pn:'ポール', lng:'Japanese',
     consentLabel:'QR Gospelから信仰に関する連絡を受けることに同意します。いつでも配信停止できます。',
     consentError:'送信前に上のチェックボックスにチェックを入れてください。',
-    privacyLink:'プライバシーポリシー'
+    privacyLink:'プライバシーポリシー',
+    formErr:'お名前またはメールアドレスを入力してください。',
+    emailErr:'メールアドレスをご確認ください。',
+    share:'友達にシェアする', aBack:'戻る', aNext:'続ける'
   },
   {
     code:'ko', name:'한국어', en:'Korean', dir:'ltr',
@@ -180,7 +205,10 @@ const LANGS = [
     pn:'바울', lng:'Korean',
     consentLabel:'QR Gospel이 신앙 관련 주제로 연락하는 것에 동의합니다. 언제든지 구독을 취소할 수 있습니다.',
     consentError:'제출하기 전에 위의 체크박스를 선택해 주세요.',
-    privacyLink:'개인정보 처리방침'
+    privacyLink:'개인정보 처리방침',
+    formErr:'이름 또는 이메일을 입력해 주세요.',
+    emailErr:'이메일 주소를 확인해 주세요.',
+    share:'친구에게 공유하기', aBack:'뒤로', aNext:'계속'
   },
   {
     code:'zh', name:'中文', en:'Mandarin', dir:'ltr',
@@ -200,27 +228,33 @@ const LANGS = [
     pn:'保罗', lng:'Mandarin Chinese',
     consentLabel:'我同意 QR Gospel 就信仰相关话题与我联系。我可以随时取消订阅。',
     consentError:'请在提交前勾选上方的同意框。',
-    privacyLink:'隐私政策'
+    privacyLink:'隐私政策',
+    formErr:'请输入你的姓名或电子邮件。',
+    emailErr:'请检查你的电子邮件地址。',
+    share:'分享给朋友', aBack:'返回', aNext:'继续'
   },
   {
     code:'pt', name:'Português', en:'Portuguese', dir:'ltr',
     hdr:'Escolha seu idioma',
     ey:'Sobre nós', ti:'Sobre nós',
-    body:'Nossa única missão neste mundo é espalhar a melhor notícia que tu já ouviu! Amor, esperança, propósito — tudo pra ti!',
+    body:'Nossa única missão neste mundo é espalhar a melhor notícia que você já ouviu! Amor, esperança, propósito — tudo para você!',
     cta:'Pegue agora de graça →',
     qEy:'Questionário', qTi:'O que mais te incomoda na vida?',
     iss:['Vício','Ansiedade','Depressão','Medo','Culpa','Solidão','Ataques de pânico','Falta de propósito','Vergonha','Raiva','Luto','Inveja','Amargura','Vazio'],
     otl:'Outra coisa...',
     t4:'O que pesa no seu coração?', s4:'Descreva com suas próprias palavras.', ph4:'Escreva aqui...', b4:'Continuar →',
     tag:'Uma mensagem para você', ldg:'Preparando sua mensagem…', lmr:'Me conta mais! →',
-    t6:'Gostaria de saber mais?', s6:'Só partilha os teus dados se estiveres confortável. Vamos contactar-te com todo o cuidado.',
+    t6:'Gostaria de saber mais?', s6:'Compartilhe seus dados apenas se estiver confortável. Entraremos em contato com cuidado.',
     ln:'Nome', le:'E-mail', lp:'Telefone (opcional)',
     sb:'Enviar', sk:'Não, obrigado',
     tyT:'Obrigado!', tyS:'Entraremos em contato em breve.', tySkip:'Que você encontre paz.',
     pn:'Paulo', lng:'Brazilian Portuguese',
-    consentLabel:'Concordo em ser contactado(a) pela QR Gospel sobre temas de fé. Posso cancelar a subscrição a qualquer momento.',
+    consentLabel:'Concordo em ser contatado(a) pela QR Gospel sobre temas de fé. Posso cancelar a inscrição a qualquer momento.',
     consentError:'Por favor, marque a caixa acima antes de enviar.',
-    privacyLink:'Política de Privacidade'
+    privacyLink:'Política de Privacidade',
+    formErr:'Por favor, informe seu nome ou e-mail.',
+    emailErr:'Verifique seu e-mail.',
+    share:'Compartilhe com um amigo', aBack:'Voltar', aNext:'Continuar'
   },
   {
     code:'ru', name:'Русский', en:'Russian', dir:'ltr',
@@ -240,7 +274,10 @@ const LANGS = [
     pn:'Павел', lng:'Russian',
     consentLabel:'Я согласен(на), чтобы QR Gospel связывался со мной по вопросам веры. Я могу отписаться в любое время.',
     consentError:'Пожалуйста, поставьте галочку выше перед отправкой.',
-    privacyLink:'Политика конфиденциальности'
+    privacyLink:'Политика конфиденциальности',
+    formErr:'Пожалуйста, укажи имя или эл. почту.',
+    emailErr:'Проверь свой адрес эл. почты.',
+    share:'Поделись с другом', aBack:'Назад', aNext:'Продолжить'
   },
   {
     code:'es', name:'Español', en:'Spanish', dir:'ltr',
@@ -260,7 +297,10 @@ const LANGS = [
     pn:'Pablo', lng:'Spanish',
     consentLabel:'Acepto que QR Gospel me contacte sobre temas de fe. Puedo darme de baja en cualquier momento.',
     consentError:'Por favor, marca la casilla de arriba antes de enviar.',
-    privacyLink:'Política de privacidad'
+    privacyLink:'Política de privacidad',
+    formErr:'Por favor, introduce tu nombre o correo.',
+    emailErr:'Revisa tu correo electrónico.',
+    share:'Comparte con un amigo', aBack:'Volver', aNext:'Continuar'
   },
   {
     code:'sw', name:'Kiswahili', en:'Swahili', dir:'ltr',
@@ -280,9 +320,15 @@ const LANGS = [
     pn:'Paulo', lng:'Swahili',
     consentLabel:'Ninakubali kuwasiliana na QR Gospel kuhusu mada za imani. Ninaweza kujiondoa wakati wowote.',
     consentError:'Tafadhali weka alama kwenye kisanduku hapo juu kabla ya kutuma.',
-    privacyLink:'Sera ya Faragha'
+    privacyLink:'Sera ya Faragha',
+    formErr:'Tafadhali weka jina au barua pepe yako.',
+    emailErr:'Tafadhali angalia barua pepe yako.',
+    share:'Shiriki na rafiki', aBack:'Rudi nyuma', aNext:'Endelea'
   }
 ];
+
+// Stable reference to English — LANGS order shifts when a dynamic language is injected at index 0
+const LANG_EN = LANGS[1];
 
 // ═══════════════════════════════════════════════════════
 // OPENING SENTENCES (hardcoded per language: [sentence1, sentence2_before, sentence2_after])
@@ -318,23 +364,16 @@ const ISSUE_KEYS = [
   'bitterness','emptiness'
 ];
 
-// "Name or email required" message, per built-in language code (dynamic languages fall back to en)
-const FORM_ERR = {
-  ar:'يرجى إدخال اسمك أو بريدك الإلكتروني.',
-  en:'Please enter your name or email.',
-  fa:'لطفاً نام یا ایمیلت را وارد کن.',
-  fr:'Merci d’entrer ton nom ou ton e-mail.',
-  de:'Bitte gib deinen Namen oder deine E-Mail ein.',
-  hi:'कृपया अपना नाम या ईमेल दर्ज करें।',
-  it:'Inserisci il tuo nome o la tua email.',
-  ja:'お名前またはメールアドレスを入力してください。',
-  ko:'이름 또는 이메일을 입력해 주세요.',
-  zh:'请输入你的姓名或电子邮件。',
-  pt:'Indica o teu nome ou e-mail.',
-  ru:'Пожалуйста, укажи имя или эл. почту.',
-  es:'Por favor, introduce tu nombre o correo.',
-  sw:'Tafadhali weka jina au barua pepe yako.'
-};
+// Same address-shape check the server uses — catches typos before the fire-and-forget submit
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// localStorage can throw (private mode, blocked storage) — degrade to no caching
+function storageGet(key) {
+  try { return localStorage.getItem(key); } catch (e) { return null; }
+}
+function storageSet(key, value) {
+  try { localStorage.setItem(key, value); } catch (e) {}
+}
 
 // ═══════════════════════════════════════════════════════
 // STATE
@@ -398,7 +437,7 @@ async function detectCountryLangCode() {
 async function loadDynamicLang(code) {
   // 1. Check localStorage cache
   const cacheKey = 'lang_' + code;
-  const cached = localStorage.getItem(cacheKey);
+  const cached = storageGet(cacheKey);
   if (cached) {
     try { return JSON.parse(cached); } catch (e) {}
   }
@@ -409,7 +448,7 @@ async function loadDynamicLang(code) {
     if (staticRes.ok) {
       const data = await staticRes.json();
       if (data.iss && data.iss.length === 14) {
-        localStorage.setItem(cacheKey, JSON.stringify(data));
+        storageSet(cacheKey, JSON.stringify(data));
         return data;
       }
     }
@@ -426,7 +465,7 @@ async function loadDynamicLang(code) {
     const data = await res.json();
     if (!data.iss || data.iss.length !== 14) return null;
 
-    localStorage.setItem(cacheKey, JSON.stringify(data));
+    storageSet(cacheKey, JSON.stringify(data));
     return data;
   } catch (e) { return null; }
 }
@@ -458,9 +497,14 @@ function buildLangEntry(code, t) {
     ln: t.ln, le: t.le, lp: t.lp,
     sb: t.sb, sk: t.sk,
     tyT: t.tyT, tyS: t.tyS, tySkip: t.tySkip,
-    consentLabel: t.consentLabel || LANGS[1].consentLabel,
-    consentError: t.consentError || LANGS[1].consentError,
-    privacyLink: t.privacyLink || LANGS[1].privacyLink,
+    consentLabel: t.consentLabel || LANG_EN.consentLabel,
+    consentError: t.consentError || LANG_EN.consentError,
+    privacyLink: t.privacyLink || LANG_EN.privacyLink,
+    formErr: t.formErr || LANG_EN.formErr,
+    emailErr: t.emailErr || LANG_EN.emailErr,
+    share: t.share || LANG_EN.share,
+    aBack: t.aBack || LANG_EN.aBack,
+    aNext: t.aNext || LANG_EN.aNext,
     pn: t.pn || 'Paul', lng: enName
   };
 }
@@ -477,7 +521,15 @@ function buildLangEntry(code, t) {
     const el = document.createElement('div');
     el.className = 'lang-item';
     el.id = 'li-' + i;
-    el.innerHTML = `<span class="lang-name">${lang.name}</span><span class="lang-en">${lang.en}</span>`;
+    el.setAttribute('role', 'option');
+    el.setAttribute('aria-selected', 'false');
+    const native = document.createElement('span');
+    native.className = 'lang-name';
+    native.textContent = lang.name;
+    const english = document.createElement('span');
+    english.className = 'lang-en';
+    english.textContent = lang.en;
+    el.append(native, english);
     el.addEventListener('click', () => {
       scroll.scrollTo({ top: i * ITEM_H, behavior: 'smooth' });
       L = LANGS[i];
@@ -503,10 +555,13 @@ function buildLangEntry(code, t) {
     const clamped = Math.max(0, Math.min(LANGS.length - 1, idx));
     document.querySelectorAll('.lang-item').forEach((el, i) => {
       el.classList.toggle('hi', i === clamped);
+      el.setAttribute('aria-selected', i === clamped ? 'true' : 'false');
     });
     L = LANGS[clamped];
     document.getElementById('p1-header-text').textContent = L.hdr;
-    document.getElementById('arrow-btn').classList.add('show');
+    const arrow = document.getElementById('arrow-btn');
+    arrow.classList.add('show');
+    arrow.setAttribute('aria-label', L.aNext);
   }
 
   scroll.addEventListener('scroll', highlight, { passive: true });
@@ -514,6 +569,9 @@ function buildLangEntry(code, t) {
   // ── KEYBOARD NAVIGATION (global) ──
   document.addEventListener('keydown', (e) => {
     const key = e.key;
+    // When a button/link/field has focus, let it handle Enter/Space natively
+    // (otherwise Enter on a focused back button would navigate forward).
+    const interactive = ['BUTTON', 'A', 'INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
 
     // ── Backspace / Escape → go back ──
     if (key === 'Backspace' || key === 'Escape') {
@@ -540,7 +598,7 @@ function buildLangEntry(code, t) {
         const idx = Math.round(scroll.scrollTop / ITEM_H);
         const target = Math.min(LANGS.length - 1, idx + 1);
         scroll.scrollTo({ top: target * ITEM_H, behavior: 'smooth' });
-      } else if (key === 'Enter' || key === ' ') {
+      } else if ((key === 'Enter' || key === ' ') && !interactive) {
         e.preventDefault();
         goTo('page2');
       }
@@ -549,7 +607,7 @@ function buildLangEntry(code, t) {
 
     // ── Page 2: about us ──
     if (cur === 'page2') {
-      if (key === 'Enter' || key === ' ' || key === 'ArrowRight' || key === 'ArrowDown') {
+      if (((key === 'Enter' || key === ' ') && !interactive) || key === 'ArrowRight' || key === 'ArrowDown') {
         e.preventDefault();
         goTo('page3');
       }
@@ -568,17 +626,13 @@ function buildLangEntry(code, t) {
         }
         return;
       }
-      // Arrow keys scroll the issue list
-      if (key === 'ArrowDown' || key === 'ArrowUp') {
-        // Let natural scroll happen on the list
-        return;
-      }
+      // Arrow keys scroll the issue list naturally
       return;
     }
 
     // ── Page 4: custom input ──
     if (cur === 'page4') {
-      if (key === 'Enter' && !e.shiftKey) {
+      if (key === 'Enter' && !e.shiftKey && e.target.tagName !== 'BUTTON') {
         e.preventDefault();
         submitOther();
       }
@@ -587,7 +641,11 @@ function buildLangEntry(code, t) {
 
     // ── Page 5: gospel ──
     if (cur === 'page5') {
-      if (key === 'Enter' || key === ' ' || key === 'ArrowRight' || key === 'ArrowDown') {
+      if (key === 'ArrowDown' || key === 'ArrowUp') {
+        // Arrows scroll the message instead of leaving the page
+        e.preventDefault();
+        document.getElementById('p5-body').scrollBy({ top: key === 'ArrowDown' ? 160 : -160, behavior: 'smooth' });
+      } else if (((key === 'Enter' || key === ' ') && !interactive) || key === 'ArrowRight') {
         e.preventDefault();
         goTo('page6');
       }
@@ -596,7 +654,7 @@ function buildLangEntry(code, t) {
 
     // ── Page 6: contact ──
     if (cur === 'page6') {
-      if (key === 'Enter' && e.target.tagName !== 'INPUT') {
+      if (key === 'Enter' && !interactive) {
         e.preventDefault();
         submitContact();
       }
@@ -673,12 +731,19 @@ function goTo(pageId) {
   document.documentElement.setAttribute('dir', L.dir);
   document.documentElement.setAttribute('lang', L.code);
 
+  // Localise the back button's accessible name
+  next.querySelectorAll('.back-btn').forEach(b => b.setAttribute('aria-label', L.aBack));
+
   // Fill page content
   if (pageId === 'page2') fillP2();
   if (pageId === 'page3') fillP3();
   if (pageId === 'page4') fillP4();
   if (pageId === 'page5') fillP5Header(false);
   if (pageId === 'page6') fillP6();
+
+  // Move focus to the new page's heading so screen readers announce the change
+  const target = next.querySelector('.pg-focus');
+  if (target) requestAnimationFrame(() => target.focus({ preventScroll: true }));
 }
 
 // ═══════════════════════════════════════════════════════
@@ -720,6 +785,7 @@ function fillP3() {
 
   L.iss.forEach((iss, idx) => {
     const btn = document.createElement('button');
+    btn.type = 'button';
     btn.className = 'issue-btn';
     btn.textContent = iss;
     btn.onclick = () => pickIssue(iss, idx);
@@ -727,6 +793,7 @@ function fillP3() {
   });
 
   const other = document.createElement('button');
+  other.type = 'button';
   other.className = 'issue-btn other-opt';
   other.textContent = L.otl;
   other.onclick = () => { fromOther = true; goTo('page4'); };
@@ -759,11 +826,13 @@ function fillP6() {
   set('p6-title', L.t6, L.dir);
   const subEl = document.getElementById('p6-sub');
   subEl.setAttribute('dir', L.dir);
-  // Split on first period+space or period+end to add a line break between sentences
+  // Split on first period+space to add a line break between sentences
+  // (built with DOM nodes — dynamic-language strings must never be parsed as HTML)
   const s6 = L.s6;
   const dotIdx = s6.indexOf('. ');
+  subEl.textContent = '';
   if (dotIdx > 0) {
-    subEl.innerHTML = s6.slice(0, dotIdx + 1) + '<br>' + s6.slice(dotIdx + 2);
+    subEl.append(s6.slice(0, dotIdx + 1), document.createElement('br'), s6.slice(dotIdx + 2));
   } else {
     subEl.textContent = s6;
   }
@@ -775,21 +844,21 @@ function fillP6() {
   // Consent checkbox
   const consentLabel = document.getElementById('consent-label');
   const privacyLinkText = L.privacyLink || 'Privacy Policy';
-  consentLabel.textContent = L.consentLabel || LANGS[1].consentLabel;
+  consentLabel.textContent = L.consentLabel || LANG_EN.consentLabel;
   consentLabel.setAttribute('dir', L.dir);
   const consentErrEl = document.getElementById('consent-error');
-  consentErrEl.textContent = L.consentError || LANGS[1].consentError;
+  consentErrEl.textContent = L.consentError || LANG_EN.consentError;
   consentErrEl.setAttribute('dir', L.dir);
   document.getElementById('f-consent').checked = false;
   consentErrEl.style.display = 'none';
   const formErrEl = document.getElementById('form-error');
-  formErrEl.textContent = FORM_ERR[L.code] || FORM_ERR.en;
+  formErrEl.textContent = L.formErr || LANG_EN.formErr;
   formErrEl.setAttribute('dir', L.dir);
   formErrEl.style.display = 'none';
   // Privacy footer
   const footerLink = document.getElementById('p6-privacy-link');
   footerLink.textContent = privacyLinkText;
-  footerLink.href = '/privacy?lang=' + L.code;
+  footerLink.href = '/privacy?lang=' + encodeURIComponent(L.code);
   // Reset
   document.getElementById('p6-form').style.display = 'block';
   document.getElementById('ty-wrap').style.display = 'none';
@@ -891,25 +960,28 @@ function renderGospelHTML(html) {
 }
 
 function renderGospel(text, displayIssue) {
-  // Opening is hardcoded from our translations; strip the API's version if present
-  const opening = buildOpening(L.code, displayIssue);
+  // The API writes the "DNA" opening itself, in the right language and with correct
+  // grammar around the issue noun. Keep it as the styled opening when present;
+  // only fall back to our per-language template when it's missing (e.g. offline fallback).
   let stripped = text.trim();
-  // Detect the DNA opening (appears in first ~300 chars in all languages)
+  let opening = '';
   const head = stripped.slice(0, 300);
   if (head.indexOf('DNA') !== -1 || head.indexOf('ДНК') !== -1) {
-    // Strip the first two sentences (DNA sentence + root-cause sentence)
+    // The opening is the first two sentences (DNA sentence + root-cause sentence)
     let dots = 0;
     for (let i = 0; i < stripped.length && i < 500; i++) {
       const c = stripped[i];
       if (c === '.' || c === '。' || c === '।') {
         dots++;
         if (dots === 2) {
+          opening = stripped.slice(0, i + 1).trim();
           stripped = stripped.slice(i + 1).trim();
           break;
         }
       }
     }
   }
+  if (!opening) opening = buildOpening(L.code, displayIssue);
   const paragraphs = stripped.split(/\n\n+/);
 
   const d = L.dir;
@@ -946,12 +1018,22 @@ function submitContact() {
   const name = document.getElementById('f-name').value.trim();
   const email = document.getElementById('f-email').value.trim();
   const phone = document.getElementById('f-phone').value.trim();
+  const hp = document.getElementById('f-hp').value;
 
   // Require at least one of name/email — show a gentle inline error rather than failing silently
   const formErr = document.getElementById('form-error');
   if (!name && !email) {
+    formErr.textContent = L.formErr || LANG_EN.formErr;
     formErr.style.display = 'block';
     document.getElementById('f-name').focus();
+    return;
+  }
+  // Catch email typos here — the submit below is fire-and-forget, so a server-side
+  // rejection would silently lose the submission
+  if (email && !EMAIL_RE.test(email)) {
+    formErr.textContent = L.emailErr || LANG_EN.emailErr;
+    formErr.style.display = 'block';
+    document.getElementById('f-email').focus();
     return;
   }
   formErr.style.display = 'none';
@@ -967,11 +1049,13 @@ function submitContact() {
 
   const consentedAt = new Date().toISOString();
 
-  // Send to API (fire-and-forget — don't block the thank-you)
+  // Send to API (fire-and-forget — don't block the thank-you).
+  // keepalive lets the request complete even if the tab closes right away.
   fetch('/api/contact', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, email, phone, lang: L.code, issue, consentedAt })
+    keepalive: true,
+    body: JSON.stringify({ name, email, phone, lang: L.code, issue, consentedAt, hp_field: hp })
   }).catch(() => {});
 
   showTY(false);
@@ -987,22 +1071,18 @@ function showTY(skipped) {
   if (navigator.share) {
     const btn = document.getElementById('share-btn');
     btn.style.display = 'inline-flex';
-    const shareTexts = {
-      ar:'شارك مع صديق',en:'Share with a friend',fa:'با یک دوست به اشتراک بگذار',
-      fr:'Partage avec un ami',de:'Teile es mit einem Freund',hi:'एक दोस्त के साथ साझा करें',
-      it:'Condividi con un amico',ja:'友達にシェアする',ko:'친구에게 공유하기',
-      zh:'分享给朋友',pt:'Compartilhe com um amigo',ru:'Поделись с другом',
-      es:'Comparte con un amigo',sw:'Shiriki na rafiki'
-    };
-    document.getElementById('share-btn-text').textContent = shareTexts[L.code] || shareTexts.en;
+    document.getElementById('share-btn-text').textContent = L.share || LANG_EN.share;
   }
+
+  const title = document.getElementById('ty-title');
+  requestAnimationFrame(() => title.focus({ preventScroll: true }));
 }
 
 function shareLink() {
   navigator.share({
     title: 'Good News',
     text: L.body,
-    url: 'https://qr-gospel.com'
+    url: 'https://www.qr-gospel.com'
   }).catch(() => {});
 }
 
@@ -1016,7 +1096,13 @@ document.addEventListener("click", (e) => {
   if (!act) return;
   const a = act.getAttribute("data-action");
   if (a === "submitOther") submitOther();
-  else if (a === "submitContact") submitContact();
   else if (a === "shareLink") shareLink();
   else if (a === "skip") showTY(true);
+});
+
+// Real form semantics: native submit (Enter in a field, the submit button, the
+// software keyboard's "Go") all funnel through one handler
+document.getElementById('p6-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  submitContact();
 });

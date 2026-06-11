@@ -4,11 +4,11 @@
 A mobile-first, multi-language gospel presentation website. People scan a QR code on a sticker in public, land on this page, pick their language, pick their biggest life problem, and receive a pre-written gospel presentation (Tim Keller style). They can optionally leave contact details and receive a localized welcome email.
 
 ## Tech stack
-- Pure HTML/CSS/JS single-page app (`index.html`) — no framework, no build step
+- Pure HTML/CSS/JS single-page app — no framework, no build step. Markup in `index.html`, all CSS/JS externalized to `public/` (strict CSP forbids inline styles/scripts)
 - Vercel serverless functions (`api/`) for OpenAI API fallback, translation, contact form, and geo detection
-- Fonts: Lora (serif, for body/gospel text) + DM Sans (sans, for UI chrome)
+- Fonts: Lora (serif, for body/gospel text) + DM Sans (sans, for UI chrome) — **self-hosted** in `public/fonts/` (variable woff2, OFL), no Google Fonts requests (GDPR + speed)
 - Colour scheme: white background, navy blue accent (`#1e3a5f`)
-- Deployed to: qr-gospel.com via Vercel (auto-deploys from GitHub)
+- Deployed to: www.qr-gospel.com (canonical) via Vercel (auto-deploys from GitHub)
 - Repo: github.com/chri7im/qr-gospel
 
 ## Flow (6 pages, all in one HTML file, JS-driven transitions)
@@ -29,7 +29,8 @@ A mobile-first, multi-language gospel presentation website. People scan a QR cod
 ## File structure
 ```
 qr-gospel/
-├── index.html              ← entire frontend (all 6 pages, CSS, JS)
+├── index.html              ← markup for all 6 pages (no inline CSS/JS — strict CSP)
+├── privacy.html            ← /privacy shell, content injected by public/privacy.js
 ├── api/
 │   ├── gospel.js           ← OpenAI API fallback for custom issues (rate-limited, hardened)
 │   ├── translate.js         ← Auto-translates UI for new languages, commits to GitHub
@@ -44,11 +45,20 @@ qr-gospel/
 │   └── {dynamic}/
 │       └── ui.json          ← Auto-committed UI translations for new languages
 ├── public/
+│   ├── app.js               ← all frontend logic + LANGS i18n table (14 languages)
+│   ├── styles.css           ← all app styling (incl. a11y: focus, reduced-motion, RTL)
+│   ├── privacy.js           ← privacy policy content in 14 languages
+│   ├── privacy.css          ← privacy page styling
+│   ├── fonts.css            ← @font-face for self-hosted fonts (unicode-range subsets)
+│   ├── fonts/               ← Lora + DM Sans variable woff2 (16 files) + LICENSE.txt
 │   ├── favicon.svg          ← Navy blue circle with white cross
+│   ├── apple-touch-icon.png ← 180×180 iOS home-screen icon
 │   ├── og.png               ← Open Graph image for social sharing (1200×630)
 │   ├── og.svg               ← OG image source
 │   └── qr-code.svg          ← Branded QR code for stickers
-├── vercel.json              ← Routing config
+├── robots.txt               ← allows all, hides /api/ and /texts/, points to sitemap
+├── sitemap.xml              ← / and /privacy
+├── vercel.json              ← Routing + security headers (CSP, HSTS, COOP…) + font caching
 ├── package.json             ← type: module
 ├── .gitignore
 └── CLAUDE.md                ← this file
@@ -73,13 +83,24 @@ When a visitor's phone language isn't one of the 14 built-in:
 ## API security
 - **No client-side prompts** — frontend sends only `{ lang, issue }`, prompt is built server-side
 - **System prompt** constrains output to gospel content only (no recipes, code, jokes, etc.)
-- **Rate limiting** — 10 requests/minute per IP on gospel API
+- **Rate limiting** — gospel: 10/min/IP; translate: 6/10min/IP; contact: 5/10min/IP (in-memory, per instance)
 - **Input validation** — issue capped at 200 chars, language codes validated against ISO 639-1
 - Built-in languages are rejected by translate API (no wasted calls)
+- **No CORS headers** — APIs are same-origin only; other origins can't read responses from a browser
+- **Consent enforced server-side** — contact API rejects submissions without a valid `consentedAt` timestamp (GDPR)
+- **Honeypot** — hidden `hp_field` input; filled = silent drop, no email sent
+- **Welcome-email dedupe** — max one welcome email per address per 24h (anti email-bombing)
+- Upstream fetches (OpenAI, GitHub, Resend) all have abort timeouts
+
+## i18n string sync (IMPORTANT)
+Adding a UI string = update **three places together** or dynamic languages break:
+1. Every entry in `LANGS` (public/app.js, 14 entries)
+2. `TEMPLATE` in api/translate.js (so new dynamic languages get it translated)
+3. `buildLangEntry()` in public/app.js (with an English fallback for older cached ui.json)
 
 ## Contact form emails
-- **Owner notification**: HTML table with name, email, phone, language, issue
-- **Visitor welcome email**: Warm, personal, localized in all 14 languages. Stored in `api/contact.js` (not AI-generated). Navy blue header, serif body, RTL support for Arabic/Farsi.
+- **Owner notification**: HTML table (plus plain-text part) with name, email, phone, language, issue, consent timestamp. If this send fails the API returns 502 and logs — it's the only persistence of the submission.
+- **Visitor welcome email**: Warm, personal, localized in all 14 languages. Stored in `api/contact.js` (not AI-generated). Navy blue header, serif body, RTL support for Arabic/Farsi, unsubscribe line, privacy link, plain-text alternative.
 
 ## Keyboard navigation
 - `↑`/`↓`/`←`/`→` — scroll language picker (page 1)
@@ -98,9 +119,12 @@ Addiction, Anxiety, Depression, Fear, Guilt, Loneliness, Panic attacks, Lack of 
 - **Mobile first** — max-width ~420px, everything optimised for thumb reach
 - **RTL support** — Arabic and Farsi get `dir="rtl"` on the html element
 - **No frameworks** — vanilla JS only, no build step
-- **Informal tone** — all languages use informal "you" (du, tu, ты, etc.)
+- **Informal tone** — all languages use informal "you" (du, tu, ты, etc.); Portuguese is Brazilian (você)
 - **Titles** — all 24px Lora serif in `#1e3a5f` (matching button color)
 - **Contact page** — consent-focused intro ("share only if comfortable")
+- **Strict CSP** — no inline `style=""`/`onclick=""` allowed anywhere; use classes + addEventListener
+- **Accessibility** — inactive pages are `visibility: hidden`; focus moves to the new page's heading on transition; aria-labels localized via `aBack`/`aNext` keys; `prefers-reduced-motion` honoured
+- **Privacy/GDPR** — privacy policy at /privacy in 14 languages discloses processors (Vercel, Resend) and the issue+language collection; consent checkbox unticked by default and enforced server-side
 
 ## How to run locally
 ```bash

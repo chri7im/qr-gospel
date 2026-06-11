@@ -20,21 +20,26 @@ body {
 }
 
 /* ── PAGE TRANSITIONS ── */
+/* visibility keeps inactive pages out of the tab order and accessibility tree */
 .page {
   position: absolute; inset: 0;
   display: flex; flex-direction: column;
   opacity: 0; pointer-events: none;
-  transition: opacity 0.32s ease, transform 0.32s ease;
+  visibility: hidden;
+  transition: opacity 0.32s ease, transform 0.32s ease, visibility 0s linear 0.32s;
   transform: translateX(28px);
   overflow: hidden;
 }
 .page.active {
   opacity: 1; pointer-events: all;
+  visibility: visible;
+  transition: opacity 0.32s ease, transform 0.32s ease, visibility 0s;
   transform: translateX(0);
 }
 .page.exit {
   opacity: 0; transform: translateX(-28px);
-  transition: opacity 0.22s ease, transform 0.22s ease;
+  visibility: visible;
+  transition: opacity 0.22s ease, transform 0.22s ease, visibility 0s;
 }
 
 /* ── BACK BUTTON ── */
@@ -141,7 +146,7 @@ body {
 .lang-en {
   font-size: 9px; letter-spacing: 2px;
   text-transform: uppercase;
-  color: rgba(26,35,50,0.2);
+  color: rgba(26,35,50,0.35);
   transition: all 0.22s ease;
 }
 .lang-item.hi .lang-name {
@@ -296,7 +301,7 @@ body {
 
 .p5-header {
   flex-shrink: 0;
-  padding: 26px 24px 16px;
+  padding: 14px;
   border-bottom: 1px solid rgba(26,35,50,0.08);
   text-align: center;
 }
@@ -322,7 +327,7 @@ body {
   animation: spin 0.9s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
-.loading-txt { font-size: 13px; color: rgba(26,35,50,0.32); }
+.loading-txt { font-size: 13px; color: rgba(26,35,50,0.55); }
 
 /* Gospel content */
 .gospel-wrap { display: none; }
@@ -430,13 +435,17 @@ body {
   text-align: center; margin-top: 12px;
 }
 .p6-footer a {
-  font-size: 12px; color: #8494a7; text-decoration: none;
+  font-size: 12px; color: #6b7a8d; text-decoration: none;
 }
 .p6-footer a:hover { text-decoration: underline; }
 .skip-link {
+  display: block; width: 100%;
+  background: none; border: none;
+  font-family: inherit;
   text-align: center; margin-top: 18px;
-  font-size: 14px; color: #8494a7;
+  font-size: 14px; color: #6b7a8d;
   cursor: pointer; padding: 8px;
+  -webkit-appearance: none; appearance: none;
 }
 
 /* Thank you */
@@ -471,5 +480,37 @@ body {
 
 /* ── CSP refactor: utilities + former inline styles ── */
 .is-hidden { display: none; }
-.share-btn svg { vertical-align: middle; margin-right: 6px; }
-.p5-header { padding: 14px; }
+.share-btn svg { vertical-align: middle; margin-inline-end: 6px; }
+
+/* ── ACCESSIBILITY ── */
+/* Headings receive focus on page transitions so screen readers announce them */
+.pg-focus:focus { outline: none; }
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible {
+  outline: 2px solid #1e3a5f;
+  outline-offset: 2px;
+}
+/* Letter-spacing breaks joined scripts (Arabic, Farsi) */
+[dir="rtl"] #p1-header-text { letter-spacing: 0; }
+/* Honeypot field — hidden from humans, invisible to the layout */
+.hp-field {
+  position: absolute;
+  width: 1px; height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+/* No-JS notice (everything else on the page is built by JS) */
+.noscript-msg {
+  position: absolute; inset: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  padding: 40px 28px; text-align: center;
+  background: #ffffff; color: #1a2332;
+  font-size: 16px; line-height: 1.6;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

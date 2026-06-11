@@ -123,7 +123,7 @@ Entraremos em contato em breve. Até lá, lembre-se: você é amado(a) mais do q
   },
   ru: {
     subject: 'Спасибо — сообщение от команды Good News',
-    greeting: name => `Дорогой друг ${name ? name + ',' : ','}`,
+    greeting: name => name ? `Дорогой ${name},` : 'Дорогой друг,',
     body: `Мы рады, что ты сделал этот шаг. То, что ты прочитал сегодня — это не просто слова. Это настоящая история о любви настолько глубокой и личной, что она была написана именно для тебя.
 
 Мы хотим, чтобы ты знал: ты не один. Есть люди, которым ты не безразличен, и которые хотели бы пройти этот путь вместе с тобой.
@@ -186,10 +186,30 @@ function rateLimit(ip) {
   return true;
 }
 
+// One welcome email per address per 24h — keeps the form from being used to
+// bombard a victim's inbox from rotating IPs.
+const sentWelcome = new Map();
+function welcomeAllowed(email) {
+  const now = Date.now();
+  const last = sentWelcome.get(email);
+  if (last && now - last < 24 * 60 * 60 * 1000) return false;
+  sentWelcome.set(email, now);
+  if (sentWelcome.size > 10000) {
+    for (const [k, t] of sentWelcome) {
+      if (now - t > 24 * 60 * 60 * 1000) sentWelcome.delete(k);
+    }
+  }
+  return true;
+}
+
 function buildWelcomeEmail(name, lang) {
   const w = WELCOME[lang] || WELCOME.en;
-  const dir = ['ar', 'fa'].includes(lang) ? 'rtl' : 'ltr';
+  // lang is user-supplied: only let validated codes into the markup/URL
+  const safeLang = /^[a-z]{2,3}$/.test(lang) ? lang : 'en';
+  const dir = ['ar', 'fa'].includes(safeLang) ? 'rtl' : 'ltr';
   const align = dir === 'rtl' ? 'right' : 'left';
+  const unsubscribe = w.unsubscribe || WELCOME.en.unsubscribe;
+  const privacyUrl = `https://www.qr-gospel.com/privacy?lang=${safeLang}`;
 
   const bodyHtml = w.body.split('\n\n').map(p =>
     `<p style="margin:0 0 16px 0;line-height:1.8;">${p}</p>`
@@ -199,9 +219,11 @@ function buildWelcomeEmail(name, lang) {
 
   return {
     subject: w.subject,
+    // Plain-text alternative improves deliverability and accessibility
+    text: `${w.greeting(name)}\n\n${w.body}\n\n${w.closing}\n\n${unsubscribe}\n\nhttps://www.qr-gospel.com · ${privacyUrl}`,
     html: `
 <!DOCTYPE html>
-<html dir="${dir}">
+<html dir="${dir}" lang="${safeLang}">
 <head><meta charset="UTF-8"></head>
 <body style="margin:0;padding:0;background:#f0f4f8;font-family:'Georgia','Times New Roman',serif;">
   <div style="max-width:560px;margin:40px auto;background:#ffffff;border-radius:12px;overflow:hidden;">
@@ -214,12 +236,12 @@ function buildWelcomeEmail(name, lang) {
       <p style="margin:24px 0 0 0;color:#6b7a8d;">${closingHtml}</p>
     </div>
     <div style="padding:24px 36px 16px;text-align:${align};">
-      <p style="margin:0;font-size:12px;color:#9ba8b5;line-height:1.6;">${w.unsubscribe || WELCOME.en.unsubscribe}</p>
+      <p style="margin:0;font-size:12px;color:#9ba8b5;line-height:1.6;">${unsubscribe}</p>
     </div>
     <div style="padding:12px 36px 20px;background:#f0f4f8;text-align:center;">
-      <a href="https://qr-gospel.com" style="color:#1e3a5f;font-size:13px;text-decoration:none;">qr-gospel.com</a>
+      <a href="https://www.qr-gospel.com" style="color:#1e3a5f;font-size:13px;text-decoration:none;">qr-gospel.com</a>
       <span style="color:#ccc;margin:0 8px;">·</span>
-      <a href="https://qr-gospel.com/privacy?lang=${lang || 'en'}" style="color:#9ba8b5;font-size:12px;text-decoration:none;">Privacy</a>
+      <a href="${privacyUrl}" style="color:#9ba8b5;font-size:12px;text-decoration:none;">Privacy</a>
     </div>
   </div>
 </body>
@@ -228,21 +250,20 @@ function buildWelcomeEmail(name, lang) {
 }
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') return res.status(200).end();
+  // Same-origin API — intentionally no CORS headers
+  if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const ip = req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || 'unknown';
+  const fwd = String(req.headers['x-forwarded-for'] || '');
+  const ip = fwd.split(',')[0].trim() || req.headers['x-real-ip'] || 'unknown';
   if (!rateLimit(ip)) {
     return res.status(429).json({ error: 'Too many requests. Please wait a moment.' });
   }
 
-  // Parse, trim and length-cap every field (defends against oversized / malformed payloads).
+  // Parse, trim, strip control characters and length-cap every field
+  // (defends against oversized payloads and header/markup tricks).
   const body = req.body || {};
-  const str = (v, max) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
+  const str = (v, max) => (typeof v === 'string' ? v.replace(/[\u0000-\u001F\u007F]+/g, ' ').trim().slice(0, max) : '');
   const name = str(body.name, 100);
   const email = str(body.email, 200);
   const phone = str(body.phone, 40);
@@ -250,12 +271,24 @@ export default async function handler(req, res) {
   const issue = str(body.issue, 200);
   const consentedAt = str(body.consentedAt, 40);
 
+  // Honeypot: a hidden field humans never see. Bots that fill it get a quiet
+  // "success" and no email is sent.
+  if (str(body.hp_field, 200)) {
+    return res.status(200).json({ ok: true });
+  }
+
   if (!name && !email) {
     return res.status(400).json({ error: 'Name or email required' });
   }
 
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return res.status(400).json({ error: 'Invalid email' });
+  }
+
+  // GDPR: consent must be given and demonstrable — reject submissions that
+  // bypass the consent checkbox (the form always sends a timestamp).
+  if (!consentedAt || isNaN(Date.parse(consentedAt))) {
+    return res.status(400).json({ error: 'Consent required' });
   }
 
   const apiKey = process.env.RESEND_API_KEY;
@@ -268,9 +301,14 @@ export default async function handler(req, res) {
   }
 
   try {
-    // 1. Notify site owner
-    await fetch('https://api.resend.com/emails', {
+    // 1. Notify site owner — this is the only place the submission is persisted,
+    //    so a failure here must not be swallowed.
+    const ownerText =
+      `New contact submission\n\nName: ${name || '—'}\nEmail: ${email || '—'}\nPhone: ${phone || '—'}\n` +
+      `Language: ${lang}\nIssue: ${issue || '—'}\nConsent: given at ${consentedAt}`;
+    const ownerRes = await fetch('https://api.resend.com/emails', {
       method: 'POST',
+      signal: AbortSignal.timeout(15000),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${apiKey}`
@@ -281,6 +319,7 @@ export default async function handler(req, res) {
         // Let the owner reply straight to the visitor (when an email was given)
         reply_to: email || undefined,
         subject: `New contact from QR Gospel — ${name || 'Anonymous'}`,
+        text: ownerText,
         html: `
           <h2>New Contact Submission</h2>
           <table style="border-collapse:collapse;font-family:sans-serif;">
@@ -289,17 +328,22 @@ export default async function handler(req, res) {
             <tr><td style="padding:8px;font-weight:bold;">Phone</td><td style="padding:8px;">${esc(phone) || '—'}</td></tr>
             <tr><td style="padding:8px;font-weight:bold;">Language</td><td style="padding:8px;">${esc(lang) || '—'}</td></tr>
             <tr><td style="padding:8px;font-weight:bold;">Issue</td><td style="padding:8px;">${esc(issue) || '—'}</td></tr>
-            <tr><td style="padding:8px;font-weight:bold;">Consent</td><td style="padding:8px;">✅ Given at ${esc(consentedAt) || new Date().toISOString()}</td></tr>
+            <tr><td style="padding:8px;font-weight:bold;">Consent</td><td style="padding:8px;">✅ Given at ${esc(consentedAt)}</td></tr>
           </table>
         `
       })
     });
+    if (!ownerRes.ok) {
+      console.error('Owner notification failed:', ownerRes.status, await ownerRes.text().catch(() => ''));
+      return res.status(502).json({ error: 'Failed to send message' });
+    }
 
-    // 2. Send welcome email to visitor (if they provided an email)
-    if (email) {
+    // 2. Send welcome email to visitor (if they provided one, max once per day per address)
+    if (email && welcomeAllowed(email)) {
       const welcome = buildWelcomeEmail(name, lang);
-      await fetch('https://api.resend.com/emails', {
+      const welcomeRes = await fetch('https://api.resend.com/emails', {
         method: 'POST',
+        signal: AbortSignal.timeout(15000),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${apiKey}`
@@ -310,9 +354,14 @@ export default async function handler(req, res) {
           // Replies (incl. "Unsubscribe") reach the monitored inbox, not the unmonitored noreply address
           reply_to: toEmail,
           subject: welcome.subject,
+          text: welcome.text,
           html: welcome.html
         })
       });
+      if (!welcomeRes.ok) {
+        // The submission itself succeeded — log, but don't fail the request
+        console.error('Welcome email failed:', welcomeRes.status, await welcomeRes.text().catch(() => ''));
+      }
     }
 
     return res.status(200).json({ ok: true });

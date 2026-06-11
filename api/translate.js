@@ -26,6 +26,10 @@ const TEMPLATE = {
   consentLabel: 'I agree to be contacted by QR Gospel about faith-related topics. I can unsubscribe at any time.',
   consentError: 'Please check the box above before submitting.',
   privacyLink: 'Privacy Policy',
+  formErr: 'Please enter your name or email.',
+  emailErr: 'Please check your email address.',
+  share: 'Share with a friend',
+  aBack: 'Go back', aNext: 'Continue',
   tyT: 'Thank you!', tyS: "We'll be in touch soon.", tySkip: 'May you find peace.',
   pn: 'Paul', dir: 'ltr'
 };
@@ -85,7 +89,7 @@ async function commitToGitHub(path, content, message) {
 
   let sha;
   try {
-    const existing = await fetch(`${apiBase}?ref=${BRANCH}`, { headers });
+    const existing = await fetch(`${apiBase}?ref=${BRANCH}`, { headers, signal: AbortSignal.timeout(8000) });
     if (existing.ok) {
       const data = await existing.json();
       sha = data.sha;
@@ -95,12 +99,19 @@ async function commitToGitHub(path, content, message) {
   const body = { message, content: Buffer.from(content).toString('base64'), branch: BRANCH };
   if (sha) body.sha = sha;
 
-  await fetch(apiBase, { method: 'PUT', headers, body: JSON.stringify(body) });
+  const put = await fetch(apiBase, {
+    method: 'PUT', headers, body: JSON.stringify(body),
+    signal: AbortSignal.timeout(10000)
+  });
+  if (!put.ok) {
+    console.error('GitHub commit failed:', put.status, await put.text().catch(() => ''));
+  }
 }
 
 async function translateLang(lang) {
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
+    signal: AbortSignal.timeout(45000),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
@@ -131,14 +142,12 @@ async function translateLang(lang) {
 }
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') return res.status(200).end();
+  // Same-origin API — intentionally no CORS headers
+  if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const ip = req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || 'unknown';
+  const fwd = String(req.headers['x-forwarded-for'] || '');
+  const ip = fwd.split(',')[0].trim() || req.headers['x-real-ip'] || 'unknown';
   if (!rateLimit(ip)) {
     return res.status(429).json({ error: 'Too many requests. Please wait a moment.' });
   }
@@ -159,14 +168,16 @@ export default async function handler(req, res) {
   // 1. Check if already committed to GitHub (static cache)
   try {
     const staticCheck = await fetch(
-      `https://raw.githubusercontent.com/${REPO}/${BRANCH}/texts/${lang}/ui.json`
+      `https://raw.githubusercontent.com/${REPO}/${BRANCH}/texts/${lang}/ui.json`,
+      { signal: AbortSignal.timeout(5000) }
     );
     if (staticCheck.ok) {
       return res.status(200).json(await staticCheck.json());
     }
   } catch (e) {}
 
-  // 2. Deduplicate: if a translation for this lang is already in progress, wait for it
+  // 2. Deduplicate: if a translation for this lang is already in progress (or done
+  //    on this warm instance), reuse it
   if (inFlight.has(lang)) {
     try {
       const result = await inFlight.get(lang);
@@ -180,23 +191,25 @@ export default async function handler(req, res) {
   const promise = translateLang(lang);
   inFlight.set(lang, promise);
 
+  let translated;
   try {
-    const translated = await promise;
-    res.status(200).json(translated);
-
-    // Commit to GitHub in the background
-    const jsonContent = JSON.stringify(translated, null, 2);
-    commitToGitHub(
-      `texts/${lang}/ui.json`,
-      jsonContent,
-      `Add auto-translated UI strings for language: ${lang}`
-    ).catch(() => {});
-
+    translated = await promise;
   } catch (err) {
+    // Evict failed promises right away so the next visitor can retry
+    inFlight.delete(lang);
     console.error('Translate error:', err);
-    res.status(500).json({ error: 'Translation failed' });
-  } finally {
-    // Clean up after a delay (keep the result cached for 60s for any stragglers)
-    setTimeout(() => inFlight.delete(lang), 60000);
+    return res.status(500).json({ error: 'Translation failed' });
   }
+
+  // Commit BEFORE responding: serverless instances freeze once the response is
+  // sent, so background work would be lost — and losing the commit means every
+  // future visitor with this language pays for a fresh OpenAI call.
+  await commitToGitHub(
+    `texts/${lang}/ui.json`,
+    JSON.stringify(translated, null, 2),
+    `Add auto-translated UI strings for language: ${lang}`
+  ).catch((err) => console.error('Commit error:', err));
+
+  // Successful results stay in the map as a warm per-instance cache
+  return res.status(200).json(translated);
 }

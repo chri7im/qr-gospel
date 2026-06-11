@@ -4,36 +4,39 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
+<meta name="color-scheme" content="light">
 <title>Good News</title>
 <meta name="description" content="Love, hope, and purpose — a free message for you, in your language. Choose what weighs on you most and read a few words of good news.">
+<link rel="canonical" href="https://www.qr-gospel.com/">
 <link rel="icon" type="image/svg+xml" href="/public/favicon.svg">
+<link rel="apple-touch-icon" href="/public/apple-touch-icon.png">
 <meta property="og:title" content="Good News">
 <meta property="og:description" content="Love, Hope, Purpose — a message for you.">
-<meta property="og:image" content="https://qr-gospel.com/public/og.png">
+<meta property="og:image" content="https://www.qr-gospel.com/public/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Good News — Love, Hope, Purpose">
 <meta property="og:site_name" content="QR Gospel">
-<meta property="og:url" content="https://qr-gospel.com">
+<meta property="og:url" content="https://www.qr-gospel.com">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/public/fonts.css">
 <link rel="stylesheet" href="/public/styles.css">
 </head>
 <body>
-<div id="app">
+<main id="app">
+
+  <noscript><div class="noscript-msg">This site needs JavaScript to work. Please enable JavaScript and reload the page.</div></noscript>
 
   <!-- ══════════ PAGE 1: LANGUAGE ══════════ -->
   <div id="page1" class="page active">
     <div class="p1-header">
-      <div id="p1-header-text">Please select your language</div>
+      <h1 id="p1-header-text" class="pg-focus" tabindex="-1">Please select your language</h1>
     </div>
     <div class="p1-scroll-area">
       <div class="p1-fade-top"></div>
       <div class="p1-band"></div>
-      <div id="p1-scroll">
+      <div id="p1-scroll" role="listbox" aria-label="Language">
         <div class="lang-pad" id="pad-top"></div>
         <!-- items injected by JS -->
         <div class="lang-pad" id="pad-bottom"></div>
@@ -42,7 +45,7 @@
     </div>
     <div class="p1-footer">
       <button class="arrow-btn" id="arrow-btn" type="button" aria-label="Continue" data-goto="page2">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
           <polyline points="9 18 15 12 9 6"/>
         </svg>
       </button>
@@ -52,30 +55,30 @@
   <!-- ══════════ PAGE 2: ABOUT US ══════════ -->
   <div id="page2" class="page">
     <button class="back-btn dark" type="button" aria-label="Go back" data-goto="page1">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(26,35,50,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(26,35,50,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
         <polyline points="15 18 9 12 15 6"/>
       </svg>
     </button>
     <div class="p2-hero">
-      <div class="p2-title" id="p2-title">About us</div>
+      <h1 class="p2-title pg-focus" id="p2-title" tabindex="-1">About us</h1>
     </div>
     <div class="p2-body">
       <p class="p2-text" id="p2-text"></p>
     </div>
     <div class="p2-footer">
-      <button class="primary-btn" id="p2-cta" data-goto="page3"></button>
+      <button class="primary-btn" id="p2-cta" type="button" data-goto="page3"></button>
     </div>
   </div>
 
   <!-- ══════════ PAGE 3: ISSUE SELECTOR ══════════ -->
   <div id="page3" class="page">
     <button class="back-btn dark" type="button" aria-label="Go back" data-goto="page2">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(26,35,50,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(26,35,50,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
         <polyline points="15 18 9 12 15 6"/>
       </svg>
     </button>
     <div class="p3-header">
-      <div class="p3-title" id="p3-title">What bothers you most in life?</div>
+      <h1 class="p3-title pg-focus" id="p3-title" tabindex="-1">What bothers you most in life?</h1>
     </div>
     <div class="p3-list" id="p3-list"></div>
   </div>
@@ -83,27 +86,27 @@
   <!-- ══════════ PAGE 4: OTHER INPUT ══════════ -->
   <div id="page4" class="page">
     <button class="back-btn dark" type="button" aria-label="Go back" data-goto="page3">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(26,35,50,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(26,35,50,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
         <polyline points="15 18 9 12 15 6"/>
       </svg>
     </button>
-    <h2 class="p4-title" id="p4-title">What weighs on your heart?</h2>
+    <h1 class="p4-title pg-focus" id="p4-title" tabindex="-1">What weighs on your heart?</h1>
     <p class="p4-sub" id="p4-sub">Describe in your own words.</p>
-    <textarea class="p4-textarea" id="p4-input" rows="5" maxlength="200"></textarea>
-    <button class="primary-btn" id="p4-cta" data-action="submitOther"></button>
+    <textarea class="p4-textarea" id="p4-input" rows="5" maxlength="200" aria-labelledby="p4-title"></textarea>
+    <button class="primary-btn" id="p4-cta" type="button" data-action="submitOther"></button>
   </div>
 
   <!-- ══════════ PAGE 5: GOSPEL ══════════ -->
   <div id="page5" class="page">
     <button class="back-btn dark" id="p5-back" type="button" aria-label="Go back" data-goto="page3">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(26,35,50,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(26,35,50,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
         <polyline points="15 18 9 12 15 6"/>
       </svg>
     </button>
     <div class="p5-header"></div>
-    <div class="p5-body" id="p5-body">
-      <div class="p5-loading" id="p5-loading">
-        <div class="spinner"></div>
+    <div class="p5-body pg-focus" id="p5-body" tabindex="-1">
+      <div class="p5-loading" id="p5-loading" role="status" aria-live="polite">
+        <div class="spinner" aria-hidden="true"></div>
         <div class="loading-txt" id="p5-loading-txt">Preparing your message…</div>
       </div>
       <div class="gospel-wrap" id="gospel-wrap">
@@ -112,42 +115,43 @@
       </div>
     </div>
     <div class="p5-footer">
-      <button class="learn-btn" id="learn-btn" data-goto="page6"></button>
+      <button class="learn-btn" id="learn-btn" type="button" data-goto="page6"></button>
     </div>
   </div>
 
   <!-- ══════════ PAGE 6: CONTACT ══════════ -->
   <div id="page6" class="page">
     <button class="back-btn dark" type="button" aria-label="Go back" data-goto="page5">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(26,35,50,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(26,35,50,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
         <polyline points="15 18 9 12 15 6"/>
       </svg>
     </button>
-    <div id="p6-form">
-      <h2 class="p6-title" id="p6-title">Would you like to learn more?</h2>
+    <form id="p6-form" novalidate>
+      <h1 class="p6-title pg-focus" id="p6-title" tabindex="-1">Would you like to learn more?</h1>
       <p class="p6-sub" id="p6-sub">Leave your details and we'll be in touch.</p>
       <label class="f-label" id="lbl-name" for="f-name">Name</label>
-      <input type="text" class="f-input" id="f-name" maxlength="100" autocomplete="name"/>
+      <input type="text" class="f-input" id="f-name" name="name" maxlength="100" autocomplete="name"/>
       <label class="f-label" id="lbl-email" for="f-email">Email</label>
-      <input type="email" class="f-input" id="f-email" maxlength="200" autocomplete="email" inputmode="email"/>
+      <input type="email" class="f-input" id="f-email" name="email" maxlength="200" autocomplete="email" inputmode="email"/>
       <label class="f-label" id="lbl-phone" for="f-phone">Phone (optional)</label>
-      <input type="tel" class="f-input f-phone" id="f-phone" maxlength="40" autocomplete="tel"/>
+      <input type="tel" class="f-input f-phone" id="f-phone" name="phone" maxlength="40" autocomplete="tel"/>
+      <input type="text" class="hp-field" id="f-hp" name="hp_field" maxlength="200" tabindex="-1" autocomplete="off" aria-hidden="true"/>
       <div class="consent-row" id="consent-row">
-        <input type="checkbox" id="f-consent"/>
+        <input type="checkbox" id="f-consent" name="consent"/>
         <label for="f-consent" id="consent-label">I agree to be contacted by QR Gospel about faith-related topics. I can unsubscribe at any time.</label>
       </div>
-      <div class="consent-error" id="consent-error">Please check the box above before submitting.</div>
-      <div class="consent-error" id="form-error">Please enter your name or email.</div>
-      <button class="primary-btn" id="p6-cta" type="button" data-action="submitContact">Submit</button>
-      <div class="skip-link" id="skip-link" data-action="skip"></div>
+      <div class="consent-error" id="consent-error" role="alert">Please check the box above before submitting.</div>
+      <div class="consent-error" id="form-error" role="alert">Please enter your name or email.</div>
+      <button class="primary-btn" id="p6-cta" type="submit">Submit</button>
+      <button class="skip-link" id="skip-link" type="button" data-action="skip"></button>
       <div class="p6-footer"><a href="/privacy" id="p6-privacy-link">Privacy Policy</a></div>
-    </div>
+    </form>
     <div class="ty-wrap" id="ty-wrap">
-      <span class="ty-star">✦</span>
-      <div class="ty-title" id="ty-title">Thank you!</div>
+      <span class="ty-star" aria-hidden="true">✦</span>
+      <div class="ty-title pg-focus" id="ty-title" tabindex="-1">Thank you!</div>
       <div class="ty-sub" id="ty-sub">We'll be in touch soon.</div>
-      <button class="share-btn is-hidden" id="share-btn" data-action="shareLink">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <button class="share-btn is-hidden" id="share-btn" type="button" data-action="shareLink">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
           <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
           <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
         </svg>
@@ -156,7 +160,7 @@
     </div>
   </div>
 
-</div><!-- #app -->
+</main><!-- #app -->
 
 <script src="/public/app.js" defer></script>
 <script defer src="/_vercel/insights/script.js"></script>
