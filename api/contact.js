@@ -171,10 +171,14 @@ function esc(s) {
     .replace(/'/g, '&#39;');
 }
 
-// Per-IP limit (5 per 10 min) plus a per-instance global breaker (40 per 10 min
-// across all IPs) so a botnet can't flood the owner inbox or burn Resend quota.
+// Per-IP limit (5 per 10 min) plus a per-instance global runaway breaker. Form
+// submissions are a small, end-of-funnel fraction of visits, so 150/10min per
+// instance sits far above any organic burst and only trips on a flood — and even
+// then the client submit is fire-and-forget, so a trip degrades follow-up email
+// without breaking the visitor's thank-you experience. Resend's own quota is the
+// real send ceiling at scale.
 const allowIp = makeRateLimiter({ windowMs: 10 * 60 * 1000, max: 5 });
-const allowGlobal = makeGlobalLimiter({ windowMs: 10 * 60 * 1000, max: 40 });
+const allowGlobal = makeGlobalLimiter({ windowMs: 10 * 60 * 1000, max: 150 });
 
 // One welcome email per address per 24h — keeps the form from being used to
 // bombard a victim's inbox from rotating IPs.

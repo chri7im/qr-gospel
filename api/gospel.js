@@ -30,10 +30,13 @@ STRICT RULES:
 - Write 5-6 paragraphs entirely in the requested language.
 - Address the reader in a warm register, matching this site's voice: use the informal singular "you" (du, tu, ты, تو, 你, etc.) in languages that distinguish formality — EXCEPT Hindi, which must use the respectful आप, and Japanese/Korean, which must use the standard polite forms (です/ます, 해요/합니다). Scripture quotes keep the wording of a common Bible translation in that language.`;
 
-// Per-IP limit (10/min) plus a per-instance global circuit breaker (60/min across
-// all IPs) so a botnet or IP-rotating attacker can't run up OpenAI cost without bound.
+// Per-IP limit (10/min) is the primary per-abuser control. The global limiter is a
+// per-instance RUNAWAY breaker, sized far above any organic per-instance peak (one
+// instance can't physically make ~150 slow OpenAI calls/min on legit traffic), so it
+// only trips on a pathological loop — it never throttles real virality (capacity
+// scales with Vercel's instance count). The true cost backstop is the OpenAI spend cap.
 const allowIp = makeRateLimiter({ windowMs: 60000, max: 10 });
-const allowGlobal = makeGlobalLimiter({ windowMs: 60000, max: 60 });
+const allowGlobal = makeGlobalLimiter({ windowMs: 60000, max: 150 });
 
 export default async function handler(req, res) {
   // The API is only called same-origin — no CORS headers means other origins

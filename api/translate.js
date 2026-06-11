@@ -82,12 +82,13 @@ const BRANCH = 'master';
 // In-flight translations — prevents stampede (multiple concurrent requests for same lang)
 const inFlight = new Map();
 
-// Per-IP limit (6 per 10 min) plus a per-instance global breaker (8 per 10 min
-// across all IPs). Each translation is an OpenAI call + a GitHub commit + a
-// production deploy, so the global cap is the backstop against a distributed
-// attack seeding junk languages.
+// Per-IP limit (6 per 10 min) plus a per-instance global runaway breaker. A new
+// language is only ever translated ONCE (then served as a static, CDN-cached
+// ui.json), so even a global launch produces few distinct new-language events per
+// instance per window — 15/10min is comfortable headroom that only trips on an
+// attacker iterating many codes. The allowlist already blocks the obscure long tail.
 const allowIp = makeRateLimiter({ windowMs: 10 * 60 * 1000, max: 6 });
-const allowGlobal = makeGlobalLimiter({ windowMs: 10 * 60 * 1000, max: 8 });
+const allowGlobal = makeGlobalLimiter({ windowMs: 10 * 60 * 1000, max: 15 });
 
 async function commitToGitHub(path, content, message) {
   const token = process.env.GITHUB_TOKEN;
