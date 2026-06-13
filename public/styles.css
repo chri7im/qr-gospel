@@ -192,7 +192,7 @@ body {
 }
 .p2-hero {
   background: #ffffff;
-  padding: 62px 28px 42px; flex-shrink: 0;
+  padding: calc(62px + env(safe-area-inset-top)) 28px 42px; flex-shrink: 0;
   text-align: center;
 }
 .p2-title {
@@ -220,7 +220,8 @@ body {
 
 .p3-header {
   flex-shrink: 0;
-  padding: 36px 24px 16px;
+  /* top inset keeps the title + divider in sync with the safe-area-inset back button */
+  padding: calc(36px + env(safe-area-inset-top)) 24px 16px;
   background: #ffffff;
   border-bottom: 1px solid rgba(26,35,50,0.08);
   text-align: center;
@@ -267,7 +268,7 @@ body {
 ═══════════════════════════════════════ */
 #page4 {
   background: #ffffff;
-  padding: 70px 28px calc(40px + env(safe-area-inset-bottom));
+  padding: calc(70px + env(safe-area-inset-top)) 28px calc(40px + env(safe-area-inset-bottom));
   overflow-y: auto; -webkit-overflow-scrolling: touch;
   text-align: center;
 }
@@ -305,7 +306,9 @@ body {
 
 .p5-header {
   flex-shrink: 0;
-  padding: 14px;
+  /* tall enough to hold the 40px back button above the divider (the header is
+     otherwise empty), plus the iOS notch inset so button + divider move together */
+  min-height: calc(62px + env(safe-area-inset-top));
   border-bottom: 1px solid rgba(26,35,50,0.08);
   text-align: center;
 }
@@ -380,7 +383,7 @@ body {
 #page6 {
   background: #ffffff;
   overflow-y: auto; -webkit-overflow-scrolling: touch;
-  padding: 52px 28px calc(48px + env(safe-area-inset-bottom));
+  padding: calc(52px + env(safe-area-inset-top)) 28px calc(48px + env(safe-area-inset-bottom));
   text-align: center;
 }
 .p6-title {
